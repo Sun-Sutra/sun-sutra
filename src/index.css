@@ -1,0 +1,111 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --background: #FDFCF8;
+  --foreground: #2C2C24;
+  
+  --primary: #5D7052;
+  --primary-foreground: #F3F4F1;
+  
+  --secondary: #C18C5D;
+  --secondary-foreground: #FFFFFF;
+  
+  --accent: #E6DCCD;
+  --accent-foreground: #4A4A40;
+  
+  --muted: #F0EBE5;
+  --muted-foreground: #78786C;
+  
+  --border: #DED8CF;
+  --destructive: #A85448;
+  
+  --surface: #FEFEFA; /* Card background */
+
+  --ff-display: 'Fraunces', serif;
+  --ff-body: 'Nunito', sans-serif;
+  
+  --radius: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  
+  /* Soft colored shadows instead of pure black */
+  --shadow-soft: 0 4px 20px -2px rgba(93, 112, 82, 0.15);
+  --shadow-float: 0 10px 40px -10px rgba(193, 140, 93, 0.2);
+  --shadow-deep: 0 20px 40px -10px rgba(93, 112, 82, 0.15);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--ff-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Global Noise Texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  /* Base64 subtle noise pattern */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 9999; /* overlay everything */
+}
+
+/* Blob Utilities */
+.blob-bg {
+  position: absolute;
+  filter: blur(60px);
+  z-index: 0;
+  opacity: 0.6;
+}
+
+.blob-1 {
+  background: var(--muted);
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.blob-2 {
+  background: rgba(93, 112, 82, 0.15); /* primary tint */
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.blob-3 {
+  background: rgba(193, 140, 93, 0.15); /* secondary tint */
+  border-radius: 50% 50% 20% 80% / 25% 80% 20% 75%;
+}
+
+/* Typography Scale */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ff-display);
+  color: var(--foreground);
+}
+
+/* Focus States */
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px rgba(93, 112, 82, 0.4);
+}
+
+/* Base button styles to be extended by inline styles or components */
+.btn-organic {
+  border-radius: 9999px;
+  font-weight: 700;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-organic:hover {
+  transform: scale(1.05);
+}
+.btn-organic:active {
+  transform: scale(0.95);
+}
