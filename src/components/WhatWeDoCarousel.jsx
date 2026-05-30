@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, ArrowRight as ArrowIcon } from 'lucide-react'
 import { useFadeIn, SectionHeading, sectionPad } from './utils'
 
-import groupCaptiveImg from '../assets/group_captive.png'
-import maharashtraClustersImg from '../assets/maharashtra_clusters.png'
-import regulatoryOnboardingImg from '../assets/regulatory_onboarding.png'
-import businessModelImg from '../assets/business_model.png'
+import groupCaptiveImg from '../assets/group_captive.jpeg'
+import regulatoryOnboardingImg from '../assets/regulatory_onboarding.jpeg'
+import businessModelImg from '../assets/business_model.jpeg'
 
 const features = [
   {
@@ -14,12 +13,6 @@ const features = [
     desc: "We structure group captive investments where generators provide clean energy directly to our MSME pool with zero upfront capex requirements.",
     path: "/solutions",
     image: groupCaptiveImg
-  },
-  {
-    title: "Maharashtra Clusters",
-    desc: "Focused on high-density industrial parks in Pune, Chakan, and Pimpri-Chinchwad to enable localized aggregation efficiency.",
-    path: "/market",
-    image: maharashtraClustersImg
   },
   {
     title: "Regulatory & Onboarding",
