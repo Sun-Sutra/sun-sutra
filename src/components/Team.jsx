@@ -14,7 +14,11 @@ export default function Team() {
   const gridRef = useFadeIn()
 
   return (
-    <section id="team" style={{ ...sectionPad, background: 'var(--background)' }}>
+    <section id="team" style={{
+      ...sectionPad,
+      paddingTop: '64px',
+      background: 'var(--background)'
+    }}>
       <div className="blob-bg blob-2" style={{ top: '30%', right: '0%', width: 500, height: 500 }} />
       <div style={{ ...container, position: 'relative', zIndex: 1 }}>
         <div ref={headerRef} style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>

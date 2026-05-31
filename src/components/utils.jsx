@@ -38,7 +38,7 @@ export function SectionLabel({ children }) {
 export function SectionHeading({ children, style }) {
   return (
     <h2 style={{
-      fontFamily:'var(--ff-display)', fontSize:'clamp(2.5rem, 5vw, 4rem)',
+      fontFamily:'var(--ff-display)', fontSize:'clamp(2.2rem, 4.5vw, 3.5rem)',
       fontWeight:600, lineHeight:1.1, letterSpacing:'-0.02em', marginBottom:'1.5rem',
       color: 'var(--foreground)',
       ...style,

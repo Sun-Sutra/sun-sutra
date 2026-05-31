@@ -39,7 +39,7 @@ export default function Footer() {
         <div style={{ height: 1, background: 'var(--border)', width: '100%', opacity: 0.5 }} />
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-          <span style={{fontSize:14,color:'var(--muted-foreground)'}}>© 2026 Sun Sutra Energy. Rooted in Maharashtra.</span>
+          <span style={{fontSize:14,color:'var(--muted-foreground)'}}>© 2026 Sun Sutra Energy.</span>
           <div style={{ display: 'flex', gap: '1rem' }}>
             {[MapPin, Phone, Mail].map((Icon, i) => (
               <a key={i} href="#" style={{

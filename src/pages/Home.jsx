@@ -4,6 +4,7 @@ import Hero from '../components/Hero'
 import WhatWeDoCarousel from '../components/WhatWeDoCarousel'
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from '../components/utils'
 import { ArrowRight } from 'lucide-react'
+import savingImg from '../assets/saving.jpg'
 
 export default function Home() {
   const calcRef = useFadeIn()
@@ -147,6 +148,17 @@ export default function Home() {
 
       {/* Hero-like Call to Action */}
       <section style={{ ...sectionPad, background: 'var(--secondary)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        {/* Background Image with Overlay */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0,
+          backgroundImage: `url(${savingImg})`, backgroundSize: 'cover', backgroundPosition: 'center',
+          opacity: 0.35
+        }}>
+          <div style={{
+            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'linear-gradient(to bottom, rgba(193, 140, 93, 0.45), rgba(193, 140, 93, 0.8))'
+          }} />
+        </div>
         <div className="blob-bg" style={{
           top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
           width: 800, height: 500, background: 'rgba(255,255,255,0.1)',
