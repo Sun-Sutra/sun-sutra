@@ -49,14 +49,14 @@ export function SectionHeading({ children, style }) {
 export function SectionBody({ children, style }) {
   return (
     <p style={{
-      fontSize:'1.125rem', color:'var(--muted-foreground)',
+      fontSize:'clamp(1rem, 2vw, 1.125rem)', color:'var(--muted-foreground)',
       maxWidth:600, lineHeight:1.8, fontFamily: 'var(--ff-body)', ...style,
     }}>{children}</p>
   )
 }
 
-export const sectionPad = { padding:'128px 0', position:'relative', zIndex:1 }
-export const container = { maxWidth:1280, margin:'0 auto', padding:'0 2rem' }
+export const sectionPad = { padding:'clamp(64px, 10vw, 128px) 0', position:'relative', zIndex:1 }
+export const container = { maxWidth:1280, margin:'0 auto', padding:'0 clamp(1rem, 5vw, 2rem)' }
 
 // Reusable organic card styling to ensure consistency across components
 export const organicCardStyle = {

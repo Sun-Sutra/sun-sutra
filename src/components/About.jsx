@@ -67,7 +67,12 @@ export default function About() {
 
   return (
     <>
-      <section id="about" style={{...sectionPad, background: 'var(--muted)', overflow: 'hidden'}}>
+      <section id="about" style={{
+        ...sectionPad,
+        paddingTop: 'clamp(100px, 10vw, 140px)',
+        background: 'var(--muted)',
+        overflow: 'hidden'
+      }}>
         <div className="blob-bg blob-3" style={{ top: '20%', left: '-10%', width: 400, height: 400 }} />
         <div ref={ref} style={{
           display:'grid', gridTemplateColumns:'1.1fr 1.35fr', gap:'4rem', alignItems:'center', position: 'relative', zIndex: 1,
@@ -81,10 +86,7 @@ export default function About() {
             <SectionBody>
               We are building an MSME-focused renewable energy aggregation business that enables industries to access affordable clean electricity through group captive and open-access procurement models.
             </SectionBody>
-            <SectionBody style={{marginTop:'1.5rem'}}>
-              Our mission is to simplify renewable energy procurement for fragmented industrial consumers by coordinating with renewable energy generators and streamlining onboarding, compliance, and operational management.
-            </SectionBody>
-            <div style={{marginTop:'3rem'}}>
+            <div style={{marginTop:'3rem', marginBottom: '1.5rem'}}>
               <Link to="/contact" className="btn-organic" style={{
                 background:'var(--primary)', color:'var(--primary-foreground)',
                 fontSize:16, padding:'16px 32px', boxShadow:'var(--shadow-soft)',
@@ -182,7 +184,7 @@ export default function About() {
                 position: 'relative'
               }}>
                 {/* Full Card Image */}
-                <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={item.image} alt={item.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 
                 {/* Default Dark bottom gradient for text readability */}
                 <div className="dark-gradient" style={{
@@ -260,14 +262,14 @@ export default function About() {
             </div>
             
             <div style={{ display: 'flex', gap: '2rem', flex: '1 1 300px', justifyContent: 'center' }}>
-              {[['₹5–6', 'Renewable Rate', 'var(--primary)'], ['₹7–9', 'Current Tariff', 'var(--destructive)']].map(([num, label, color]) => (
+              {[['₹7-15', 'Sunsutra Tariff', 'var(--primary)'], ['₹9-17', 'Grid Tariff', 'var(--destructive)']].map(([num, label, color]) => (
                 <div key={label} style={{
-                  flex: 1, padding: '2rem 1.5rem', background: 'var(--surface)',
+                  flex: 1, padding: 'clamp(1.25rem, 4vw, 2rem) clamp(0.75rem, 3vw, 1.5rem)', background: 'var(--surface)',
                   borderRadius: '1.5rem', border: '1px solid rgba(222,216,207,0.8)',
-                  textAlign: 'center', minWidth: '140px', boxShadow: 'var(--shadow-soft)'
-                }}>
-                  <div style={{ fontFamily: 'var(--ff-display)', fontSize: '2.5rem', fontWeight: 700, color, lineHeight: 1 }}>{num}</div>
-                  <div style={{ fontSize: 11, color: 'var(--muted-foreground)', marginTop: 8, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
+                  textAlign: 'center', minWidth: '120px', boxShadow: 'var(--shadow-soft)'
+                }} className="rate-card">
+                  <div style={{ fontFamily: 'var(--ff-display)', fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', fontWeight: 700, color, lineHeight: 1 }}>{num}</div>
+                  <div style={{ fontSize: 10, color: 'var(--muted-foreground)', marginTop: 8, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
                 </div>
               ))}
             </div>
@@ -301,17 +303,30 @@ export default function About() {
         @media(max-width:900px){
           .about-grid{
             grid-template-columns:1fr!important;
-            gap:3rem!important;
-            padding-left:2rem!important;
-            padding-right:2rem!important;
+            gap:2rem!important;
+            padding-left:clamp(1rem, 5vw, 2rem)!important;
+            padding-right:clamp(1rem, 5vw, 2rem)!important;
           }
           .about-image-card {
             border-radius:2rem!important;
             border-right:1px solid rgba(222, 216, 207, 0.5)!important;
-            height:380px!important;
+            height:300px!important;
+            width:100%!important;
           }
-          .focus-grid{grid-template-columns:1fr!important;gap:2rem!important}
-          .comparison-card{flex-direction:column!important;text-align:center!important;padding:2rem!important;gap:2rem!important}
+          .focus-grid{grid-template-columns:1fr!important;gap:1.5rem!important}
+          .focus-grid > div { height: 300px !important; }
+          .comparison-card{flex-direction:column!important;text-align:center!important;padding:1.5rem!important;gap:2rem!important}
+          .comparison-card > div {
+            flex: none !important;
+          }
+          .comparison-card > div:last-child { 
+            flex-direction: row !important; 
+            gap: 1rem !important; 
+            width: 100% !important;
+          }
+        }
+        @media(max-width:480px) {
+          .about-image-card { height: 240px !important; }
         }
       `}</style>
     </>

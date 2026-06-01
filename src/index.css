@@ -34,6 +34,11 @@
   --shadow-deep: 0 20px 40px -10px rgba(93, 112, 82, 0.15);
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -42,7 +47,6 @@ body {
   font-family: var(--ff-body);
   font-size: 16px;
   line-height: 1.6;
-  overflow-x: hidden;
   position: relative;
 }
 
@@ -109,3 +113,51 @@ h1, h2, h3, h4, h5, h6 {
 .btn-organic:active {
   transform: scale(0.95);
 }
+
+/* ───── Global Mobile Responsive ───── */
+@media (max-width: 768px) {
+  h1, h2, h3 {
+    word-break: break-word;
+  }
+  .btn-organic {
+    font-size: 14px !important;
+    padding: 12px 24px !important;
+  }
+}
+
+.mobile-br {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-br {
+    display: block;
+  }
+  .hero-buttons {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1.25rem !important;
+    margin-bottom: 3.5rem !important;
+  }
+  .hero-buttons > a {
+    width: 100% !important;
+    max-width: 290px;
+    margin: 0 auto;
+  }
+  h1 {
+    line-height: 1.28 !important;
+    margin-bottom: 2.5rem !important;
+  }
+  .hero-desc {
+    margin-bottom: 4rem !important;
+  }
+}
+
+.pattern-diagonal-lines-sm {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(93, 112, 82, 0.15) 8px, rgba(93, 112, 82, 0.15) 9px);
+}
+
+.pattern-vertical-lines-sm {
+  background-image: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(93, 112, 82, 0.15) 8px, rgba(93, 112, 82, 0.15) 9px);
+}
+

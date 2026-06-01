@@ -167,6 +167,7 @@ export default function WhyNow() {
                   <img
                     src={card.image}
                     alt={card.title}
+                    loading="lazy"
                     className="why-image"
                     style={{
                       width: '100%',

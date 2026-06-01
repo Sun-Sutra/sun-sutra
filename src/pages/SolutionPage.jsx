@@ -6,7 +6,7 @@ import { SectionLabel, SectionHeading, SectionBody, container } from '../compone
 
 export default function SolutionPage() {
   return (
-    <div style={{ paddingTop: '30px' }}>
+    <div>
 
       <Problem />
       <Solution />

@@ -11,7 +11,7 @@ const problems = [
   {
     num: '01',
     title: 'High Industrial Tariffs',
-    desc: 'Industrial electricity tariffs between ₹7–₹9 per unit create an unsustainable cost burden for MSMEs competing in tight margins.',
+    desc: 'Industrial electricity tariffs between ₹9-17 per unit create an unsustainable cost burden for MSMEs competing in tight margins.',
     image: industrialTariffs
   },
   {
@@ -51,7 +51,11 @@ export default function Problem() {
   const gridRef = useFadeIn()
 
   return (
-    <section id="problem" style={{...sectionPad, background: 'var(--background)'}}>
+    <section id="problem" style={{
+      ...sectionPad,
+      paddingTop: 'clamp(100px, 10vw, 140px)',
+      background: 'var(--background)'
+    }}>
       <div style={container}>
         <div ref={headerRef} style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
           <SectionLabel>The Problem</SectionLabel>

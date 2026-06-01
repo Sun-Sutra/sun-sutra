@@ -6,7 +6,7 @@ import heroImg from '../assets/hero.jpg'
 const metrics = [
   { icon: <Activity size={24} />, label: 'Electricity Cost', value: 'Lower Bills' },
   { icon: <Sun size={24} />, label: 'Renewable Energy', value: 'Clean Access' },
-  { icon: <ShieldCheck size={24} />, label: 'Tariff Stability', value: 'Long-Term Rates' },
+  { icon: <ShieldCheck size={24} />, label: 'Tariff Stability', value: 'Long-Term Stable Rates' },
   { icon: <FileCheck size={24} />, label: 'Procurement', value: 'Simplified' },
 ]
 
@@ -30,7 +30,7 @@ export default function Hero() {
     <section ref={heroRef} id="home" style={{
       position:'relative', minHeight:'100vh',
       display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-      textAlign:'center', padding:'160px 2rem 80px', overflow:'hidden',
+      textAlign:'center', padding:'clamp(140px, 20vw, 180px) clamp(1rem, 5vw, 2rem) clamp(40px, 8vw, 80px)', overflow:'hidden',
     }}>
       {/* Background Image with Bottom Fade */}
       <div style={{
@@ -51,30 +51,23 @@ export default function Hero() {
       <h1 className="fade-up" style={{
         fontFamily:'var(--ff-display)', fontWeight:700, lineHeight:1.1,
         letterSpacing:'-0.02em', maxWidth:900, marginBottom:'2rem',
-        fontSize:'clamp(3rem, 6vw, 5.5rem)', position:'relative', zIndex:1,
+        fontSize:'clamp(2.2rem, 8vw, 5.5rem)', position:'relative', zIndex:1,
         color: 'var(--foreground)'
       }}>
-        <em style={{fontStyle:'italic', color:'var(--primary)', fontWeight: 600}}>Affordable Renewable</em><br/>
+        <em style={{fontStyle:'italic', color:'var(--primary)', fontWeight: 600}}>Affordable<br className="mobile-br"/> Renewable</em><br/>
         Electricity for<br/>
         Industrial MSMEs
       </h1>
 
-      <p className="fade-up" style={{
-        fontSize:'clamp(1.125rem, 2vw, 1.35rem)', color:'var(--muted-foreground)', maxWidth:600,
-        marginBottom:'3rem', fontWeight:400, lineHeight:1.8, zIndex:1, position:'relative',
-        fontFamily: 'var(--ff-body)'
-      }}>
-        Helping MSMEs reduce electricity costs through renewable energy aggregation, group captive, and open-access procurement models.
-      </p>
-
-      <div className="fade-up" style={{
+      <div className="fade-up hero-buttons" style={{
         display:'flex', alignItems:'center', gap:'1.5rem', flexWrap:'wrap',
-        justifyContent:'center', marginBottom:'5rem', position:'relative', zIndex:1,
+        justifyContent:'center', marginBottom:'2.5rem', position:'relative', zIndex:1,
       }}>
         <Link to="/contact" className="btn-organic" style={{
           background:'var(--primary)', color:'var(--primary-foreground)',
           fontSize:16, padding:'16px 36px',
           boxShadow:'var(--shadow-soft)',
+          justifyContent: 'center'
         }}>
           Get Cost Analysis <ArrowRight size={18} />
         </Link>
@@ -82,10 +75,19 @@ export default function Hero() {
           background:'transparent', color:'var(--secondary)',
           fontSize:16, padding:'14px 34px',
           border:'2px solid var(--secondary)',
+          justifyContent: 'center'
         }}>
           How It Works
         </Link>
       </div>
+
+      <p className="fade-up hero-desc" style={{
+        fontSize:'clamp(1.125rem, 2vw, 1.35rem)', color:'var(--muted-foreground)', maxWidth:600,
+        marginBottom:'5rem', fontWeight:400, lineHeight:1.8, zIndex:1, position:'relative',
+        fontFamily: 'var(--ff-body)'
+      }}>
+        Helping MSMEs reduce electricity costs through renewable energy aggregation, group captive, and open-access procurement models.
+      </p>
 
       {/* Metrics strip - Organic styled */}
       <div className="fade-up" style={{
@@ -125,8 +127,11 @@ export default function Hero() {
           50% { opacity: 0.5; transform: scale(0.85); }
         }
         @media (max-width: 900px) {
-          .metric-item { border-right: none !important; border-bottom: 1px solid rgba(222, 216, 207, 0.5) !important; }
+          .metric-item { border-right: none !important; border-bottom: 1px solid rgba(222, 216, 207, 0.5) !important; flex: 1 1 45% !important; }
           .metric-item:last-child { border-bottom: none !important; }
+        }
+        @media (max-width: 480px) {
+          .metric-item { flex: 1 1 100% !important; }
         }
       `}</style>
     </section>

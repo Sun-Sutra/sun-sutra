@@ -48,7 +48,8 @@ export default function ValueProp() {
           <div style={{
             display:'flex', gap:'0.5rem', background:'var(--muted)',
             padding: '0.5rem', borderRadius:'9999px', width:'fit-content',
-            marginBottom:'3rem',
+            marginBottom:'3rem', flexWrap: 'wrap', justifyContent: 'center',
+            maxWidth: '100%',
           }}>
             {tabs.map((tab) => (
               <button key={tab.id} onClick={() => setActive(tab.id)} style={{
@@ -89,7 +90,12 @@ export default function ValueProp() {
           </div>
         </div>
       </div>
-      <style>{`@media(max-width:900px){.vp-grid{grid-template-columns:1fr!important}}`}</style>
+      <style>{`
+        @media(max-width:900px){.vp-grid{grid-template-columns:1fr!important}}
+        @media(max-width:640px){
+          .vp-grid > div { padding: 1rem !important; }
+        }
+      `}</style>
     </section>
   )
 }

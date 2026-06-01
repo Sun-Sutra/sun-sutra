@@ -34,7 +34,7 @@ export default function Home() {
       <Hero />
 
       {/* Savings Calculator Section */}
-      <section ref={calcRef} style={{ ...sectionPad, background: 'var(--muted)', borderTop: '1px solid var(--border)' }}>
+      <section ref={calcRef} style={{ ...sectionPad, background: 'var(--muted)', borderTop: '1px solid var(--border)', overflow: 'hidden' }}>
         <div className="blob-bg blob-3" style={{ top: '10%', left: '-5%', width: 500, height: 500 }} />
         <div style={{...container, position: 'relative', zIndex: 1}}>
           <div style={{ textAlign: 'center', marginBottom: '4rem', maxWidth: 800, margin: '0 auto 4rem' }}>
@@ -84,8 +84,8 @@ export default function Home() {
               <div style={{ background: 'var(--background)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid rgba(222,216,207,0.5)' }}>
                 <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--foreground)' }}>Assumptions based on Pune/Chakan MIDC averages:</h4>
                 <ul style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', paddingLeft: '1.2rem', display: 'flex', flexDirection: 'column', gap: 8, lineHeight: 1.5 }}>
-                  <li>Current industrial grid tariff of ~₹8.00 per unit</li>
-                  <li>Sun Sutra consolidated group captive rate of ~₹5.50 per unit</li>
+                  <li>Current industrial grid tariff of ₹9-17 per unit</li>
+                  <li>Sun Sutra tariff of ₹7-15 per unit</li>
                   <li>No capital expenditure required from your company</li>
                 </ul>
               </div>
@@ -101,6 +101,7 @@ export default function Home() {
               display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
               minHeight: 400, position: 'relative', overflow: 'hidden'
             }}>
+              <div className="pattern-vertical-lines-sm" style={{ position: 'absolute', inset: 0, opacity: 0.6, pointerEvents: 'none' }} />
               <div className="blob-bg" style={{
                 top: '-20%', right: '-20%', width: 300, height: 300,
                 background: 'rgba(255,255,255,0.1)', borderRadius: '50% 50% 20% 80% / 25% 80% 20% 75%',
@@ -190,8 +191,12 @@ export default function Home() {
         }
         .custom-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
         @media(max-width:1024px){
-          .calc-container { grid-template-columns: 1fr !important; gap: 3rem !important; padding: 2.5rem !important; }
+          .calc-container { grid-template-columns: 1fr !important; gap: 2rem !important; padding: 2rem !important; border-radius: 2rem !important; }
           .features-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+        }
+        @media(max-width:640px){
+          .calc-container { padding: 1.25rem !important; }
+          .calc-container h3 { font-size: 1.3rem !important; }
         }
       `}</style>
     </>
