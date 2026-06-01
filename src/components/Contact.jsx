@@ -26,7 +26,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" style={{...sectionPad, background: 'var(--background)'}}>
+    <section id="contact" style={{...sectionPad, background: 'var(--background)', overflow: 'hidden'}}>
       <div className="blob-bg blob-2" style={{ top: '10%', right: '0%', width: 500, height: 500 }} />
       <div style={{...container, position: 'relative', zIndex: 1}}>
         <div ref={ref} style={{
@@ -122,10 +122,11 @@ export default function Contact() {
       </div>
       <style>{`
         @media(max-width:1024px){
-          .contact-layout{grid-template-columns:1fr!important;gap:4rem!important}
+          .contact-layout{grid-template-columns:1fr!important;gap:3rem!important}
         }
         @media(max-width:640px){
           .form-grid{grid-template-columns:1fr!important}
+          .contact-layout > div:last-child { padding: 2rem !important; }
         }
       `}</style>
     </section>

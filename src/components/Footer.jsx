@@ -12,7 +12,7 @@ export default function Footer() {
   ]
   return (
     <footer style={{
-      borderTop:'1px solid var(--border)', padding:'4rem 2rem',
+      borderTop:'1px solid var(--border)', padding:'clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 2rem)',
       background:'var(--background)', position:'relative', zIndex:1,
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>

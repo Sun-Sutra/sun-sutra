@@ -12,8 +12,8 @@ import { MapPin } from 'lucide-react'
 
 const stats = [
   { num: '63M+', label: 'MSMEs in India' },
-  { num: '₹7–9', label: 'Grid tariff per unit' },
-  { num: '₹5–6', label: 'Renewable per unit' },
+  { num: '₹9-17', label: 'Grid tariff per unit' },
+  { num: '₹7-15', label: 'Sunsutra tariff per unit' },
   { num: 'MH #1', label: 'Industrial market size' },
 ]
 
@@ -32,7 +32,9 @@ export default function Market() {
       id="market"
       style={{
         ...sectionPad,
+        paddingTop: 'clamp(100px, 10vw, 140px)',
         background: 'var(--background)',
+        overflow: 'hidden',
       }}
     >
       <div
@@ -65,9 +67,6 @@ export default function Market() {
           {/* MARKET OPPORTUNITY */}
           <div
             style={{
-              ...organicCardStyle,
-              padding: '4rem',
-              borderRadius: '3rem',
               textAlign: 'center',
             }}
           >
@@ -99,10 +98,10 @@ export default function Market() {
             >
               {stats.map((s, index) => {
                 const radii = [
-                  '30% 70% 70% 30% / 30% 30% 70% 70%',
-                  '60% 40% 30% 70% / 60% 30% 70% 40%',
-                  '50% 50% 20% 80% / 25% 80% 20% 75%',
-                  '40% 60% 70% 30% / 40% 50% 60% 50%',
+                  '2rem 4rem 2rem 3rem',
+                  '3rem 2rem 4rem 2rem',
+                  '2rem 3rem 2rem 4rem',
+                  '4rem 2rem 3rem 2rem',
                 ]
 
                 return (
@@ -167,15 +166,9 @@ export default function Market() {
           </div>
 
           {/* FOCUS REGIONS */}
-          <div
-            style={{
-              ...organicCardStyle,
-              padding: '4rem',
-              borderRadius: '3rem',
-            }}
-          >
-            <div
-              style={{
+          <div>
+              <div
+                style={{
                 textAlign: 'center',
                 marginBottom: '3rem',
               }}

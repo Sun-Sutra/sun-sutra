@@ -38,8 +38,8 @@ const imageCardStyle = (image) => ({
   overflow: 'hidden',
   backgroundImage: `
     linear-gradient(
-      rgba(0,0,0,00),
-      rgba(0,0,0,00)
+      rgba(0,0,0,0),
+      rgba(0,0,0,0)
     ),
     url(${image})
   `,
@@ -47,8 +47,9 @@ const imageCardStyle = (image) => ({
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   color: '#fff',
-  transition: 'all 0.4s ease',
+  transition: 'transform 0.4s ease, box-shadow 0.4s ease',
   minHeight: '300px',
+  willChange: 'transform',
 })
 
 export default function Solution() {
@@ -57,7 +58,7 @@ export default function Solution() {
   const pointsRef = useFadeIn()
 
   return (
-    <section id="solution" style={{ ...sectionPad, background: 'var(--muted)' }}>
+    <section id="solution" style={{ ...sectionPad, background: 'var(--muted)', overflow: 'hidden' }}>
       <div
         className="blob-bg blob-2"
         style={{
@@ -406,6 +407,16 @@ export default function Solution() {
         @media(max-width:768px){
           .sol-points{
             grid-template-columns:1fr!important;
+          }
+          .sol-points > div {
+            padding: 1rem 1.25rem !important;
+            border-radius: 1.25rem !important;
+          }
+        }
+
+        @media(hover: none) {
+          .solution-flow > div {
+            transform: none !important;
           }
         }
       `}</style>

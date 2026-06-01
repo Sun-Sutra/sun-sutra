@@ -76,7 +76,7 @@ export default function WhatWeDoCarousel() {
         </div>
 
         {/* Carousel Container */}
-        <div style={{ position: 'relative', width: '100%', outline: 'none' }}>
+        <div style={{ position: 'relative', width: '100%', outline: 'none', overflow: 'hidden' }}>
           <div style={{
             display: 'flex',
             transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -120,7 +120,7 @@ export default function WhatWeDoCarousel() {
                       alignItems: 'center',
                       opacity: 0.95
                     }}>
-                      <img src={f.image} alt={f.title} style={{ width: '100%', maxWidth: 320, height: 'auto', borderRadius: '1.5rem', mixBlendMode: 'multiply' }} />
+                      <img src={f.image} alt={f.title} loading="lazy" style={{ width: '100%', maxWidth: 320, height: 'auto', borderRadius: '1.5rem', mixBlendMode: 'multiply' }} />
                     </div>
                   </div>
 
@@ -214,6 +214,17 @@ export default function WhatWeDoCarousel() {
           }
           .whatwedo-nav > div:last-child {
             justify-content: space-between;
+          }
+        }
+        @media(max-width: 640px) {
+          .whatwedo-card {
+            padding: 2rem 1.25rem !important;
+          }
+          .whatwedo-card h3 {
+            font-size: 2rem !important;
+          }
+          .whatwedo-card p {
+            font-size: 1rem !important;
           }
         }
       `}</style>
