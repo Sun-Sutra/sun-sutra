@@ -1,13 +1,20 @@
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
 import profileFallback from '../assets/profile_fallback.png'
 
+import Aryan from '../assets/team/Aryan.jpeg';
+import Manmohan from '../assets/team/Manmohan.jpeg';
+import Aditya from '../assets/team/Aditya.jpeg';
+import Rohit from '../assets/team/Rohit.jpeg';
+// import Madhav from '../assets/team/Madhav.jpeg';
+// import Avinash from '../assets/team/Avinash.jpeg';
+
 const members = [
-  { initials: 'AD', name: 'Aryan Dhangar', role: 'Founder', bio: 'BS Economics student at IIT Kharagpur. Experience in business strategy, revenue model development, team management, and entrepreneurial initiatives.' },
-  { initials: 'MM', name: 'Manmohan', role: 'Co-Founder', bio: 'Ex-Navodayan with experience in import-export operations, client relationship management, chemical markets, and industrial networking.' },
-  { initials: 'AK', name: 'Aditya Kumar', role: 'Co-Founder', bio: 'Student at the Department of Humanities and Social Sciences, IIT Kharagpur. Contributes to market research, stakeholder engagement, and strategic planning, helping bridge business insights with operational execution. His interdisciplinary perspective supports Sunsutra\'s mission of making renewable energy more accessible and affordable for MSMEs.' },
-  { initials: 'RB', name: 'Rohit Bej', role: 'CTO', bio: 'B.Tech Mechanical Engineering student at the Indian Institute of Technology Kharagpur. Experienced in web development and artificial intelligence technologies, bringing technical expertise in building intelligent digital platforms.' },
-  { initials: 'MD', name: 'Madhav', role: 'Legal & Compliance Advisor', bio: 'Renewable energy professional with 10+ years of experience in solar project management and execution. A qualified lawyer, he advises Sunsutra on regulatory compliance, contractual matters, and renewable energy project governance.' },
-  { initials: 'AK', name: 'Avinash Kumar', role: 'Advisory', bio: 'Director at Brahmih International Foundation with deep organizational leadership and social impact experience.' }
+  { initials: 'AD', name: 'Aryan Dhangar', role: 'Founder', bio: 'BS Economics student at IIT Kharagpur. Experience in business strategy, revenue model development, team management, and entrepreneurial initiatives.', image: Aryan },
+  { initials: 'MM', name: 'Manmohan', role: 'Co-Founder', bio: 'Ex-Navodayan with experience in import-export operations, client relationship management, chemical markets, and industrial networking.', image: Manmohan },
+  { initials: 'AK', name: 'Aditya Kumar', role: 'Co-Founder', bio: 'Student at the Department of Humanities and Social Sciences, IIT Kharagpur. Contributes to market research, stakeholder engagement, and strategic planning, helping bridge business insights with operational execution. His interdisciplinary perspective supports Sunsutra\'s mission of making renewable energy more accessible and affordable for MSMEs.', image: Aditya },
+  { initials: 'RB', name: 'Rohit Bej', role: 'CTO', bio: 'B.Tech Mechanical Engineering student at the Indian Institute of Technology Kharagpur. Experienced in web development and artificial intelligence technologies, bringing technical expertise in building intelligent digital platforms.', image:Rohit },
+  { initials: 'MD', name: 'Madhav', role: 'Legal & Compliance Advisor', bio: 'Renewable energy professional with 10+ years of experience in solar project management and execution. A qualified lawyer, he advises Sunsutra on regulatory compliance, contractual matters, and renewable energy project governance.',  image: profileFallback},
+  { initials: 'AK', name: 'Avinash Kumar', role: 'Advisory', bio: 'Director at Brahmih International Foundation with deep organizational leadership and social impact experience.', image:'../assets/team/Aryan.jpeg' }
 ]
 
 export default function Team() {
@@ -42,7 +49,7 @@ export default function Team() {
                 overflow: 'hidden'
               }}>
                 <img
-                  src={`/team/${m.name}.png`}
+                  src={m.image}
                   alt={m.name}
                   loading="lazy"
                   onError={(e) => { e.currentTarget.src = profileFallback; }}
