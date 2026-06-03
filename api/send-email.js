@@ -1,5 +1,12 @@
 import nodemailer from 'nodemailer'
 
+// ─── Constants ───
+const MAX_PAYLOAD_BYTES = 10_000 // 10 KB hard limit on request body
+const ALLOWED_ORIGINS = [
+  'https://sunsutragroup.com',
+  'https://www.sunsutragroup.com',
+]
+
 // ─── Input Validation ───
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
@@ -43,9 +50,7 @@ function createTransporter() {
       pass: SMTP_PASS,
     },
     tls: {
-      // Namecheap Private Email requires STARTTLS on port 587
-      ciphers: 'SSLv3',
-      rejectUnauthorized: false,
+      rejectUnauthorized: true,
     },
   })
 }
@@ -134,18 +139,27 @@ function buildAutoReply({ name, email }) {
 
 // ─── API Handler ───
 export default async function handler(req, res) {
-  // CORS headers
+  // CORS — restrict to production origins
+  const origin = req.headers.origin || ''
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+  }
   res.setHeader('Access-Control-Allow-Credentials', 'true')
-  res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end()
+    return res.status(204).end()
   }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' })
+  }
+
+  // Guard against oversized payloads
+  const bodyStr = JSON.stringify(req.body || {})
+  if (bodyStr.length > MAX_PAYLOAD_BYTES) {
+    return res.status(413).json({ success: false, error: 'Request payload too large' })
   }
 
   // Parse and validate input
