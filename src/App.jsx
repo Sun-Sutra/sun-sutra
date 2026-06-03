@@ -8,6 +8,7 @@ import AboutPage from './pages/AboutPage'
 import SolutionPage from './pages/SolutionPage'
 import MarketPage from './pages/MarketPage'
 import ContactPage from './pages/ContactPage'
+import AdminPage from './pages/AdminPage'
 
 // ScrollToTop component to reset scroll position on page change
 function ScrollToTop() {
@@ -18,23 +19,36 @@ function ScrollToTop() {
   return null
 }
 
+// Layout wrapper that hides Nav/Footer on admin route
+function Layout({ children }) {
+  const { pathname } = useLocation()
+  const isAdmin = pathname === '/admin'
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}>
+      {!isAdmin && <Nav />}
+      <main style={{ flex: '1 0 auto' }}>
+        {children}
+      </main>
+      {!isAdmin && <Footer />}
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}>
-        <Nav />
-        <main style={{ flex: '1 0 auto' }}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/solutions" element={<SolutionPage />} />
-            <Route path="/market" element={<MarketPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/solutions" element={<SolutionPage />} />
+          <Route path="/market" element={<MarketPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </Layout>
     </Router>
   )
 }
