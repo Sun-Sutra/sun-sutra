@@ -10,6 +10,7 @@ import SolutionPage from './pages/SolutionPage'
 import MarketPage from './pages/MarketPage'
 import ContactPage from './pages/ContactPage'
 import AdminPage from './pages/AdminPage'
+import AnalysisPage from './pages/AnalysisPage'
 
 // ScrollToTop component to reset scroll position on page change
 function ScrollToTop() {
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/market" element={<MarketPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/analysis" element={<AnalysisPage />} />
         </Routes>
       </Layout>
       <Analytics />
