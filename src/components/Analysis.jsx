@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
 import { LineChart, ShieldCheck, Clock } from 'lucide-react'
 import UploadSection from './UploadSection'
@@ -11,7 +11,9 @@ const trustItems = [
 
 const inputStyle = {
   background:'var(--background)',
-  border:'1px solid rgba(222,216,207,0.8)',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: 'rgba(222,216,207,0.8)',
   borderRadius:'9999px', color:'var(--foreground)',
   fontFamily:'var(--ff-body)', fontSize:'1rem',
   padding:'14px 20px', width:'100%',
@@ -52,6 +54,7 @@ export default function Analysis() {
   })
   const [errors, setErrors] = useState({})
   const ref = useFadeIn()
+  const uploadRef = useRef(null)
 
   const handleChange = (field) => (e) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }))
@@ -104,10 +107,14 @@ export default function Analysis() {
     }));
   };
 
-  const handleAnalysis = () => {
+  const handleAnalysis = async () => {
     if (!validate()) return
-    // Button currently does nothing, you can output here later
-    console.log("Get Analysis clicked with data:", formData)
+    // Upload bill image to Cloudflare R2 if user attached one (optional, non-blocking)
+    if (uploadRef.current) {
+      await uploadRef.current.uploadToR2()
+    }
+    // Button currently does nothing else — analysis output goes here later
+    console.log('Get Analysis clicked with data:', formData)
   }
 
   const fields = [
@@ -193,7 +200,7 @@ export default function Analysis() {
           }}>
             <div style={{position:'absolute',top:0,left:0,right:0,height:6,background:'var(--primary)', zIndex: 2}}/>
 
-            <UploadSection onExtracted={handleExtractedData} />
+            <UploadSection ref={uploadRef} onExtracted={handleExtractedData} />
 
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1.25rem', marginBottom:'2rem'}} className="form-grid">
               {fields.map(f => (

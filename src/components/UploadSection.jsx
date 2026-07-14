@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { extractTextFromImage } from '../services/ocrService';
 import { processOCRTextWithAI } from '../services/aiService';
 
-const UploadSection = ({ onExtracted }) => {
+// forwardRef so parent (Analysis.jsx) can call uploadToR2() on "Get Analysis" click
+const UploadSection = forwardRef(({ onExtracted }, ref) => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState('');
   
@@ -11,15 +12,35 @@ const UploadSection = ({ onExtracted }) => {
   const [errorMsg, setErrorMsg] = useState('');
   
   const [rawText, setRawText] = useState('');
-  const [aiJson, setAiJson] = useState('');
   
   const fileInputRef = useRef(null);
 
+  // Expose uploadToR2 and getImage to parent via ref
+  useImperativeHandle(ref, () => ({
+    getImage: () => image,
+    uploadToR2: async () => {
+      if (!image) return; // optional — silently skip
+      try {
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+        const formPayload = new FormData();
+        formPayload.append('file', image);
+        const res = await fetch(`${BACKEND_URL}/api/upload`, {
+          method: 'POST',
+          body: formPayload,
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          console.warn('R2 upload failed (non-blocking):', err.error);
+        }
+      } catch (e) {
+        console.warn('R2 upload error (non-blocking):', e.message);
+      }
+    },
+  }));
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      processFile(file);
-    }
+    if (file) processFile(file);
   };
 
   const processFile = (file) => {
@@ -28,18 +49,14 @@ const UploadSection = ({ onExtracted }) => {
       setStatus('error');
       return;
     }
-    
     setImage(file);
-    if (file.type === 'application/pdf') {
-      setPreview('https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg'); 
-    } else {
-      setPreview(URL.createObjectURL(file));
-    }
+    setPreview(file.type === 'application/pdf'
+      ? 'https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg'
+      : URL.createObjectURL(file));
     setStatus('idle');
     setProgress(0);
     setErrorMsg('');
     setRawText('');
-    setAiJson('');
   };
 
   const removeImage = () => {
@@ -49,10 +66,7 @@ const UploadSection = ({ onExtracted }) => {
     setProgress(0);
     setErrorMsg('');
     setRawText('');
-    setAiJson('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleExtract = async () => {
@@ -61,27 +75,22 @@ const UploadSection = ({ onExtracted }) => {
       setStatus('error');
       return;
     }
-
     try {
+      // OCR
       setStatus('ocr');
       setProgress(0);
       const extractedText = await extractTextFromImage(image, (p) => {
         setProgress(Math.round(p * 100));
       });
-      
       setRawText(extractedText);
-      
       if (!extractedText.trim()) {
         throw new Error('No text found in the document. Please try a clearer bill.');
       }
-
+      // AI
       setStatus('ai');
       const aiData = await processOCRTextWithAI(extractedText);
-      setAiJson(JSON.stringify(aiData, null, 2));
-      
       setStatus('success');
       onExtracted(aiData);
-      
     } catch (err) {
       setStatus('error');
       setErrorMsg(err.message || 'An unexpected error occurred.');
@@ -100,11 +109,11 @@ const UploadSection = ({ onExtracted }) => {
             fontSize: '0.95rem', fontWeight: 600, border: '1px solid rgba(222,216,207,0.5)'
           }}>
             Upload Bill (JPG, PNG, PDF)
-            <input 
-              type="file" 
+            <input
+              type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
-              accept=".jpg,.jpeg,.png,.pdf" 
+              accept=".jpg,.jpeg,.png,.pdf"
               style={{ display: 'none' }}
             />
           </label>
@@ -118,9 +127,9 @@ const UploadSection = ({ onExtracted }) => {
               <button type="button" onClick={removeImage} style={{ background: 'none', border: 'none', color: 'var(--destructive)', cursor: 'pointer', padding: 0, fontSize: '0.85rem', marginTop: '4px' }}>Remove File</button>
             </div>
           </div>
-          
+
           <div>
-            <button 
+            <button
               type="button"
               onClick={handleExtract}
               disabled={status === 'ocr' || status === 'ai'}
@@ -128,11 +137,11 @@ const UploadSection = ({ onExtracted }) => {
               style={{
                 padding: '10px 20px', background: 'var(--primary)',
                 color: 'var(--primary-foreground)', fontSize: '0.95rem',
-                border: 'none', cursor: (status === 'ocr' || status === 'ai') ? 'wait' : 'pointer',
-                opacity: (status === 'ocr' || status === 'ai') ? 0.7 : 1
+                border: 'none', cursor: ['ocr', 'ai'].includes(status) ? 'wait' : 'pointer',
+                opacity: ['ocr', 'ai'].includes(status) ? 0.7 : 1
               }}
             >
-              {status === 'ocr' ? `Scanning (${progress}%)...` : 
+              {status === 'ocr' ? `Scanning (${progress}%)...` :
                status === 'ai' ? 'AI Analyzing...' : 'Extract & Auto-Fill'}
             </button>
           </div>
@@ -163,6 +172,7 @@ const UploadSection = ({ onExtracted }) => {
       )}
     </div>
   );
-};
+});
 
+UploadSection.displayName = 'UploadSection';
 export default UploadSection;
