@@ -31,26 +31,52 @@ const errorTextStyle = {
   marginTop: 4, fontFamily: 'var(--ff-body)',
 }
 
+const parseToKw = (val) => {
+  if (val === undefined || val === null || val === '') return '';
+  let str = String(val).toLowerCase().replace(/,/g, '').trim();
+  const match = str.match(/([0-9]*\.?[0-9]+)/);
+  if (!match) return '';
+  let num = parseFloat(match[1]);
+  if (isNaN(num)) return '';
+  if (str.includes('hp') || str.includes('horsepower')) {
+    num = num * 0.7457;
+  } else if (str.includes('mw') || str.includes('megawatt')) {
+    num = num * 1000;
+  } else if (str.includes(' w') || str.includes('watts') || (str.endsWith('w') && !str.endsWith('kw') && !str.endsWith('mw') && !str.endsWith('hp'))) {
+    num = num / 1000;
+  }
+  return Number(num.toFixed(3));
+};
+
+const cleanNumber = (val) => {
+  if (val === undefined || val === null || val === '') return '';
+  let str = String(val).replace(/₹|,|\s/g, '').trim();
+  const match = str.match(/([0-9]*\.?[0-9]+)/);
+  if (!match) return '';
+  const num = parseFloat(match[1]);
+  return isNaN(num) ? '' : num;
+};
+
 export default function Analysis() {
   const [formData, setFormData] = useState({
-    state: '',
-    monthlyBill: '',
-    industry: '',
     consumerNumber: '',
+    consumerName: '',
     discom: '',
-    htLt: '',
-    tariffCategory: '',
-    consumerCategory: '',
-    connectedLoad: '',
-    sanctionedLoad: '',
+    state: '',
+    tariff: '',
     contractDemand: '',
-    monthlyConsumption: '',
-    billingHistory: '',
+    supplyVoltage: '',
+    billingPeriod: '',
+    unitsConsumed: '',
+    sanctionedLoad: '',
     energyCharges: '',
-    fixedDemandCharges: '',
-    fac: '',
-    electricityDuty: '',
+    demandCharges: '',
+    fixedCharges: '',
     wheelingCharges: '',
+    electricityDuty: '',
+    totalBill: '',
+    totalLossPercentage: '',
+    miscellaneousCharges: '',
   })
   const [errors, setErrors] = useState({})
   const ref = useFadeIn()
@@ -65,19 +91,20 @@ export default function Analysis() {
 
   const validate = () => {
     const newErrors = {}
-    const cn = formData.consumerNumber.trim()
-    if (!cn) {
-      newErrors.consumerNumber = 'Consumer number is required'
-    } else if (!/^\d{13}$/.test(cn)) {
-      newErrors.consumerNumber = 'Consumer number must be exactly 13 digits'
-    }
-
-    if (!formData.monthlyBill.trim()) newErrors.monthlyBill = 'Monthly bill is required'
-    if (!formData.discom.trim()) newErrors.discom = 'DISCOM is required'
-    if (!formData.connectedLoad.trim()) newErrors.connectedLoad = 'Connected load is required'
-    if (!formData.sanctionedLoad.trim()) newErrors.sanctionedLoad = 'Sanctioned load is required'
-    if (!formData.contractDemand.trim()) newErrors.contractDemand = 'Contract demand is required'
-    if (!formData.monthlyConsumption.trim()) newErrors.monthlyConsumption = 'Monthly consumption is required'
+    if (!String(formData.consumerNumber).trim()) newErrors.consumerNumber = 'Consumer number is required'
+    if (!String(formData.consumerName).trim()) newErrors.consumerName = 'Consumer name is required'
+    if (!String(formData.discom).trim()) newErrors.discom = 'DISCOM is required'
+    if (!String(formData.state).trim()) newErrors.state = 'State is required'
+    if (!String(formData.tariff).trim()) newErrors.tariff = 'Tariff is required'
+    if (!String(formData.contractDemand).trim()) newErrors.contractDemand = 'Contract demand is required'
+    if (!String(formData.supplyVoltage).trim()) newErrors.supplyVoltage = 'Supply voltage is required'
+    if (!String(formData.billingPeriod).trim()) newErrors.billingPeriod = 'Billing period is required'
+    if (!String(formData.unitsConsumed).trim()) newErrors.unitsConsumed = 'Units consumed is required'
+    if (!String(formData.sanctionedLoad).trim()) newErrors.sanctionedLoad = 'Sanctioned load is required'
+    if (!String(formData.energyCharges).trim()) newErrors.energyCharges = 'Energy charges are required'
+    if (!String(formData.demandCharges).trim()) newErrors.demandCharges = 'Demand charges are required'
+    if (!String(formData.electricityDuty).trim()) newErrors.electricityDuty = 'Electricity duty is required'
+    if (!String(formData.totalBill).trim()) newErrors.totalBill = 'Total bill is required'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -86,24 +113,24 @@ export default function Analysis() {
   const handleExtractedData = (aiData) => {
     setFormData(prev => ({
       ...prev,
-      state: aiData.state || prev.state,
-      monthlyBill: aiData.monthlyBill || prev.monthlyBill,
-      industry: aiData.industry || prev.industry,
-      consumerNumber: aiData.consumerNumber || prev.consumerNumber,
-      discom: aiData.discom || prev.discom,
-      htLt: aiData.htLt || prev.htLt,
-      tariffCategory: aiData.tariffCategory || prev.tariffCategory,
-      consumerCategory: aiData.consumerCategory || prev.consumerCategory,
-      connectedLoad: aiData.connectedLoad || prev.connectedLoad,
-      sanctionedLoad: aiData.sanctionedLoad || prev.sanctionedLoad,
-      contractDemand: aiData.contractDemand || prev.contractDemand,
-      monthlyConsumption: aiData.monthlyConsumption || prev.monthlyConsumption,
-      billingHistory: aiData.billingHistory || prev.billingHistory,
-      energyCharges: aiData.energyCharges || prev.energyCharges,
-      fixedDemandCharges: aiData.fixedDemandCharges || prev.fixedDemandCharges,
-      fac: aiData.fac || prev.fac,
-      electricityDuty: aiData.electricityDuty || prev.electricityDuty,
-      wheelingCharges: aiData.wheelingCharges || prev.wheelingCharges,
+      consumerNumber: cleanNumber(aiData.consumerNumber) !== '' ? cleanNumber(aiData.consumerNumber) : prev.consumerNumber,
+      consumerName: aiData.consumerName ? String(aiData.consumerName).trim() : prev.consumerName,
+      discom: aiData.discom ? String(aiData.discom).trim() : prev.discom,
+      state: aiData.state ? String(aiData.state).trim() : prev.state,
+      tariff: cleanNumber(aiData.tariff) !== '' ? cleanNumber(aiData.tariff) : prev.tariff,
+      contractDemand: parseToKw(aiData.contractDemand) !== '' ? parseToKw(aiData.contractDemand) : prev.contractDemand,
+      supplyVoltage: aiData.supplyVoltage ? String(aiData.supplyVoltage).trim() : prev.supplyVoltage,
+      billingPeriod: aiData.billingPeriod ? String(aiData.billingPeriod).trim() : prev.billingPeriod,
+      unitsConsumed: cleanNumber(aiData.unitsConsumed) !== '' ? cleanNumber(aiData.unitsConsumed) : prev.unitsConsumed,
+      sanctionedLoad: parseToKw(aiData.sanctionedLoad) !== '' ? parseToKw(aiData.sanctionedLoad) : prev.sanctionedLoad,
+      energyCharges: cleanNumber(aiData.energyCharges) !== '' ? cleanNumber(aiData.energyCharges) : prev.energyCharges,
+      demandCharges: cleanNumber(aiData.demandCharges) !== '' ? cleanNumber(aiData.demandCharges) : prev.demandCharges,
+      fixedCharges: cleanNumber(aiData.fixedCharges) !== '' ? cleanNumber(aiData.fixedCharges) : prev.fixedCharges,
+      wheelingCharges: cleanNumber(aiData.wheelingCharges) !== '' ? cleanNumber(aiData.wheelingCharges) : prev.wheelingCharges,
+      electricityDuty: cleanNumber(aiData.electricityDuty) !== '' ? cleanNumber(aiData.electricityDuty) : prev.electricityDuty,
+      totalBill: cleanNumber(aiData.totalBill) !== '' ? cleanNumber(aiData.totalBill) : prev.totalBill,
+      totalLossPercentage: cleanNumber(aiData.totalLossPercentage) !== '' ? cleanNumber(aiData.totalLossPercentage) : prev.totalLossPercentage,
+      miscellaneousCharges: cleanNumber(aiData.miscellaneousCharges) !== '' ? cleanNumber(aiData.miscellaneousCharges) : prev.miscellaneousCharges,
     }));
   };
 
@@ -118,41 +145,32 @@ export default function Analysis() {
   }
 
   const fields = [
+    { label: 'Consumer Number', id: 'consumerNumber', type: 'number', placeholder: 'Enter consumer number' },
+    { label: 'Consumer Name', id: 'consumerName', type: 'text', placeholder: 'Enter consumer name' },
+    { label: 'DISCOM', id: 'discom', type: 'text', placeholder: 'Enter DISCOM' },
     { 
       label: 'State', id: 'state', type: 'select', placeholder: 'Select state',
       options: [
         'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'
       ]
     },
-    { label: 'Monthly Electricity Bill (₹)', id: 'monthlyBill', type: 'text', placeholder: 'e.g. 100000' },
+    { label: 'Tariff', id: 'tariff', type: 'number', placeholder: 'Enter tariff category' },
+    { label: 'Contract Demand (kW)', id: 'contractDemand', type: 'number', placeholder: 'Enter contract demand' },
     { 
-      label: 'Industry', id: 'industry', type: 'select', placeholder: 'Select your industry',
-      options: [
-        'Textile processing',
-        'Foundries/Metal processing',
-        'Plastic manufacturing',
-        'Cold storage',
-        'Food processing',
-        'Packaging',
-        'Engineering workshop',
-        'Others'
-      ]
+      label: 'Supply Voltage (HT/LT)', id: 'supplyVoltage', type: 'select', placeholder: 'Select supply voltage',
+      options: ['HT', 'LT']
     },
-    { label: 'Consumer Number', id: 'consumerNumber', type: 'text', placeholder: 'Enter consumer number' },
-    { label: 'DISCOM', id: 'discom', type: 'text', placeholder: 'Enter DISCOM' },
-    { label: 'HT/LT', id: 'htLt', type: 'text', placeholder: 'e.g. HT or LT' },
-    { label: 'Tariff Category', id: 'tariffCategory', type: 'text', placeholder: 'Enter tariff category' },
-    { label: 'Consumer Category', id: 'consumerCategory', type: 'text', placeholder: 'Enter consumer category' },
-    { label: 'Connected Load', id: 'connectedLoad', type: 'text', placeholder: 'Enter connected load' },
-    { label: 'Sanctioned Load', id: 'sanctionedLoad', type: 'text', placeholder: 'Enter sanctioned load' },
-    { label: 'Contract Demand', id: 'contractDemand', type: 'text', placeholder: 'Enter contract demand' },
-    { label: 'Monthly Consumption (kWh)', id: 'monthlyConsumption', type: 'text', placeholder: 'e.g. 5000' },
-    { label: 'Billing History', id: 'billingHistory', type: 'text', placeholder: 'Enter billing history' },
-    { label: 'Energy Charges', id: 'energyCharges', type: 'text', placeholder: 'Enter energy charges' },
-    { label: 'Fixed/Demand Charges', id: 'fixedDemandCharges', type: 'text', placeholder: 'Enter fixed/demand charges' },
-    { label: 'FAC', id: 'fac', type: 'text', placeholder: 'Enter FAC' },
-    { label: 'Electricity Duty', id: 'electricityDuty', type: 'text', placeholder: 'Enter electricity duty' },
-    { label: 'Wheeling Charges (if shown)', id: 'wheelingCharges', type: 'text', placeholder: 'Enter wheeling charges' },
+    { label: 'Billing Period', id: 'billingPeriod', type: 'text', placeholder: 'Enter billing period' },
+    { label: 'Units Consumed (kWh)', id: 'unitsConsumed', type: 'number', placeholder: 'Enter units consumed' },
+    { label: 'Sanctioned Load (kW)', id: 'sanctionedLoad', type: 'number', placeholder: 'Enter sanctioned load' },
+    { label: 'Energy Charges (₹)', id: 'energyCharges', type: 'number', placeholder: 'Enter energy charges' },
+    { label: 'Demand Charges (₹)', id: 'demandCharges', type: 'number', placeholder: 'Enter demand charges' },
+    { label: 'Fixed Charges (₹)', id: 'fixedCharges', type: 'number', placeholder: 'Enter fixed charges (optional)' },
+    { label: 'Wheeling Charges (₹)', id: 'wheelingCharges', type: 'number', placeholder: 'Enter wheeling charges (optional)' },
+    { label: 'Electricity Duty (₹)', id: 'electricityDuty', type: 'number', placeholder: 'Enter electricity duty' },
+    { label: 'Total Bill (₹)', id: 'totalBill', type: 'number', placeholder: 'Enter total bill' },
+    { label: 'Total Loss Percentage (%)', id: 'totalLossPercentage', type: 'number', placeholder: 'Enter total loss percentage (optional)' },
+    { label: 'Miscellaneous Charges (₹)', id: 'miscellaneousCharges', type: 'number', placeholder: 'Enter miscellaneous charges (optional)' },
   ]
 
   return (
@@ -207,7 +225,7 @@ export default function Analysis() {
                 <div key={f.id} style={{display:'flex',flexDirection:'column',gap:8}}>
                   <label style={{fontSize:13,fontWeight:600,color:'var(--foreground)',fontFamily:'var(--ff-body)'}}>
                     {f.label}
-                    {['consumerNumber', 'monthlyBill', 'discom', 'connectedLoad', 'sanctionedLoad', 'contractDemand', 'monthlyConsumption'].includes(f.id) && <span style={{color:'var(--destructive)', marginLeft: 2}}>*</span>}
+                    {['consumerNumber', 'consumerName', 'discom', 'state', 'tariff', 'contractDemand', 'supplyVoltage', 'billingPeriod', 'unitsConsumed', 'sanctionedLoad', 'energyCharges', 'demandCharges', 'electricityDuty', 'totalBill'].includes(f.id) && <span style={{color:'var(--destructive)', marginLeft: 2}}>*</span>}
                   </label>
                   {f.type === 'select' ? (
                     <select
