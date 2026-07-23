@@ -1,0 +1,601 @@
+/* ==========================================================================
+   Report layout — shared by browser preview and PDF export.
+   A4 = 210mm x 297mm. We size the page in mm so the on-screen preview
+   maps 1:1 onto what html2canvas will render.
+   ========================================================================== */
+
+.report-viewport {
+  min-height: 100vh;
+  background: var(--color-bg-subtle);
+  padding: var(--space-7) var(--space-4);
+  display: flex;
+  justify-content: center;
+}
+
+.report-page {
+  width: 210mm;
+  min-height: 297mm;
+  max-width: 100%;
+  background: var(--color-bg);
+  box-shadow: var(--shadow-card);
+  padding: 16mm;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ---- Section scaffolding ---- */
+
+.report-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  border-bottom: 1.5px solid var(--color-primary);
+  padding-bottom: var(--space-2);
+}
+
+.section-heading .section-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.06em;
+}
+
+.section-heading h2 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.section-subtext {
+  font-size: 12.5px;
+  color: var(--color-secondary-light);
+  line-height: 1.55;
+}
+
+/* ---- Card primitive ---- */
+
+.report-viewport .card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  box-shadow: 0 1px 2px rgba(18, 53, 36, 0.04);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: var(--space-5);
+  border-bottom: 3px solid var(--color-primary);
+}
+
+.report-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.report-header__logo {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.report-header__org {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-secondary-light);
+  font-weight: 600;
+}
+
+.report-header__title h1 {
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 600;
+  max-width: 340px;
+}
+
+.report-header__title .subtitle {
+  margin-top: var(--space-1);
+  font-size: 12.5px;
+  color: var(--color-secondary-light);
+  max-width: 340px;
+}
+
+.report-header__meta {
+  text-align: right;
+  font-size: 12px;
+  color: var(--color-secondary-light);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.report-header__meta strong {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.report-header__meta .client-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Executive Summary — KPI cards
+   ========================================================================== */
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+.kpi-card {
+  background: var(--color-primary-tint);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--color-accent);
+}
+
+.kpi-card .kpi-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--color-secondary-light);
+}
+
+.kpi-card .kpi-value {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.kpi-card .kpi-unit {
+  font-size: 11px;
+  color: var(--color-secondary-light);
+}
+
+/* ==========================================================================
+   Electricity Profile
+   ========================================================================== */
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.profile-stat-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--space-2) 0;
+  border-bottom: 1px dashed var(--color-border);
+  font-size: 12.5px;
+}
+
+.stat-row .stat-label {
+  color: var(--color-secondary-light);
+}
+
+.stat-row .stat-value {
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--color-secondary);
+}
+
+/* Simple bar chart used as a lightweight placeholder for monthly load */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 90px;
+  padding-top: var(--space-3);
+}
+
+.bar-chart .bar {
+  flex: 1;
+  background: linear-gradient(180deg, var(--color-primary-light), var(--color-primary));
+  border-radius: 3px 3px 0 0;
+  position: relative;
+}
+
+.bar-chart .bar-label {
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 8.5px;
+  color: var(--color-secondary-light);
+}
+
+.chart-wrapper {
+  padding-bottom: var(--space-4);
+}
+
+/* ==========================================================================
+   Bill Composition
+   ========================================================================== */
+
+.bill-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: var(--space-5);
+  align-items: center;
+}
+
+.donut-chart-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-total {
+  font-family: var(--font-display);
+}
+
+.donut-total .donut-total-value {
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--color-primary);
+}
+
+.donut-total .donut-total-label {
+  font-size: 7.5px;
+  fill: var(--color-secondary-light);
+}
+
+.bill-legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  flex: 1;
+  color: var(--color-secondary);
+}
+
+.legend-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--color-secondary-light);
+  font-size: 11px;
+}
+
+/* ==========================================================================
+   Tables — Eligibility / Procurement Comparison
+   ========================================================================== */
+
+.report-table {
+  font-size: 11.5px;
+}
+
+.report-table thead th {
+  background: var(--color-primary);
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-3);
+}
+
+.report-table thead th:first-child {
+  border-radius: var(--radius-sm) 0 0 0;
+}
+
+.report-table thead th:last-child {
+  border-radius: 0 var(--radius-sm) 0 0;
+}
+
+.report-table tbody td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-secondary);
+}
+
+.report-table tbody tr:nth-child(even) {
+  background: var(--color-bg-subtle);
+}
+
+.report-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.status-pill--eligible {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.status-pill--applicable {
+  background: var(--color-accent-tint);
+  color: var(--color-accent);
+}
+
+.comparison-highlight {
+  background: var(--color-primary-tint) !important;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Financial Impact
+   ========================================================================== */
+
+.financial-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--space-5);
+}
+
+.financial-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.financial-stat {
+  text-align: center;
+  padding: var(--space-2) var(--space-1);
+}
+
+.financial-stat .value {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.financial-stat .label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-secondary-light);
+  margin-top: 2px;
+}
+
+.savings-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.savings-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.savings-card .savings-label {
+  font-size: 10px;
+  color: var(--color-secondary-light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.savings-card .savings-value {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-positive);
+}
+
+.line-chart-area {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  height: 110px;
+  padding-top: var(--space-3);
+}
+
+/* ==========================================================================
+   Environmental Impact
+   ========================================================================== */
+
+.eco-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-3);
+}
+
+.eco-stat {
+  text-align: center;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-2);
+}
+
+.eco-stat .eco-icon {
+  font-size: 18px;
+  margin-bottom: var(--space-2);
+}
+
+.eco-stat .eco-value {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.eco-stat .eco-label {
+  font-size: 9.5px;
+  color: var(--color-secondary-light);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+/* ==========================================================================
+   Recommendation
+   ========================================================================== */
+
+.recommendation-card {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.recommendation-card .recommendation-tag {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.recommendation-card h3 {
+  color: #fff;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.3;
+  max-width: 90%;
+}
+
+.recommendation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.recommendation-list li {
+  display: flex;
+  gap: var(--space-2);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.recommendation-list li::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+
+/* ==========================================================================
+   Disclaimer & Footer
+   ========================================================================== */
+
+.disclaimer-block {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.disclaimer-block h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-secondary-light);
+  font-weight: 600;
+}
+
+.disclaimer-block p {
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--color-secondary-light);
+}
+
+.report-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--color-secondary-light);
+  padding-top: var(--space-3);
+}

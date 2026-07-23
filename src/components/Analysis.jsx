@@ -1,7 +1,12 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
-import { LineChart, ShieldCheck, Clock } from 'lucide-react'
+import { LineChart, ShieldCheck, Clock, X, Zap, TrendingDown, Activity, Info, CheckCircle2, AlertCircle, Leaf, Download, Loader2 } from 'lucide-react'
 import UploadSection from './UploadSection'
+import ReportPage from './report/ReportPage'
+import buildReportData from './report/buildReportData'
+import generatePdf from './report/generatePdf'
+import '../styles/report-tokens.css'
+import '../styles/report.css'
 
 const trustItems = [
   { icon: <LineChart size={20} />, text: 'Detailed analysis of your energy consumption' },
@@ -79,7 +84,10 @@ export default function Analysis() {
     miscellaneousCharges: '',
   })
   const [errors, setErrors] = useState({})
+  const [analysisResult, setAnalysisResult] = useState(null)
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
   const ref = useFadeIn()
+  const reportContainerRef = useRef(null)
   const uploadRef = useRef(null)
 
   const handleChange = (field) => (e) => {
@@ -140,8 +148,33 @@ export default function Analysis() {
     if (uploadRef.current) {
       await uploadRef.current.uploadToR2()
     }
-    // Button currently does nothing else — analysis output goes here later
-    console.log('Get Analysis clicked with data:', formData)
+    
+    const units = Number(formData.unitsConsumed) || 0;
+    const bill = Number(formData.totalBill) || 0;
+    
+    const effectiveRate = units > 0 ? bill / units : 0;
+    const renTariff = effectiveRate > 7.35 ? 7.35 : effectiveRate * 0.8;
+    const monthlySavings = (effectiveRate - renTariff) * units;
+    const annualSavings = monthlySavings * 12;
+    const co2 = (units * 12 * 0.71 / 1000).toFixed(0);
+    const score = Math.min(100, Math.max(50, Math.round(70 + (monthlySavings / bill) * 100)));
+    
+    const isHT = formData.supplyVoltage === 'HT';
+    const isHighConsumption = units > 20000;
+    const isEligible = isHT && isHighConsumption;
+    const isPass = isHT && units > 10000;
+
+    setAnalysisResult({
+      currentBill: bill.toLocaleString('en-IN'),
+      averageTariff: effectiveRate.toFixed(2),
+      renewableTariff: renTariff.toFixed(2),
+      monthlySavings: Math.max(0, Math.round(monthlySavings)).toLocaleString('en-IN'),
+      annualSavings: Math.max(0, Math.round(annualSavings)).toLocaleString('en-IN'),
+      co2,
+      score,
+      isEligible: isPass,
+      solution: isHT ? (isHighConsumption ? 'Open Access Solar PPA' : 'Group Captive') : 'Rooftop Solar'
+    });
   }
 
   const fields = [
@@ -264,7 +297,172 @@ export default function Analysis() {
           </div>
         </div>
       </div>
+
+      {/* Results Section Inline */}
+      {analysisResult && (
+        <div style={{...container, marginTop: '4rem'}} ref={(el) => { if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}>
+          <div style={{
+            background: 'var(--surface)', borderRadius: '2rem',
+            padding: '3.5rem', boxShadow: 'var(--shadow-soft)',
+            border: '1px solid rgba(222,216,207,0.8)', position: 'relative', overflow: 'hidden'
+          }}>
+            <div style={{position:'absolute',top:0,left:0,right:0,height:6,background:'var(--primary)'}}/>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '3rem' }}>
+              <SectionLabel>Assessment Report</SectionLabel>
+              <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '2.5rem', color: 'var(--foreground)', marginBottom: '1rem' }}>
+                Renewable Energy Procurement Analysis
+              </h3>
+              <p style={{ color: 'var(--muted-foreground)', fontSize: '1.1rem', maxWidth: 700 }}>
+                Based on the analysis of your electricity consumption, tariff structure, and demand profile, your facility is a {analysisResult.isEligible ? 'strong candidate' : 'potential candidate'} for renewable energy procurement.
+              </p>
+              <button
+                onClick={async () => {
+                  if (isGeneratingPdf || !reportContainerRef.current) return;
+                  setIsGeneratingPdf(true);
+                  try {
+                    await generatePdf(
+                      reportContainerRef.current.querySelector('.report-page') || reportContainerRef.current,
+                      `Energy-Report-${formData.consumerName || 'Assessment'}.pdf`
+                    );
+                  } catch (err) {
+                    console.error('PDF generation failed:', err);
+                  } finally {
+                    setIsGeneratingPdf(false);
+                  }
+                }}
+                className="btn-organic"
+                style={{
+                  marginTop: '1.5rem',
+                  padding: '14px 32px',
+                  background: 'var(--primary)',
+                  color: 'var(--primary-foreground)',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  border: 'none',
+                  cursor: isGeneratingPdf ? 'wait' : 'pointer',
+                  opacity: isGeneratingPdf ? 0.7 : 1,
+                  boxShadow: 'var(--shadow-soft)',
+                  justifyContent: 'center',
+                  gap: 10,
+                }}
+                disabled={isGeneratingPdf}
+                id="download-report-btn"
+              >
+                {isGeneratingPdf ? (
+                  <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> Generating PDF…</>
+                ) : (
+                  <><Download size={18} /> Download Full Report</>    
+                )}
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
+              {/* Key Insights */}
+              <div style={{ background: 'var(--background)', borderRadius: '1.5rem', padding: '2rem', border: '1px solid rgba(222,216,207,0.5)' }}>
+                <h4 style={{ fontSize: '1.25rem', fontFamily: 'var(--ff-display)', color: 'var(--foreground)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Zap size={20} color="var(--primary)"/> Key Insights
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(222,216,207,0.4)', paddingBottom: '0.5rem' }}>
+                    <span style={{ color: 'var(--muted-foreground)' }}>Current Monthly Bill</span>
+                    <strong style={{ color: 'var(--foreground)' }}>₹{analysisResult.currentBill}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(222,216,207,0.4)', paddingBottom: '0.5rem' }}>
+                    <span style={{ color: 'var(--muted-foreground)' }}>Average Tariff</span>
+                    <strong style={{ color: 'var(--foreground)' }}>₹{analysisResult.averageTariff}/kWh</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(222,216,207,0.4)', paddingBottom: '0.5rem' }}>
+                    <span style={{ color: 'var(--muted-foreground)' }}>Est. Renewable Tariff</span>
+                    <strong style={{ color: 'var(--primary)' }}>₹{analysisResult.renewableTariff}/kWh</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(222,216,207,0.4)', paddingBottom: '0.5rem' }}>
+                    <span style={{ color: 'var(--muted-foreground)' }}>Est. Monthly Savings</span>
+                    <strong style={{ color: '#B8860B' }}>₹{analysisResult.monthlySavings}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(222,216,207,0.4)', paddingBottom: '0.5rem' }}>
+                    <span style={{ color: 'var(--muted-foreground)' }}>Est. Annual Savings</span>
+                    <strong style={{ color: '#B8860B' }}>₹{analysisResult.annualSavings}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(222,216,207,0.4)', paddingBottom: '0.5rem' }}>
+                    <span style={{ color: 'var(--muted-foreground)' }}>Est. CO₂ Reduction</span>
+                    <strong style={{ color: 'var(--foreground)' }}>{analysisResult.co2} tCO₂/year</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--muted-foreground)' }}>Overall Eligibility Score</span>
+                    <strong style={{ color: 'var(--foreground)' }}>{analysisResult.score}/100</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Strategic Summary */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{ background: analysisResult.isEligible ? 'rgba(93,112,82,0.05)' : 'rgba(212,175,55,0.05)', borderRadius: '1.5rem', padding: '2rem', border: `1px solid ${analysisResult.isEligible ? 'rgba(93,112,82,0.2)' : 'rgba(212,175,55,0.2)'}` }}>
+                  <h4 style={{ fontSize: '1.25rem', fontFamily: 'var(--ff-display)', color: 'var(--foreground)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Activity size={20} color={analysisResult.isEligible ? 'var(--primary)' : '#B8860B'}/> Strategic Summary
+                  </h4>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <li style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                      {analysisResult.isEligible ? <CheckCircle2 size={20} color="var(--primary)" style={{flexShrink:0}}/> : <AlertCircle size={20} color="#B8860B" style={{flexShrink:0}}/>}
+                      <div>
+                        <strong style={{ color: 'var(--foreground)', display: 'block' }}>Eligibility</strong>
+                        <span style={{ color: 'var(--muted-foreground)', fontSize: '0.95rem' }}>{analysisResult.isEligible ? 'Eligible for Open Access Procurement' : 'Evaluate alternative procurement models'}</span>
+                      </div>
+                    </li>
+                    <li style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                      <TrendingDown size={20} color="var(--primary)" style={{flexShrink:0}}/>
+                      <div>
+                        <strong style={{ color: 'var(--foreground)', display: 'block' }}>Recommended Solution</strong>
+                        <span style={{ color: 'var(--muted-foreground)', fontSize: '0.95rem' }}>{analysisResult.solution}</span>
+                      </div>
+                    </li>
+                    <li style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                      <Leaf size={20} color="var(--primary)" style={{flexShrink:0}}/>
+                      <div>
+                        <strong style={{ color: 'var(--foreground)', display: 'block' }}>Environmental Impact</strong>
+                        <span style={{ color: 'var(--muted-foreground)', fontSize: '0.95rem' }}>{analysisResult.co2} Tonnes CO₂ Reduction / year</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div style={{ background: 'var(--foreground)', color: 'var(--background)', borderRadius: '1.5rem', padding: '2rem' }}>
+                  <h4 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Info size={18} /> Next Steps
+                  </h4>
+                  <p style={{ fontSize: '0.95rem', opacity: 0.9, lineHeight: 1.6, marginBottom: 0 }}>
+                    Receive quotations from multiple qualified renewable energy developers through Sunsutra based on this assessment profile.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden offscreen container for PDF rendering */}
+      {analysisResult && (
+        <div
+          ref={reportContainerRef}
+          style={{
+            position: 'absolute',
+            left: '-9999px',
+            top: 0,
+            width: '210mm',
+            zIndex: -1,
+            pointerEvents: 'none',
+          }}
+          aria-hidden="true"
+        >
+          <ReportPage data={buildReportData(formData, analysisResult)} />
+        </div>
+      )}
+
       <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
         @media(max-width:1024px){
           .analysis-layout{grid-template-columns:1fr!important;gap:3rem!important}
         }

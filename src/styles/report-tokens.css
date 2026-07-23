@@ -1,0 +1,110 @@
+/* ==========================================================================
+   Report design tokens — scoped under .report-viewport so they never
+   bleed into the main Sunsutra site.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap");
+
+.report-viewport {
+  /* --- Brand palette --- */
+  --rpt-color-primary: #123524;
+  --rpt-color-primary-light: #1e5c3b;
+  --rpt-color-primary-tint: #e9f1ec;
+  --rpt-color-secondary: #26292b;
+  --rpt-color-secondary-light: #4a4f52;
+  --rpt-color-accent: #a9822f;
+  --rpt-color-accent-tint: #f6efdf;
+
+  --rpt-color-bg: #ffffff;
+  --rpt-color-bg-subtle: #f7f8f6;
+  --rpt-color-border: #e2e6e2;
+  --rpt-color-border-strong: #c9d0c9;
+
+  --rpt-color-positive: #1e5c3b;
+  --rpt-color-negative: #8a2f22;
+
+  /* --- Type --- */
+  --rpt-font-display: "Fraunces", "Iowan Old Style", serif;
+  --rpt-font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --rpt-font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+
+  /* --- Spacing scale --- */
+  --rpt-space-1: 4px;
+  --rpt-space-2: 8px;
+  --rpt-space-3: 12px;
+  --rpt-space-4: 16px;
+  --rpt-space-5: 24px;
+  --rpt-space-6: 32px;
+  --rpt-space-7: 48px;
+
+  --rpt-radius-sm: 6px;
+  --rpt-radius-md: 10px;
+  --rpt-radius-lg: 14px;
+
+  --rpt-shadow-card: 0 1px 2px rgba(18, 53, 36, 0.06), 0 6px 20px rgba(18, 53, 36, 0.06);
+
+  /* Map scoped tokens to the shorter names used by report.css */
+  --color-primary: var(--rpt-color-primary);
+  --color-primary-light: var(--rpt-color-primary-light);
+  --color-primary-tint: var(--rpt-color-primary-tint);
+  --color-secondary: var(--rpt-color-secondary);
+  --color-secondary-light: var(--rpt-color-secondary-light);
+  --color-accent: var(--rpt-color-accent);
+  --color-accent-tint: var(--rpt-color-accent-tint);
+  --color-bg: var(--rpt-color-bg);
+  --color-bg-subtle: var(--rpt-color-bg-subtle);
+  --color-border: var(--rpt-color-border);
+  --color-border-strong: var(--rpt-color-border-strong);
+  --color-positive: var(--rpt-color-positive);
+  --color-negative: var(--rpt-color-negative);
+  --font-display: var(--rpt-font-display);
+  --font-body: var(--rpt-font-body);
+  --font-mono: var(--rpt-font-mono);
+  --space-1: var(--rpt-space-1);
+  --space-2: var(--rpt-space-2);
+  --space-3: var(--rpt-space-3);
+  --space-4: var(--rpt-space-4);
+  --space-5: var(--rpt-space-5);
+  --space-6: var(--rpt-space-6);
+  --space-7: var(--rpt-space-7);
+  --radius-sm: var(--rpt-radius-sm);
+  --radius-md: var(--rpt-radius-md);
+  --radius-lg: var(--rpt-radius-lg);
+  --shadow-card: var(--rpt-shadow-card);
+
+  /* Reset type inside the report container */
+  font-family: var(--rpt-font-body);
+  color: var(--rpt-color-secondary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  box-sizing: border-box;
+}
+
+.report-viewport *,
+.report-viewport *::before,
+.report-viewport *::after {
+  box-sizing: border-box;
+}
+
+.report-viewport h1,
+.report-viewport h2,
+.report-viewport h3,
+.report-viewport h4 {
+  font-family: var(--rpt-font-display);
+  color: var(--rpt-color-primary);
+  margin: 0;
+}
+
+.report-viewport p {
+  margin: 0;
+}
+
+.report-viewport table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.report-viewport img {
+  max-width: 100%;
+  display: block;
+}
