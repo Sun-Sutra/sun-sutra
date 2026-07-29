@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Zap, Sun, ShieldCheck, FileCheck, ArrowRight, Activity } from 'lucide-react'
-import heroImg from '../assets/hero.jpg'
+import heroImg from '../assets/shared/hero.jpg'
 
 const metrics = [
   { icon: <Activity size={24} />, label: 'Electricity Cost', value: 'Lower Bills' },

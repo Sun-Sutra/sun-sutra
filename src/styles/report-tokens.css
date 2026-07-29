@@ -3,30 +3,30 @@
    bleed into the main Sunsutra site.
    ========================================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap");
 
 .report-viewport {
-  /* --- Brand palette --- */
-  --rpt-color-primary: #123524;
-  --rpt-color-primary-light: #1e5c3b;
-  --rpt-color-primary-tint: #e9f1ec;
-  --rpt-color-secondary: #26292b;
-  --rpt-color-secondary-light: #4a4f52;
-  --rpt-color-accent: #a9822f;
-  --rpt-color-accent-tint: #f6efdf;
+  /* --- Brand palette matching main website --- */
+  --rpt-color-primary: #1c1d20;
+  --rpt-color-primary-light: #2d3036;
+  --rpt-color-primary-tint: #f0fdf4;
+  --rpt-color-secondary: #374151;
+  --rpt-color-secondary-light: #6b7280;
+  --rpt-color-accent: #10b981;
+  --rpt-color-accent-tint: #ecfdf5;
 
   --rpt-color-bg: #ffffff;
-  --rpt-color-bg-subtle: #f7f8f6;
-  --rpt-color-border: #e2e6e2;
-  --rpt-color-border-strong: #c9d0c9;
+  --rpt-color-bg-subtle: #f8f9fa;
+  --rpt-color-border: #e5e7eb;
+  --rpt-color-border-strong: #d1d5db;
 
-  --rpt-color-positive: #1e5c3b;
-  --rpt-color-negative: #8a2f22;
+  --rpt-color-positive: #10b981;
+  --rpt-color-negative: #ef4444;
 
-  /* --- Type --- */
-  --rpt-font-display: "Fraunces", "Iowan Old Style", serif;
-  --rpt-font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
-  --rpt-font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+  /* --- Fonts matching website --- */
+  --rpt-font-display: "Montserrat", -apple-system, sans-serif;
+  --rpt-font-body: "Inter", -apple-system, sans-serif;
+  --rpt-font-mono: "SFMono-Regular", Consolas, monospace;
 
   /* --- Spacing scale --- */
   --rpt-space-1: 4px;
@@ -37,13 +37,13 @@
   --rpt-space-6: 32px;
   --rpt-space-7: 48px;
 
-  --rpt-radius-sm: 6px;
-  --rpt-radius-md: 10px;
-  --rpt-radius-lg: 14px;
+  --rpt-radius-sm: 8px;
+  --rpt-radius-md: 12px;
+  --rpt-radius-lg: 16px;
 
-  --rpt-shadow-card: 0 1px 2px rgba(18, 53, 36, 0.06), 0 6px 20px rgba(18, 53, 36, 0.06);
+  --rpt-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.05);
 
-  /* Map scoped tokens to the shorter names used by report.css */
+  /* Map scoped tokens */
   --color-primary: var(--rpt-color-primary);
   --color-primary-light: var(--rpt-color-primary-light);
   --color-primary-tint: var(--rpt-color-primary-tint);

@@ -4,7 +4,7 @@ import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } fro
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import { SectionLabel, SectionHeading, SectionBody, container, organicCardStyle } from '../components/utils'
 import { LogOut, Inbox, Bell, Calendar, Mail, Phone, MapPin, Building, Trash2, CheckCircle, Circle, Eye, EyeOff, User, Lock } from 'lucide-react'
-import navLogo from '../assets/nav.png'
+import navLogo from '../assets/shared/logo_rectangle.png'
 
 /* ─── Styles ─── */
 const pageStyle = {

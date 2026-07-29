@@ -1,11 +1,11 @@
-import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
+import { useFadeIn, useParallax, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
 
-import industrialTariffs from '../assets/industrial_tariffs.jpg'
-import fragmentedDemand from '../assets/fragmented_demand.jpg'
-import regulatoryBarriers from '../assets/regulatory_barriers.jpg'
-import limitedAccess from '../assets/limited_access.jpg'
-import procurementComplexity from '../assets/procurement_complexity.jpg'
-import noSupport from '../assets/no_support.jpg'
+import industrialTariffs from '../assets/solutions/industrial_tariffs.jpg'
+import fragmentedDemand from '../assets/solutions/fragmented_demand.jpg'
+import regulatoryBarriers from '../assets/solutions/regulatory_barriers.jpg'
+import limitedAccess from '../assets/solutions/limited_access.jpg'
+import procurementComplexity from '../assets/solutions/procurement_complexity.jpg'
+import noSupport from '../assets/solutions/no_support.jpg'
 
 const problems = [
   {
@@ -44,7 +44,96 @@ const problems = [
     desc: 'There is no single operational partner to manage the end-to-end process from procurement through delivery for small industrials.',
     image: noSupport
   },
-]
+];
+
+const ProblemCard = ({ p, index, radii }) => {
+  const parallaxRef = useParallax(0.1);
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        minHeight: '320px',
+        borderRadius: radii[index % radii.length],
+        cursor: 'pointer',
+        transition: 'all 0.4s ease',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        padding: '2rem',
+        boxShadow: 'var(--shadow-soft)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-deep)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0) scale(1)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-soft)';
+      }}
+    >
+      {/* Background Image with Parallax */}
+      <div 
+        ref={parallaxRef}
+        style={{
+          position: 'absolute',
+          top: '-20%',
+          left: 0,
+          right: 0,
+          bottom: '-20%',
+          backgroundImage: `url(${p.image})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: 0,
+          willChange: 'transform'
+        }}
+      />
+      {/* Gradient Overlay */}
+      <div 
+        style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 100%)',
+          zIndex: 1
+        }}
+      />
+
+      <div style={{ position: 'relative', zIndex: 2 }}>
+        <div style={{
+          fontFamily: 'var(--ff-display)',
+          fontSize: '3rem',
+          fontWeight: 800,
+          color: '#ffffff',
+          opacity: 0.9,
+          lineHeight: 1,
+          marginBottom: '0.75rem',
+          textShadow: '0 2px 10px rgba(0,0,0,0.4)',
+        }}>
+          {p.num}
+        </div>
+        <h3 style={{
+          fontSize: '1.3rem',
+          fontWeight: 700,
+          color: '#ffffff',
+          marginBottom: '0.75rem',
+          fontFamily: 'var(--ff-display)',
+          textShadow: '0 2px 8px rgba(0,0,0,0.4)',
+        }}>
+          {p.title}
+        </h3>
+        <p style={{
+          fontSize: '0.95rem',
+          color: 'rgba(255,255,255,0.92)',
+          lineHeight: 1.7,
+          textShadow: '0 2px 8px rgba(0,0,0,0.4)',
+        }}>
+          {p.desc}
+        </p>
+      </div>
+    </div>
+  );
+};
 
 export default function Problem() {
   const headerRef = useFadeIn()
@@ -53,7 +142,6 @@ export default function Problem() {
   return (
     <section id="problem" style={{
       ...sectionPad,
-      paddingTop: 'clamp(100px, 10vw, 140px)',
       background: 'var(--background)'
     }}>
       <div style={container}>
@@ -67,7 +155,6 @@ export default function Problem() {
           display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'2rem', marginTop:'4rem',
         }} className="problem-grid">
           {problems.map((p, index) => {
-            // Apply varied wabi-sabi border radii to cards based on index
             const radii = [
               '4rem 2rem 2rem 2rem',
               '2rem 4rem 2rem 2rem',
@@ -76,82 +163,8 @@ export default function Problem() {
               '3rem 1.5rem 3rem 1.5rem',
               '1.5rem 3rem 1.5rem 3rem'
             ]
-            
-            return (
-            <div
-              key={p.num}
-              style={{
-                position: 'relative',
-                overflow: 'hidden',
-                minHeight: '320px',
-                borderRadius: radii[index % radii.length],
-                cursor: 'pointer',
-                transition: 'all 0.4s ease',
-                backgroundImage: `
-                  linear-gradient(
-                    rgba(0,0,0,0.35),
-                    rgba(0,0,0,0.35)
-                  ),
-                  url(${p.image})
-                `,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                padding: '2rem',
-                boxShadow: 'var(--shadow-soft)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'
-                e.currentTarget.style.boxShadow = 'var(--shadow-deep)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = 'var(--shadow-soft)'
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: 'var(--ff-display)',
-                  fontSize: '3rem',
-                  fontWeight: 800,
-                  color: '#ffffff',
-                  opacity: 0.9,
-                  lineHeight: 1,
-                  marginBottom: '0.75rem',
-                  textShadow: '0 2px 10px rgba(0,0,0,0.4)',
-                }}
-              >
-                {p.num}
-              </div>
-
-              <h3
-                style={{
-                  fontSize: '1.3rem',
-                  fontWeight: 700,
-                  color: '#ffffff',
-                  marginBottom: '0.75rem',
-                  fontFamily: 'var(--ff-display)',
-                  textShadow: '0 2px 8px rgba(0,0,0,0.4)',
-                }}
-              >
-                {p.title}
-              </h3>
-
-              <p
-                style={{
-                  fontSize: '0.95rem',
-                  color: 'rgba(255,255,255,0.92)',
-                  lineHeight: 1.7,
-                  textShadow: '0 2px 8px rgba(0,0,0,0.4)',
-                }}
-              >
-                {p.desc}
-              </p>
-            </div>
-          )})}
+            return <ProblemCard key={p.num} p={p} index={index} radii={radii} />
+          })}
         </div>
       </div>
       <style>{`

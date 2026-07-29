@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, ArrowRight as ArrowIcon } from 'lucide-react'
 import { useFadeIn, SectionHeading, sectionPad } from './utils'
 
-import groupCaptiveImg from '../assets/group_captive.jpeg'
-import regulatoryOnboardingImg from '../assets/regulatory_onboarding.jpeg'
-import businessModelImg from '../assets/business_model.jpeg'
+import groupCaptiveImg from '../assets/about/group_captive.jpeg'
+import regulatoryOnboardingImg from '../assets/about/regulatory_onboarding.jpeg'
+import businessModelImg from '../assets/about/business_model.jpeg'
 
 const features = [
   {

@@ -2,7 +2,7 @@ import Analysis from '../components/Analysis'
 
 export default function AnalysisPage() {
   return (
-    <div>
+    <div className="page-wrapper">
       <Analysis />
     </div>
   )

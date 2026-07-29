@@ -3,7 +3,7 @@ import { SectionLabel, SectionHeading, SectionBody, container } from '../compone
 
 export default function ContactPage() {
   return (
-    <div>
+    <div className="page-wrapper">
       <Contact />
     </div>
   )

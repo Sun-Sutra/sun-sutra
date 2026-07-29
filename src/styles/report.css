@@ -77,8 +77,8 @@
 .report-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  padding-bottom: var(--space-5);
+  align-items: center;
+  padding: var(--space-3) 0 var(--space-5);
   border-bottom: 3px solid var(--color-primary);
 }
 

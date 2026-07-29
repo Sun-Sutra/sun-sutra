@@ -1,18 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import './index.css'
+
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import AboutPage from './pages/AboutPage'
 import SolutionPage from './pages/SolutionPage'
-import MarketPage from './pages/MarketPage'
 import ContactPage from './pages/ContactPage'
 import AdminPage from './pages/AdminPage'
 import AnalysisPage from './pages/AnalysisPage'
 
-// ScrollToTop component to reset scroll position on page change
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => {
@@ -21,19 +20,43 @@ function ScrollToTop() {
   return null
 }
 
-// Layout wrapper that hides Nav/Footer on admin route
 function Layout({ children }) {
   const { pathname } = useLocation()
   const isAdmin = pathname === '/admin'
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}>
-      {!isAdmin && <Nav />}
-      <main style={{ flex: '1 0 auto' }}>
-        {children}
-      </main>
-      {!isAdmin && <Footer />}
-    </div>
+    <>
+      {/* Background Elements */}
+      <div className="bg-text-container">
+        {/* Dynamic Floating Elements */}
+        <div className="ambient-orb orb-1"></div>
+        <div className="ambient-orb orb-2"></div>
+
+        <div className="bg-text-large">SUN SUTRA</div>
+      </div>
+
+      {/* Main Card */}
+      {isAdmin ? (
+         children 
+      ) : (
+        <div className={`main-app-card ${scrolled ? 'expanded' : ''}`}>
+          <Nav />
+          <main style={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
+            {children}
+          </main>
+          <Footer />
+        </div>
+      )}
+    </>
   )
 }
 
@@ -46,7 +69,6 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/solutions" element={<SolutionPage />} />
-          <Route path="/market" element={<MarketPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/analysis" element={<AnalysisPage />} />

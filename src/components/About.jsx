@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, MapPin, Layers, Briefcase } from 'lucide-react'
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
-import maharashtraClustersImg from '../assets/maharashtra_clusters.png'
-import groupCaptiveImg from '../assets/group_captive.jpeg'
-import regulatoryOnboardingImg from '../assets/regulatory_onboarding.jpeg'
-import businessModelImg from '../assets/business_model.jpeg'
-import savingImg from '../assets/saving.jpg'
+import maharashtraClustersImg from '../assets/about/maharashtra_clusters.png'
+import groupCaptiveImg from '../assets/about/group_captive.jpeg'
+import regulatoryOnboardingImg from '../assets/about/regulatory_onboarding.jpeg'
+import businessModelImg from '../assets/about/business_model.jpeg'
+import savingImg from '../assets/about/saving.jpg'
 
 const flowItems = [
   { 
@@ -68,14 +68,11 @@ export default function About() {
   return (
     <>
       <section id="about" style={{
-        ...sectionPad,
-        paddingTop: 'clamp(100px, 10vw, 140px)',
-        background: 'var(--muted)',
+        padding: '20px 0 clamp(40px, 6vw, 80px)',
         overflow: 'hidden'
       }}>
-        <div className="blob-bg blob-3" style={{ top: '20%', left: '-10%', width: 400, height: 400 }} />
         <div ref={ref} style={{
-          display:'grid', gridTemplateColumns:'1.1fr 1.35fr', gap:'4rem', alignItems:'center', position: 'relative', zIndex: 1,
+          display:'grid', gridTemplateColumns:'1.1fr 1.35fr', gap:'4rem', alignItems:'flex-start', position: 'relative', zIndex: 1,
           maxWidth: '100%', width: '100%',
           paddingLeft: 'max(2rem, calc((100vw - 1280px) / 2 + 2rem))',
           paddingRight: 0
@@ -155,9 +152,8 @@ export default function About() {
         background: 'var(--background)',
         borderTop: '1px solid var(--border)'
       }}>
-        <div className="blob-bg blob-2" style={{ bottom: '10%', right: '-5%', width: 500, height: 500 }} />
         <div style={container}>
-          <div style={{ textAlign: 'center', marginBottom: '4rem', maxWidth: 800, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto 4rem' }}>
             <SectionLabel>Our Strategy</SectionLabel>
             <SectionHeading style={{ color: 'var(--primary)' }}>Current Focus Areas</SectionHeading>
             <SectionBody style={{ margin: '0 auto' }}>

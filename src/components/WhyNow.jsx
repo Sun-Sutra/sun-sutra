@@ -8,12 +8,12 @@ import {
   organicCardStyle
 } from './utils'
 
-import industrialTariffs from '../assets/industrial_tariffs.jpg'
-import fallingCosts from '../assets/falling_costs.jpg'
-import openAccess from '../assets/open_access.jpg'
-import sustainability from '../assets/sustainability.jpg'
-import expandingEcosystem from '../assets/expanding_ecosystem.jpg'
-import policyTailwinds from '../assets/policy_tailwinds.jpg'
+import industrialTariffs from '../assets/solutions/industrial_tariffs.jpg'
+import fallingCosts from '../assets/solutions/falling_costs.jpg'
+import openAccess from '../assets/solutions/open_access.jpg'
+import sustainability from '../assets/solutions/sustainability.jpg'
+import expandingEcosystem from '../assets/solutions/expanding_ecosystem.jpg'
+import policyTailwinds from '../assets/solutions/policy_tailwinds.jpg'
 
 const cards = [
   {
@@ -60,15 +60,6 @@ export default function WhyNow() {
         background: 'var(--muted)'
       }}
     >
-      <div
-        className="blob-bg blob-1"
-        style={{
-          top: '40%',
-          right: '0%',
-          width: 500,
-          height: 500
-        }}
-      />
 
       <div
         style={{

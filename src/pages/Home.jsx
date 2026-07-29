@@ -1,25 +1,28 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Hero from '../components/Hero'
+import { ArrowRight, Sun, Wind, Layers, Zap, Leaf, Award, Calculator, ShieldCheck } from 'lucide-react'
+import heroImg from '../assets/shared/hero.jpg'
 import WhatWeDoCarousel from '../components/WhatWeDoCarousel'
-import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from '../components/utils'
-import { ArrowRight } from 'lucide-react'
-import savingImg from '../assets/saving.jpg'
+import Ticker from '../components/Ticker'
+import ProjectionChart from '../components/ProjectionChart'
+import { useFadeIn, useParallax, SectionLabel, SectionHeading, SectionBody, sectionPad, container } from '../components/utils'
 
 export default function Home() {
   const calcRef = useFadeIn()
-  const featuresRef = useFadeIn()
+  const parallaxRef = useParallax(0.15)
 
   // Savings Calculator State
   const [bill, setBill] = useState(250000)
+  const [mix, setMix] = useState('hybrid') // 'solar', 'wind', 'hybrid'
 
   // Calculations
-  const currentRate = 8 
-  const voltaraRate = 5.5
+  const currentRate = 9.5 // Average grid rate
+  const sunSutraRate = mix === 'solar' ? 6.8 : mix === 'wind' ? 7.1 : 6.5
   const units = bill / currentRate
-  const newBill = units * voltaraRate
+  const newBill = units * sunSutraRate
   const monthlySavings = bill - newBill
   const annualSavings = monthlySavings * 12
+  const co2Offset = units * 12 * 0.71 / 1000 // in metric tons
 
   const formatCurrency = (val) => {
     return new Intl.NumberFormat('en-IN', {
@@ -31,113 +34,235 @@ export default function Home() {
 
   return (
     <>
-      <Hero />
+      {/* Redesigned Minimalist Hero Section */}
+      <div style={{
+        display: 'flex',
+        flex: 'none',
+        height: '75vh',
+        padding: '50px 60px 20px 60px',
+        gap: '40px'
+      }}>
+        {/* Left Text Content */}
+        <div style={{
+          flex: '0 0 35%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          paddingBottom: '40px'
+        }}>
+          <h1 style={{
+            display: 'flex',
+            flexDirection: 'column',
+            lineHeight: 1.1,
+            letterSpacing: '-0.02em',
+            color: 'var(--foreground)',
+            marginBottom: '2rem'
+          }}>
+            <span style={{ fontWeight: 300, fontSize: '3rem', color: '#a0a0a0' }}>POWERING</span>
+            <span style={{ fontWeight: 800, fontSize: '3.5rem' }}>INDUSTRY</span>
+          </h1>
+          <p style={{
+            fontSize: '1.1rem',
+            color: 'var(--muted-foreground)',
+            marginBottom: '3rem',
+            lineHeight: 1.6,
+            fontFamily: 'var(--ff-body)'
+          }}>
+            Helping MSMEs reduce electricity costs through renewable energy aggregation, group captive, and open-access procurement models.
+          </p>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <Link to="/analysis" style={{
+              background: 'var(--foreground)',
+              color: 'var(--background)',
+              padding: '16px 32px',
+              borderRadius: '9999px',
+              textDecoration: 'none',
+              fontFamily: 'var(--ff-display)',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              letterSpacing: '0.05em'
+            }}>
+              COST ANALYSIS
+            </Link>
+          </div>
+        </div>
+
+        {/* Right Image Content */}
+        <div style={{
+          flex: 1,
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: '16px'
+        }}>
+          <img 
+            ref={parallaxRef}
+            src={heroImg} 
+            alt="Sun Sutra Hero" 
+            style={{
+              width: '100%',
+              height: '130%',
+              marginTop: '-15%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              display: 'block',
+              willChange: 'transform'
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Trust & Impact Ticker */}
+      <Ticker />
 
       {/* Savings Calculator Section */}
-      <section ref={calcRef} style={{ ...sectionPad, background: 'var(--muted)', borderTop: '1px solid var(--border)', overflow: 'hidden' }}>
-        <div className="blob-bg blob-3" style={{ top: '10%', left: '-5%', width: 500, height: 500 }} />
+      <section ref={calcRef} style={{ ...sectionPad, background: 'transparent', borderTop: '1px solid var(--border)', overflow: 'hidden' }}>
         <div style={{...container, position: 'relative', zIndex: 1}}>
           <div style={{ textAlign: 'center', marginBottom: '4rem', maxWidth: 800, margin: '0 auto 4rem' }}>
-            <SectionLabel>Instant Savings Estimator</SectionLabel>
-            <SectionHeading>See How Much You Can Save</SectionHeading>
+            <SectionLabel style={{ color: 'var(--muted-foreground)' }}>Instant Savings Estimator</SectionLabel>
+            <SectionHeading style={{ fontFamily: 'var(--ff-display)', fontWeight: 800 }}>See Your Potential Savings</SectionHeading>
             <SectionBody style={{ margin: '0 auto' }}>
-              MSMEs in Maharashtra are saving up to 30% on electricity costs by switching to our aggregated renewable energy model.
+              Select your energy mix and slide your monthly bill to instantly calculate estimated savings under a Sun Sutra flat PPA agreement.
             </SectionBody>
           </div>
 
           <div style={{
-            ...organicCardStyle,
-            display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '4rem', alignItems: 'center',
-            padding: '4rem', borderRadius: '4rem 2rem 5rem 2rem'
+            background: 'var(--surface)',
+            display: 'grid', gridTemplateColumns: '1.25fr 1fr', gap: '3.5rem', alignItems: 'stretch',
+            padding: '3rem', borderRadius: '40px', border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow-card)'
           }} className="calc-container">
-            {/* Input Slider */}
-            <div>
-              <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.8rem', fontWeight: 700, marginBottom: '2rem', color: 'var(--foreground)' }}>
-                Your Current Consumption
-              </h3>
-              <div style={{ marginBottom: '3rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontWeight: 600 }}>
-                  <span style={{ color: 'var(--muted-foreground)' }}>Monthly Electricity Bill</span>
-                  <span style={{ color: 'var(--primary)', fontSize: '1.4rem' }}>{formatCurrency(bill)}</span>
+            
+            {/* Input Controls Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.6rem', fontWeight: 800, marginBottom: '2rem', color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <Calculator size={24} color="var(--primary)" /> Sourcing Configuration
+                </h3>
+
+                {/* Sourcing Mix Switcher */}
+                <div style={{ marginBottom: '2.5rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    1. Select Sourcing Mix
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+                    {[
+                      { id: 'solar', label: 'Solar Mix', rate: '₹6.80', icon: <Sun size={18} /> },
+                      { id: 'wind', label: 'Wind Mix', rate: '₹7.10', icon: <Wind size={18} /> },
+                      { id: 'hybrid', label: 'Hybrid Mix', rate: '₹6.50', icon: <Layers size={18} /> }
+                    ].map(p => (
+                      <div
+                        key={p.id}
+                        onClick={() => setMix(p.id)}
+                        style={{
+                          border: `2px solid ${mix === p.id ? 'var(--foreground)' : 'var(--border)'}`,
+                          background: mix === p.id ? 'var(--muted)' : 'transparent',
+                          borderRadius: '16px',
+                          padding: '16px 12px',
+                          textAlign: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.25s ease'
+                        }}
+                      >
+                        <div style={{ color: mix === p.id ? 'var(--foreground)' : 'var(--muted-foreground)', marginBottom: 6, display: 'flex', justifyContent: 'center' }}>
+                          {p.icon}
+                        </div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--foreground)' }}>{p.label}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: 4 }}>{p.rate}/unit</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="50000"
-                  max="1000000"
-                  step="10000"
-                  value={bill}
-                  onChange={(e) => setBill(Number(e.target.value))}
+
+                {/* Slider Input */}
+                <div style={{ marginBottom: '2.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1rem' }}>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--foreground)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      2. Monthly Electricity Bill
+                    </span>
+                    <strong style={{ color: 'var(--foreground)', fontSize: '1.5rem', fontFamily: 'var(--ff-display)' }}>
+                      {formatCurrency(bill)}
+                    </strong>
+                  </div>
+                  <input
+                    type="range"
+                    min="50000"
+                    max="1000000"
+                    step="10000"
+                    value={bill}
+                    onChange={(e) => setBill(Number(e.target.value))}
+                    style={{
+                      width: '100%', height: 8, borderRadius: 4,
+                      background: 'var(--border)', outline: 'none',
+                      WebkitAppearance: 'none', cursor: 'pointer',
+                    }}
+                    className="custom-slider"
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--muted-foreground)', marginTop: '0.75rem', fontWeight: 600 }}>
+                    <span>₹50k</span>
+                    <span>₹5L</span>
+                    <span>₹10L+</span>
+                  </div>
+                </div>
+
+                {/* Real-time Metrics Card */}
+                <div style={{
+                  background: 'var(--background)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '24px',
+                  padding: '1.75rem',
+                  marginBottom: '2rem',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '1.5rem'
+                }}>
+                  <div>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--muted-foreground)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      EST. MONTHLY SAVINGS
+                    </span>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#10b981', fontFamily: 'var(--ff-display)', marginTop: 4 }}>
+                      {formatCurrency(monthlySavings)}
+                    </div>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--muted-foreground)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      ANNUAL REDUCTION
+                    </span>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#eab308', fontFamily: 'var(--ff-display)', marginTop: 4 }}>
+                      {formatCurrency(annualSavings)}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Action Toolbar */}
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <Link
+                  to={`/analysis?bill=${bill}&mix=${mix}`}
                   style={{
-                    width: '100%', height: 8, borderRadius: 4,
-                    background: 'rgba(222,216,207,0.8)', outline: 'none',
-                    WebkitAppearance: 'none', cursor: 'pointer',
+                    flex: 1,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    background: 'var(--foreground)',
+                    color: 'var(--background)',
+                    padding: '16px 24px',
+                    borderRadius: '9999px',
+                    textDecoration: 'none',
+                    fontFamily: 'var(--ff-display)',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    boxShadow: 'var(--shadow-soft)'
                   }}
-                  className="custom-slider"
-                />
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--muted-foreground)', marginTop: '0.75rem', fontWeight: 500 }}>
-                  <span>₹50k</span>
-                  <span>₹5L</span>
-                  <span>₹10L+</span>
-                </div>
-              </div>
-
-              <div style={{ background: 'var(--background)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid rgba(222,216,207,0.5)' }}>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--foreground)' }}>Assumptions based on Pune/Chakan MIDC averages:</h4>
-                <ul style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', paddingLeft: '1.2rem', display: 'flex', flexDirection: 'column', gap: 8, lineHeight: 1.5 }}>
-                  <li>Current industrial grid tariff of ₹9-17 per unit</li>
-                  <li>Sun Sutra tariff of ₹7-15 per unit</li>
-                  <li>No capital expenditure required from your company</li>
-                </ul>
+                >
+                  Run Precision AI Audit <ArrowRight size={16} />
+                </Link>
               </div>
             </div>
 
-            {/* Results Output */}
-            <div style={{
-              background: 'var(--primary)',
-              color: 'var(--primary-foreground)',
-              padding: '3.5rem',
-              borderRadius: '2rem 4rem 2rem 5rem',
-              boxShadow: 'var(--shadow-deep)',
-              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-              minHeight: 400, position: 'relative', overflow: 'hidden'
-            }}>
-              <div className="pattern-vertical-lines-sm" style={{ position: 'absolute', inset: 0, opacity: 0.6, pointerEvents: 'none' }} />
-              <div className="blob-bg" style={{
-                top: '-20%', right: '-20%', width: 300, height: 300,
-                background: 'rgba(255,255,255,0.1)', borderRadius: '50% 50% 20% 80% / 25% 80% 20% 75%',
-                filter: 'blur(30px)'
-              }} />
-
-              <div style={{position: 'relative', zIndex: 1}}>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.9 }}>Estimated Savings</span>
-                <div style={{ fontFamily: 'var(--ff-display)', fontSize: '3rem', fontWeight: 800, marginTop: '0.5rem', lineHeight: 1 }}>
-                  {formatCurrency(monthlySavings)}
-                  <span style={{ fontSize: '1.2rem', fontWeight: 500, opacity: 0.9, fontFamily: 'var(--ff-body)' }}> / month</span>
-                </div>
-                <div style={{ fontSize: '1.05rem', opacity: 0.9, marginTop: '1rem', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '2rem' }}>
-                  Annual savings of <strong style={{ fontSize: '1.3rem', fontWeight: 700 }}>{formatCurrency(annualSavings)}</strong>
-                </div>
-              </div>
-
-              <div style={{ marginTop: '2rem', position: 'relative', zIndex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: '0.75rem', opacity: 0.9 }}>
-                  <span>Estimated New Bill:</span>
-                  <span style={{ fontWeight: 700, fontSize: 16 }}>{formatCurrency(newBill)}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, opacity: 0.9 }}>
-                  <span>Carbon Reduction:</span>
-                  <span style={{ fontWeight: 700, fontSize: 16 }}>~{(units * 0.0008).toFixed(1)} MT CO₂/mo</span>
-                </div>
-              </div>
-
-              <Link to="/contact" className="btn-organic" style={{
-                background: 'var(--primary-foreground)', color: 'var(--primary)',
-                padding: '16px', justifyContent: 'center', fontSize: 16,
-                marginTop: '3rem', position: 'relative', zIndex: 1
-              }}>
-                Get Verified Analysis <ArrowRight size={18} />
-              </Link>
-            </div>
+            {/* Results Output - Interactive Chart */}
+            <ProjectionChart monthlyBill={bill} newBill={newBill} />
           </div>
         </div>
       </section>
@@ -145,58 +270,18 @@ export default function Home() {
       {/* Highlights Section */}
       <WhatWeDoCarousel />
 
-      {/* <Testimonials /> */}
-
-      {/* Hero-like Call to Action */}
-      <section style={{ ...sectionPad, background: 'var(--secondary)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        {/* Background Image with Overlay */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0,
-          backgroundImage: `url(${savingImg})`, backgroundSize: 'cover', backgroundPosition: 'center',
-          opacity: 0.35
-        }}>
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-            background: 'linear-gradient(to bottom, rgba(193, 140, 93, 0.45), rgba(193, 140, 93, 0.8))'
-          }} />
-        </div>
-        <div className="blob-bg" style={{
-          top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          width: 800, height: 500, background: 'rgba(255,255,255,0.1)',
-          borderRadius: '50% 50% 20% 80% / 25% 80% 20% 75%', filter: 'blur(60px)'
-        }} />
-        <div style={{...container, position: 'relative', zIndex: 1}}>
-          <SectionLabel style={{color: 'var(--secondary-foreground)'}}>Ready to Begin?</SectionLabel>
-          <SectionHeading style={{ maxWidth: 800, margin: '0 auto 2rem', color: 'var(--secondary-foreground)' }}>Start Reducing Your Industrial Power Costs</SectionHeading>
-          <SectionBody style={{ margin: '0 auto 3rem', maxWidth: 600, color: 'rgba(255,255,255,0.9)' }}>
-            Submit a request with your facility location and monthly consumption to get a customized, certified cost analysis.
-          </SectionBody>
-          <Link to="/contact" className="btn-organic" style={{
-            background: 'var(--secondary-foreground)', color: 'var(--secondary)',
-            fontSize: 16, padding: '16px 36px', boxShadow: 'var(--shadow-float)',
-          }}>
-            Request Cost Analysis <ArrowRight size={18} />
-          </Link>
-        </div>
-      </section>
-
       <style>{`
         .custom-slider::-webkit-slider-thumb {
           -webkit-appearance: none; appearance: none;
           width: 24px; height: 24px; border-radius: 50%;
-          background: var(--primary); cursor: pointer;
+          background: var(--foreground); cursor: pointer;
           border: 4px solid var(--background);
           box-shadow: 0 4px 10px rgba(0,0,0,0.15);
           transition: transform 0.2s ease;
         }
         .custom-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
         @media(max-width:1024px){
-          .calc-container { grid-template-columns: 1fr !important; gap: 2rem !important; padding: 2rem !important; border-radius: 2rem !important; }
-          .features-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
-        }
-        @media(max-width:640px){
-          .calc-container { padding: 1.25rem !important; }
-          .calc-container h3 { font-size: 1.3rem !important; }
+          .calc-container { grid-template-columns: 1fr !important; gap: 2rem !important; padding: 2rem !important; border-radius: 24px !important; }
         }
       `}</style>
     </>

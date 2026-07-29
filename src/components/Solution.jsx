@@ -1,9 +1,10 @@
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
+import ElectronFlow from './ElectronFlow'
 import { Wind, Combine, Factory, Check } from 'lucide-react'
 
-import generatorBg from "../assets/generators.jpg"
-import voltaraBg from "../assets/agreement.jpg"
-import msmeBg from "../assets/industries.jpg"
+import generatorBg from "../assets/solutions/generators.jpg"
+import voltaraBg from "../assets/solutions/agreement.jpg"
+import msmeBg from "../assets/solutions/industries.jpg"
 
 const solPoints = [
   'MSME demand aggregation across industrial clusters',
@@ -58,16 +59,7 @@ export default function Solution() {
   const pointsRef = useFadeIn()
 
   return (
-    <section id="solution" style={{ ...sectionPad, background: 'var(--muted)', overflow: 'hidden' }}>
-      <div
-        className="blob-bg blob-2"
-        style={{
-          top: '30%',
-          right: '-5%',
-          width: 500,
-          height: 500,
-        }}
-      />
+    <section id="solution" style={{ ...sectionPad, overflow: 'hidden' }}>
 
       <div style={{ ...container, position: 'relative', zIndex: 1 }}>
         <div ref={headerRef}>
@@ -157,27 +149,8 @@ export default function Solution() {
             </div>
           </div>
 
-          <div
-            className="flow-arrow"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              width="40"
-              height="40"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--border)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
+          <div className="flow-arrow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 0 }}>
+            <ElectronFlow />
           </div>
 
           {/* SUN SUTRA */}
@@ -248,27 +221,8 @@ export default function Solution() {
             </div>
           </div>
 
-          <div
-            className="flow-arrow"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              width="40"
-              height="40"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--border)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
+          <div className="flow-arrow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 0 }}>
+            <ElectronFlow />
           </div>
 
           {/* MSMEs */}
@@ -394,8 +348,9 @@ export default function Solution() {
             gap:1.5rem!important;
           }
 
-          .flow-arrow svg{
-            transform:rotate(90deg);
+          .flow-arrow {
+            transform: rotate(90deg);
+            height: 60px;
           }
 
           .solution-flow > div{

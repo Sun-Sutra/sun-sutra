@@ -1,12 +1,12 @@
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
-import profileFallback from '../assets/profile_fallback.png'
+import profileFallback from '../assets/shared/profile_fallback.png'
 
-import Aryan from '../assets/team/Aryan.jpeg';
-import Manmohan from '../assets/team/Manmohan.jpeg';
-import Aditya from '../assets/team/Aditya.jpeg';
-import Rohit from '../assets/team/Rohit.jpeg';
-// import Madhav from '../assets/team/Madhav.jpeg';
-// import Avinash from '../assets/team/Avinash.jpeg';
+import Aryan from '../assets/about/team/Aryan.jpeg';
+import Manmohan from '../assets/about/team/Manmohan.jpeg';
+import Aditya from '../assets/about/team/Aditya.jpeg';
+import Rohit from '../assets/about/team/Rohit.jpeg';
+// import Madhav from '../assets/about/team/Madhav.jpeg';
+// import Avinash from '../assets/about/team/Avinash.jpeg';
 
 const members = [
   { initials: 'AD', name: 'Aryan Dhangar', role: 'Founder', bio: 'BS Economics student at IIT Kharagpur. Experience in business strategy, revenue model development, team management, and entrepreneurial initiatives.', image: Aryan },

@@ -121,7 +121,23 @@ const UploadSection = forwardRef(({ onExtracted }, ref) => {
       ) : (
         <div>
           <div style={{ display: 'flex', gap: '20px', marginBottom: '1rem', alignItems: 'center' }}>
-            <img src={preview} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'contain', border: '1px solid rgba(222,216,207,0.5)', borderRadius: '8px', background: '#fff' }} />
+            {/* Image Preview with Laser Scanning Overlay */}
+            <div style={{ position: 'relative', width: '80px', height: '80px', flexShrink: 0, overflow: 'hidden', border: '1px solid rgba(222,216,207,0.5)', borderRadius: '12px', background: '#090d16' }}>
+              <img src={preview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: ['ocr', 'ai'].includes(status) ? 0.7 : 1 }} />
+              {['ocr', 'ai'].includes(status) && (
+                <div style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  height: '3px',
+                  background: 'linear-gradient(90deg, transparent, #10b981, #38bdf8, transparent)',
+                  boxShadow: '0 0 10px #10b981, 0 0 20px #10b981',
+                  animation: 'laserScan 1.8s infinite ease-in-out',
+                  zIndex: 10
+                }} />
+              )}
+            </div>
+
             <div>
               <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 600, color: 'var(--foreground)' }}>{image.name}</p>
               <button type="button" onClick={removeImage} style={{ background: 'none', border: 'none', color: 'var(--destructive)', cursor: 'pointer', padding: 0, fontSize: '0.85rem', marginTop: '4px' }}>Remove File</button>
@@ -141,10 +157,35 @@ const UploadSection = forwardRef(({ onExtracted }, ref) => {
                 opacity: ['ocr', 'ai'].includes(status) ? 0.7 : 1
               }}
             >
-              {status === 'ocr' ? `Scanning (${progress}%)...` :
-               status === 'ai' ? 'AI Analyzing...' : 'Extract & Auto-Fill'}
+              {status === 'ocr' ? `Scanning OCR (${progress}%)...` :
+               status === 'ai' ? 'AI Extracting Metrics...' : 'Extract & Auto-Fill'}
             </button>
           </div>
+
+          {/* Futuristic Status Terminal Log */}
+          {['ocr', 'ai'].includes(status) && (
+            <div style={{
+              marginTop: '15px',
+              background: '#090d16',
+              border: '1px solid rgba(16,185,129,0.3)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              fontFamily: 'monospace',
+              fontSize: '0.82rem',
+              color: '#38bdf8',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', animation: 'pulse 1s infinite' }} />
+                <strong>SUN SUTRA AI ENGINE ONLINE</strong>
+              </div>
+              {status === 'ocr' && <div>[1/3] Performing Optical Character Recognition... {progress}%</div>}
+              {status === 'ocr' && progress > 50 && <div style={{ color: '#a3a3a3' }}>[2/3] Parsing account number, tariff codes & consumption units...</div>}
+              {status === 'ai' && <div style={{ color: '#eab308' }}>[3/3] AI structuring billing variables & voltage tiers...</div>}
+            </div>
+          )}
 
           {status === 'error' && (
             <div style={{ color: 'var(--destructive)', marginTop: '10px', fontSize: '0.9rem' }}>
@@ -153,8 +194,20 @@ const UploadSection = forwardRef(({ onExtracted }, ref) => {
           )}
 
           {status === 'success' && (
-            <div style={{ color: '#5D7052', marginTop: '10px', fontSize: '0.9rem', fontWeight: 500 }}>
-              <p>Successfully extracted data! Please review the fields below.</p>
+            <div style={{ 
+              background: 'rgba(16,185,129,0.1)', 
+              border: '1px solid rgba(16,185,129,0.3)', 
+              borderRadius: '10px', 
+              padding: '10px 14px', 
+              marginTop: '12px', 
+              color: '#10b981', 
+              fontSize: '0.88rem', 
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span>✓</span> AI Extraction Complete — Fields Auto-Populated!
             </div>
           )}
 
@@ -168,6 +221,19 @@ const UploadSection = forwardRef(({ onExtracted }, ref) => {
               </details>
             )}
           </div>
+
+          <style>{`
+            @keyframes laserScan {
+              0% { top: 0%; }
+              50% { top: 90%; }
+              100% { top: 0%; }
+            }
+            @keyframes pulse {
+              0% { opacity: 0.3; }
+              50% { opacity: 1; }
+              100% { opacity: 0.3; }
+            }
+          `}</style>
         </div>
       )}
     </div>

@@ -1,22 +1,31 @@
 import { useEffect, useRef } from 'react'
 
+export function useParallax(speed = 0.2) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!ref.current) return
+      const rect = ref.current.parentElement.getBoundingClientRect()
+      const windowHeight = window.innerHeight
+      if (rect.top <= windowHeight && rect.bottom >= 0) {
+        const offset = (rect.top - windowHeight / 2) * speed
+        ref.current.style.transform = `translateY(${offset}px)`
+      }
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [speed])
+  return ref
+}
+
 export function useFadeIn() {
   const ref = useRef(null)
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        el.style.transition = 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
-        el.style.opacity = 1
-        el.style.transform = 'none'
-        observer.unobserve(el)
-      }
-    }, { threshold: 0.1 })
-    el.style.opacity = 0
-    el.style.transform = 'translateY(24px)'
-    observer.observe(el)
-    return () => observer.disconnect()
+    el.style.opacity = 1
+    el.style.transform = 'none'
   }, [])
   return ref
 }
@@ -55,7 +64,7 @@ export function SectionBody({ children, style }) {
   )
 }
 
-export const sectionPad = { padding:'clamp(64px, 10vw, 128px) 0', position:'relative', zIndex:1 }
+export const sectionPad = { padding:'clamp(40px, 6vw, 80px) 0', position:'relative', zIndex:1 }
 export const container = { maxWidth:1280, margin:'0 auto', padding:'0 clamp(1rem, 5vw, 2rem)' }
 
 // Reusable organic card styling to ensure consistency across components
