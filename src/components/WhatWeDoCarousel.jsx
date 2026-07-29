@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, ArrowRight as ArrowIcon } from 'lucide-react'
-import { useFadeIn, SectionHeading, sectionPad } from './utils'
+import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container } from './utils'
 
 import groupCaptiveImg from '../assets/about/group_captive.jpeg'
 import regulatoryOnboardingImg from '../assets/about/regulatory_onboarding.jpeg'
@@ -12,24 +12,43 @@ const features = [
     title: "Group Captive Sourcing",
     desc: "We structure group captive investments where generators provide clean energy directly to our MSME pool with zero upfront capex requirements.",
     path: "/solutions",
-    image: groupCaptiveImg
+    image: groupCaptiveImg,
+    bullets: [
+      "Zero upfront capital expenditure for solar & wind procurement",
+      "Direct grid injection with up to 40% energy cost reduction",
+      "Aggregated MSME buying power accessing tier-1 developer rates",
+      "Long-term fixed tariff hedging against DISCOM rate hikes"
+    ]
   },
   {
     title: "Regulatory & Onboarding",
     desc: "We handle DISCOM approvals, open access compliance, and monthly scheduling so you can focus entirely on your manufacturing.",
     path: "/solutions",
-    image: regulatoryOnboardingImg
+    image: regulatoryOnboardingImg,
+    bullets: [
+      "End-to-end DISCOM open access approval & regulatory filings",
+      "Automated monthly energy banking & grid scheduling support",
+      "Full compliance with state electricity regulatory commission guidelines",
+      "Zero operational overhead for your internal manufacturing team"
+    ]
   },
   {
     title: "Aligned Business Model",
     desc: "No expensive consulting fees. We earn margins on the units of electricity successfully delivered, ensuring we only win when you save.",
     path: "/market",
-    image: businessModelImg
+    image: businessModelImg,
+    bullets: [
+      "No upfront consulting or advisory service fees",
+      "Performance pricing strictly tied to verified unit savings",
+      "Transparent per-unit billing with zero hidden surcharges",
+      "Shared success structure ensuring maximum energy yield"
+    ]
   }
 ]
 
 export default function WhatWeDoCarousel() {
   const [current, setCurrent] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
   const headerRef = useFadeIn()
   
   const nextSlide = () => {
@@ -41,190 +60,366 @@ export default function WhatWeDoCarousel() {
   }
 
   useEffect(() => {
+    if (isHovered) return
     const timer = setInterval(() => {
       setCurrent(c => (c === features.length - 1 ? 0 : c + 1))
     }, 5000)
     return () => clearInterval(timer)
-  }, [])
-
-  const progress = ((current + 1) / features.length) * 100
+  }, [isHovered])
 
   return (
     <section id="what-we-do" style={{ ...sectionPad, background: 'var(--background)', overflow: 'hidden' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2rem', position: 'relative' }}>
+      <div style={container}>
         
-        {/* Header */}
-        <div ref={headerRef} style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <div style={{ 
-            display: 'inline-flex', alignItems: 'center', gap: 8, 
-            fontSize: 13, fontWeight: 700, letterSpacing: '0.15em', 
-            textTransform: 'uppercase', color: 'var(--muted-foreground)', marginBottom: '1.5rem',
-            fontFamily: 'var(--ff-body)'
-          }}>
-            <div style={{ width: 10, height: 10, background: '#FDE047' }} />
-            What We Do
-          </div>
-          <SectionHeading style={{ maxWidth: 600, margin: '0 auto', color: '#2b3f30' }}>
+        {/* Section Header */}
+        <div ref={headerRef} style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <SectionLabel>What We Do</SectionLabel>
+          <SectionHeading style={{ maxWidth: 650, margin: '0 auto 1.25rem' }}>
             Unlocking Renewable Value
           </SectionHeading>
-          <p style={{
-            fontSize: '1.125rem', color: 'var(--muted-foreground)', maxWidth: 600, 
-            margin: '1.5rem auto 0', lineHeight: 1.8, fontFamily: 'var(--ff-body)'
-          }}>
+          <SectionBody style={{ margin: '0 auto', maxWidth: 650 }}>
             Sun Sutra acts as a single aggregator of fragmented industrial loads to secure tier-1 solar and wind power agreements, passing the savings to MSMEs.
-          </p>
+          </SectionBody>
         </div>
 
-        {/* Carousel Container */}
-        <div style={{ position: 'relative', width: '100%', outline: 'none', overflow: 'hidden' }}>
+        {/* Carousel Viewport */}
+        <div 
+          style={{ position: 'relative', width: '100%', borderRadius: '40px', overflow: 'hidden' }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Carousel Track */}
           <div style={{
             display: 'flex',
-            transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-            transform: `translateX(calc(-${current * 100}% - ${current * 2}rem))`,
-            gap: '2rem',
+            width: '100%',
+            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+            transform: `translateX(-${current * 100}%)`,
           }}>
             {features.map((f, idx) => {
               const isActive = idx === current
               return (
-                <div key={idx} style={{
-                  minWidth: '100%',
-                  flex: '0 0 100%',
-                  background: '#F5F5ED',
-                  borderRadius: '1rem',
-                  padding: '4rem 5rem',
-                  display: 'grid',
-                  gridTemplateColumns: '1.2fr 1fr',
-                  gap: '4rem',
-                  alignItems: 'center',
-                  opacity: isActive ? 1 : 0.4,
-                  transform: isActive ? 'scale(1)' : 'scale(0.95)',
-                  transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-                  position: 'relative'
-                }} className="whatwedo-card">
-                  
-                  {/* Left Column - Headline & Icon */}
-                  <div style={{ position: 'relative', zIndex: 1 }}>
-                    <h3 style={{
-                      fontFamily: 'var(--ff-body)',
-                      fontSize: '2.8rem',
-                      fontWeight: 400,
-                      lineHeight: 1.2,
-                      color: '#2b3f30'
-                    }}>
-                      {f.title}
-                    </h3>
+                <div 
+                  key={idx} 
+                  className="wwd-slide-card"
+                  style={{
+                    minWidth: '100%',
+                    flex: '0 0 100%',
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '40px',
+                    boxShadow: 'var(--shadow-card)',
+                    padding: 'clamp(2rem, 4vw, 3.5rem)',
+                    boxSizing: 'border-box',
+                    transition: 'opacity 0.5s ease, transform 0.5s ease',
+                    opacity: isActive ? 1 : 0,
+                    transform: isActive ? 'translateY(0)' : 'translateY(8px)',
+                  }}
+                >
+                  <div className="wwd-card-grid">
                     
-                    <div style={{
-                      marginTop: '3rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      opacity: 0.95
-                    }}>
-                      <img src={f.image} alt={f.title} loading="lazy" style={{ width: '100%', maxWidth: 320, height: 'auto', borderRadius: '1.5rem', mixBlendMode: 'multiply' }} />
+                    {/* Content Column */}
+                    <div className="wwd-content-col">
+                      <h3 
+                        className="wwd-title"
+                        style={{
+                          fontFamily: 'var(--ff-display)',
+                          fontSize: 'clamp(1.75rem, 3vw, 2.4rem)',
+                          fontWeight: 800,
+                          lineHeight: 1.2,
+                          color: 'var(--foreground)',
+                          margin: 0
+                        }}
+                      >
+                        {f.title}
+                      </h3>
+
+                      {/* Small Section Divider */}
+                      <div 
+                        className="wwd-divider"
+                        style={{
+                          width: 48,
+                          height: 3,
+                          background: 'var(--foreground)',
+                          borderRadius: 2,
+                          margin: '1.25rem 0 1.5rem 0',
+                          opacity: 0.85
+                        }}
+                      />
+
+                      {/* Description */}
+                      <p 
+                        className="wwd-desc"
+                        style={{
+                          fontSize: 'clamp(1rem, 1.5vw, 1.1rem)',
+                          lineHeight: 1.7,
+                          color: 'var(--muted-foreground)',
+                          fontFamily: 'var(--ff-body)',
+                          margin: '0 0 1.75rem 0'
+                        }}
+                      >
+                        {f.desc}
+                      </p>
+
+                      {/* Feature Bullets */}
+                      <ul 
+                        className="wwd-bullets"
+                        style={{
+                          listStyle: 'none',
+                          padding: 0,
+                          margin: '0 0 2.25rem 0',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '0.85rem'
+                        }}
+                      >
+                        {f.bullets.map((bullet, bIdx) => (
+                          <li 
+                            key={bIdx}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.75rem',
+                              fontSize: '0.95rem',
+                              color: 'var(--foreground)',
+                              fontFamily: 'var(--ff-body)',
+                              fontWeight: 500,
+                              lineHeight: 1.4
+                            }}
+                          >
+                            <div style={{
+                              width: 22,
+                              height: 22,
+                              borderRadius: '50%',
+                              background: 'var(--background)',
+                              border: '1px solid var(--border)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                              color: 'var(--foreground)'
+                            }}>
+                              <CheckCircle2 size={13} />
+                            </div>
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {/* Primary CTA Button */}
+                      <div className="wwd-cta-wrap">
+                        <Link 
+                          to={f.path} 
+                          className="wwd-cta-btn"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            padding: '0.85rem 1.75rem',
+                            background: 'var(--foreground)',
+                            color: 'var(--background)',
+                            borderRadius: '9999px',
+                            fontWeight: 600,
+                            fontSize: '0.95rem',
+                            fontFamily: 'var(--ff-body)',
+                            textDecoration: 'none',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
+                          }}
+                        >
+                          <span>Learn More</span>
+                          <ArrowRight size={18} className="wwd-arrow-icon" />
+                        </Link>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Right Column - Description & Link */}
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#2b3f30', marginBottom: '2rem' }} />
-                    
-                    <p style={{
-                      fontSize: '1.2rem',
-                      lineHeight: 1.7,
-                      color: '#4b5563',
-                      fontWeight: 400,
-                      fontFamily: 'var(--ff-body)',
-                      marginBottom: '3rem'
-                    }}>
-                      {f.desc}
-                    </p>
-                    
-                    <Link to={f.path} style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 8,
-                      fontSize: '1.05rem', color: '#2b3f30', textDecoration: 'none', 
-                      fontWeight: 700, fontFamily: 'var(--ff-body)', transition: 'opacity 0.3s'
-                    }} onMouseEnter={e=>e.currentTarget.style.opacity=0.7} onMouseLeave={e=>e.currentTarget.style.opacity=1}>
-                      Learn More <ArrowIcon size={18} />
-                    </Link>
-                  </div>
+                    {/* Image Column */}
+                    <div className="wwd-image-col">
+                      <div 
+                        style={{
+                          background: 'var(--background)',
+                          border: '1px solid var(--border)',
+                          borderRadius: '24px',
+                          padding: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          overflow: 'hidden',
+                          width: '100%',
+                          boxSizing: 'border-box'
+                        }}
+                      >
+                        <img 
+                          src={f.image} 
+                          alt={f.title} 
+                          loading="lazy" 
+                          style={{
+                            width: '100%',
+                            maxHeight: '340px',
+                            objectFit: 'cover',
+                            borderRadius: '16px',
+                            display: 'block'
+                          }} 
+                        />
+                      </div>
+                    </div>
 
+                  </div>
                 </div>
               )
             })}
           </div>
         </div>
 
-        {/* Progress & Navigation */}
-        <div style={{ 
-          marginTop: '4rem', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between' 
-        }} className="whatwedo-nav">
-          
-          {/* Progress Bar */}
-          <div style={{ flex: 1, height: 2, background: '#E5E7EB', marginRight: '4rem', position: 'relative' }}>
-            <div style={{ 
-              position: 'absolute', top: 0, left: 0, height: '100%', 
-              background: '#2b3f30', width: `${progress}%`,
-              transition: 'width 0.3s ease'
-            }} />
+        {/* Navigation Controls & Pagination Indicators */}
+        <div 
+          className="wwd-controls"
+          style={{ 
+            marginTop: '2.5rem', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            gap: '1.5rem'
+          }} 
+        >
+          {/* Elegant Pagination Dots */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            {features.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrent(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                style={{
+                  height: '10px',
+                  width: idx === current ? '28px' : '10px',
+                  borderRadius: '9999px',
+                  background: idx === current ? 'var(--foreground)' : 'var(--border)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+              />
+            ))}
           </div>
 
-          {/* Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <button onClick={prevSlide} style={{
-              width: 44, height: 44, borderRadius: '50%', background: '#4B4B4B', color: '#FFF',
-              border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-              transition: 'background 0.2s'
-            }} onMouseEnter={e=>e.currentTarget.style.background='#2C2C24'} onMouseLeave={e=>e.currentTarget.style.background='#4B4B4B'}>
-              <ArrowLeft size={20} />
+          {/* Clean Outlined Circular Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+            <button 
+              onClick={prevSlide} 
+              aria-label="Previous slide"
+              className="wwd-nav-btn"
+              style={{
+                width: 46, 
+                height: 46, 
+                borderRadius: '50%', 
+                background: 'var(--surface)', 
+                color: 'var(--foreground)',
+                border: '1px solid var(--border)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                cursor: 'pointer',
+                transition: 'all 0.25s ease',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)'
+              }}
+            >
+              <ArrowLeft size={19} />
             </button>
             
-            <div style={{ fontSize: '1rem', fontWeight: 500, color: '#4b5563', fontVariantNumeric: 'tabular-nums' }}>
+            <div style={{ 
+              fontSize: '0.9rem', 
+              fontWeight: 600, 
+              color: 'var(--muted-foreground)', 
+              fontFamily: 'var(--ff-body)',
+              fontVariantNumeric: 'tabular-nums',
+              minWidth: '42px',
+              textAlign: 'center'
+            }}>
               {current + 1} / {features.length}
             </div>
             
-            <button onClick={nextSlide} style={{
-              width: 44, height: 44, borderRadius: '50%', background: '#4B4B4B', color: '#FFF',
-              border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-              transition: 'background 0.2s'
-            }} onMouseEnter={e=>e.currentTarget.style.background='#2C2C24'} onMouseLeave={e=>e.currentTarget.style.background='#4B4B4B'}>
-              <ArrowRight size={20} />
+            <button 
+              onClick={nextSlide} 
+              aria-label="Next slide"
+              className="wwd-nav-btn"
+              style={{
+                width: 46, 
+                height: 46, 
+                borderRadius: '50%', 
+                background: 'var(--surface)', 
+                color: 'var(--foreground)',
+                border: '1px solid var(--border)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                cursor: 'pointer',
+                transition: 'all 0.25s ease',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)'
+              }}
+            >
+              <ArrowRight size={19} />
             </button>
           </div>
 
         </div>
+
       </div>
-      
+
       <style>{`
-        @media(max-width: 1024px) {
-          .whatwedo-card {
-            grid-template-columns: 1fr !important;
-            padding: 3rem 2rem !important;
-            gap: 2rem !important;
-          }
-          .whatwedo-nav {
-            flex-direction: column;
-            gap: 2rem;
-            align-items: stretch !important;
-          }
-          .whatwedo-nav > div:first-child {
-            margin-right: 0 !important;
-          }
-          .whatwedo-nav > div:last-child {
-            justify-content: space-between;
-          }
+        .wwd-card-grid {
+          display: grid;
+          grid-template-columns: 1.15fr 0.85fr;
+          gap: clamp(2rem, 4vw, 3.5rem);
+          align-items: center;
         }
-        @media(max-width: 640px) {
-          .whatwedo-card {
-            padding: 2rem 1.25rem !important;
+
+        .wwd-nav-btn:hover {
+          transform: translateY(-2px);
+          border-color: var(--foreground) !important;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .wwd-nav-btn:active {
+          transform: translateY(0);
+        }
+
+        .wwd-cta-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+          opacity: 0.94;
+        }
+
+        .wwd-cta-btn:hover .wwd-arrow-icon {
+          transform: translateX(4px);
+        }
+
+        .wwd-arrow-icon {
+          transition: transform 0.25s ease;
+        }
+
+        @media (max-width: 900px) {
+          .wwd-card-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
           }
-          .whatwedo-card h3 {
-            font-size: 2rem !important;
+          .wwd-title { order: 1; }
+          .wwd-divider { order: 2; margin: 0.5rem 0 1rem 0 !important; }
+          .wwd-image-col { order: 3; width: 100%; margin-bottom: 0.5rem; }
+          .wwd-desc { order: 4; }
+          .wwd-bullets { order: 5; }
+          .wwd-cta-wrap { order: 6; }
+        }
+
+        @media (max-width: 640px) {
+          .wwd-slide-card {
+            padding: 1.75rem 1.25rem !important;
+            border-radius: 28px !important;
           }
-          .whatwedo-card p {
-            font-size: 1rem !important;
+          .wwd-controls {
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
           }
         }
       `}</style>

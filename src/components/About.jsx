@@ -68,79 +68,94 @@ export default function About() {
   return (
     <>
       <section id="about" style={{
-        padding: '20px 0 clamp(40px, 6vw, 80px)',
-        overflow: 'hidden'
+        padding: 'clamp(40px, 6vw, 80px) 0',
+        overflow: 'hidden',
+        background: 'var(--background)',
+        position: 'relative'
       }}>
-        <div ref={ref} style={{
-          display:'grid', gridTemplateColumns:'1.1fr 1.35fr', gap:'4rem', alignItems:'flex-start', position: 'relative', zIndex: 1,
-          maxWidth: '100%', width: '100%',
-          paddingLeft: 'max(2rem, calc((100vw - 1280px) / 2 + 2rem))',
-          paddingRight: 0
-        }} className="about-grid">
-          <div style={{ paddingRight: '2rem' }}>
-            <SectionLabel>About Us</SectionLabel>
-            <SectionHeading>Building Affordable Renewable Energy Access</SectionHeading>
-            <SectionBody>
-              We are building an MSME-focused renewable energy aggregation business that enables industries to access affordable clean electricity through group captive and open-access procurement models.
-            </SectionBody>
-            <div style={{marginTop:'3rem', marginBottom: '1.5rem'}}>
-              <Link to="/contact" className="btn-organic" style={{
-                background:'var(--primary)', color:'var(--primary-foreground)',
-                fontSize:16, padding:'16px 32px', boxShadow:'var(--shadow-soft)',
-              }}>
-                Partner With Us <ArrowRight size={18} />
-              </Link>
-            </div>
-          </div>
-
-          {/* Asymmetric card containing the scrolling images, touching the right edge of the screen */}
-          <div 
-            className="about-image-card"
-            style={{
-              ...organicCardStyle,
-              borderRadius: '4rem 0px 0px 4rem', /* Flat on the right side to stick to the screen edge */
-              borderRight: 'none',
-              background: 'var(--surface)',
-              padding: 0,
-              overflow: 'hidden',
-              boxShadow: 'var(--shadow-deep)',
-              height: '590px',
-              position: 'relative',
-              width: '90%',
-              marginLeft: 'auto'
-            }}
-          >
-            {aboutImages.map((img, idx) => (
-              <div key={idx} style={{
-                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                opacity: idx === activeImgIdx ? 1 : 0,
-                transition: 'opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 8s cubic-bezier(0.4, 0, 0.2, 1)',
-                transform: idx === activeImgIdx ? 'scale(1.05)' : 'scale(1)',
-                zIndex: idx === activeImgIdx ? 1 : 0
-              }}>
-                <img src={img} alt={getCaption(idx)} style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block'
-                }} />
+        <div style={container}>
+          <div ref={ref} className="about-hero-grid">
+            
+            {/* Left Column: Text & CTA */}
+            <div className="about-hero-content">
+              <SectionLabel>About Us</SectionLabel>
+              <SectionHeading style={{ margin: '0 0 1.25rem 0', lineHeight: 1.15 }}>
+                Building Affordable Renewable Energy Access
+              </SectionHeading>
+              <SectionBody style={{ margin: '0 0 2rem 0', maxWidth: '540px' }}>
+                We are building an MSME-focused renewable energy aggregation business that enables industries to access affordable clean electricity through group captive and open-access procurement models.
+              </SectionBody>
+              <div style={{ marginTop: '2rem' }}>
+                <Link to="/contact" className="btn-organic" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  background: 'var(--primary)',
+                  color: 'var(--primary-foreground)',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  padding: '14px 28px',
+                  borderRadius: '9999px',
+                  boxShadow: 'var(--shadow-soft)',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease'
+                }}>
+                  <span>Partner With Us</span> <ArrowRight size={18} />
+                </Link>
               </div>
-            ))}
-
-            <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0,
-              background: 'linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent)',
-              padding: '2.5rem 2rem 2.5rem 3rem',
-              color: '#FFFFFF',
-              zIndex: 5
-            }}>
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#FDE047' }}>
-                {getLabel(activeImgIdx)}
-              </span>
-              <h4 style={{ color: '#FFFFFF', fontSize: '1.4rem', marginTop: 6, fontWeight: 700, fontFamily: 'var(--ff-display)' }}>
-                {getCaption(activeImgIdx)}
-              </h4>
             </div>
+
+            {/* Right Column: Balanced Image Card */}
+            <div className="about-image-card-wrapper">
+              <div 
+                className="about-image-card"
+                style={{
+                  ...organicCardStyle,
+                  borderRadius: '2.5rem',
+                  border: '1px solid var(--border)',
+                  background: 'var(--surface)',
+                  padding: 0,
+                  overflow: 'hidden',
+                  boxShadow: 'var(--shadow-card)',
+                  height: '480px',
+                  width: '100%',
+                  position: 'relative'
+                }}
+              >
+                {aboutImages.map((img, idx) => (
+                  <div key={idx} style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                    opacity: idx === activeImgIdx ? 1 : 0,
+                    transition: 'opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 8s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transform: idx === activeImgIdx ? 'scale(1.05)' : 'scale(1)',
+                    zIndex: idx === activeImgIdx ? 1 : 0
+                  }}>
+                    <img src={img} alt={getCaption(idx)} style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block'
+                    }} />
+                  </div>
+                ))}
+
+                <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0,
+                  background: 'linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
+                  padding: '2.25rem 2rem 2rem 2rem',
+                  color: '#FFFFFF',
+                  zIndex: 5
+                }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#FDE047' }}>
+                    {getLabel(activeImgIdx)}
+                  </span>
+                  <h4 style={{ color: '#FFFFFF', fontSize: '1.35rem', marginTop: 6, fontWeight: 700, fontFamily: 'var(--ff-display)', margin: '6px 0 0 0' }}>
+                    {getCaption(activeImgIdx)}
+                  </h4>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
@@ -277,6 +292,13 @@ export default function About() {
         .focus-card {
           transition: transform 0.4s ease, box-shadow 0.4s ease !important;
         }
+        .about-hero-grid {
+          display: grid;
+          grid-template-columns: 1.15fr 0.85fr;
+          gap: clamp(2rem, 4vw, 3.5rem);
+          align-items: center;
+        }
+
         .focus-card:hover {
           transform: translateY(-6px);
           box-shadow: var(--shadow-deep) !important;
@@ -297,17 +319,14 @@ export default function About() {
         }
 
         @media(max-width:900px){
-          .about-grid{
-            grid-template-columns:1fr!important;
-            gap:2rem!important;
-            padding-left:clamp(1rem, 5vw, 2rem)!important;
-            padding-right:clamp(1rem, 5vw, 2rem)!important;
+          .about-hero-grid {
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
           }
           .about-image-card {
-            border-radius:2rem!important;
-            border-right:1px solid rgba(222, 216, 207, 0.5)!important;
-            height:300px!important;
-            width:100%!important;
+            border-radius: 2rem !important;
+            height: 340px !important;
+            width: 100% !important;
           }
           .focus-grid{grid-template-columns:1fr!important;gap:1.5rem!important}
           .focus-grid > div { height: 300px !important; }
@@ -322,7 +341,7 @@ export default function About() {
           }
         }
         @media(max-width:480px) {
-          .about-image-card { height: 240px !important; }
+          .about-image-card { height: 260px !important; }
         }
       `}</style>
     </>
