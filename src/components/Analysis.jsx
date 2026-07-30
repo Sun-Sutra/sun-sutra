@@ -110,6 +110,31 @@ export default function Analysis() {
   const [analysisResult, setAnalysisResult] = useState(null)
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [isSlow, setIsSlow] = useState(false)
+  const [isOfflineParser, setIsOfflineParser] = useState(false)
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    if (navigator.connection) {
+      const conn = navigator.connection
+      const updateConn = () => {
+        setIsSlow(conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g')
+      }
+      conn.addEventListener('change', updateConn)
+      updateConn()
+    }
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
   const ref = useFadeIn()
   const reportContainerRef = useRef(null)
   const uploadRef = useRef(null)
@@ -244,6 +269,7 @@ export default function Analysis() {
   }
 
   const handleExtractedData = (aiData) => {
+    setIsOfflineParser(!!aiData.isOffline);
     setFormData(prev => ({
       ...prev,
       consumerNumber: cleanNumber(aiData.consumerNumber) !== '' ? cleanNumber(aiData.consumerNumber) : prev.consumerNumber,
@@ -265,8 +291,6 @@ export default function Analysis() {
       totalLossPercentage: cleanNumber(aiData.totalLossPercentage) !== '' ? cleanNumber(aiData.totalLossPercentage) : prev.totalLossPercentage,
       miscellaneousCharges: cleanNumber(aiData.miscellaneousCharges) !== '' ? cleanNumber(aiData.miscellaneousCharges) : prev.miscellaneousCharges,
     }));
-    // Auto jump to Step 3 so the user can immediately review & submit!
-    setWizardStep(3);
   };
 
   const handleAnalysis = async () => {
@@ -448,6 +472,70 @@ export default function Analysis() {
               <Building2 size={16} /> Precision Bill Audit (Wizard)
             </button>
           </div>
+        </div>
+
+        {/* Connection HUD / Notice Bar */}
+        <div style={{
+          marginTop: '-1.5rem',
+          marginBottom: '2.5rem',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: 12,
+          flexWrap: 'wrap'
+        }}>
+          {/* Online / Offline Indicator */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '6px 14px',
+            borderRadius: '9999px',
+            background: isOnline ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+            border: `1px solid ${isOnline ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`,
+            color: isOnline ? '#10b981' : '#ef4444',
+            fontSize: '0.82rem',
+            fontWeight: 700
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: isOnline ? '#10b981' : '#ef4444', animation: 'pulse 1.2s infinite' }} />
+            {isOnline ? 'CLOUD SYNC ONLINE' : 'OFFLINE MODE'}
+          </div>
+
+          {/* Slow Network Alert */}
+          {isSlow && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 14px',
+              borderRadius: '9999px',
+              background: 'rgba(234,179,8,0.08)',
+              border: '1px solid rgba(234,179,8,0.2)',
+              color: '#eab308',
+              fontSize: '0.82rem',
+              fontWeight: 700
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#eab308', animation: 'pulse 1.2s infinite' }} />
+              SLOW CONNECTION DETECTED
+            </div>
+          )}
+
+          {/* Local Offline Parser Warning */}
+          {isOfflineParser && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 14px',
+              borderRadius: '9999px',
+              background: 'rgba(249,115,22,0.08)',
+              border: '1px solid rgba(249,115,22,0.2)',
+              color: '#f97316',
+              fontSize: '0.82rem',
+              fontWeight: 700
+            }}>
+              ⚠️ LOCAL PARSER FALLBACK ACTIVE
+            </div>
+          )}
         </div>
 
         {/* MODE 1: INSTANT LIVE SIMULATOR */}

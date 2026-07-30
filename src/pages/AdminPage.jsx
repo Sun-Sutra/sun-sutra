@@ -3,7 +3,7 @@ import { db, auth } from '../firebase'
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import { SectionLabel, SectionHeading, SectionBody, container, organicCardStyle } from '../components/utils'
-import { LogOut, Inbox, Bell, Calendar, Mail, Phone, MapPin, Building, Trash2, CheckCircle, Circle, Eye, EyeOff, User, Lock } from 'lucide-react'
+import { LogOut, Inbox, Bell, Calendar, Mail, Phone, MapPin, Building, Trash2, CheckCircle, Circle, Eye, EyeOff, User, Lock, Search, ShieldAlert } from 'lucide-react'
 import navLogo from '../assets/shared/logo_rectangle.png'
 
 /* ─── Styles ─── */
@@ -231,6 +231,8 @@ function Dashboard({ user }) {
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState(null)
   const [filter, setFilter] = useState('all') // all | unread | read
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sessionError, setSessionError] = useState(null)
 
   useEffect(() => {
     const q = query(collection(db, 'contactMessages'), orderBy('createdAt', 'desc'))
@@ -241,6 +243,9 @@ function Dashboard({ user }) {
     }, (err) => {
       console.error('Firestore error:', err)
       setLoading(false)
+      if (err.code === 'permission-denied') {
+        setSessionError('Permission Denied: Your authentication token is expired or unauthorized to access database feeds.')
+      }
     })
     return () => unsub()
   }, [])
@@ -274,6 +279,15 @@ function Dashboard({ user }) {
     if (filter === 'unread') return !m.read
     if (filter === 'read') return m.read
     return true
+  }).filter(m => {
+    if (!searchQuery.trim()) return true
+    const q = searchQuery.toLowerCase()
+    return (
+      (m.name || '').toLowerCase().includes(q) ||
+      (m.email || '').toLowerCase().includes(q) ||
+      (m.company || '').toLowerCase().includes(q) ||
+      (m.location || '').toLowerCase().includes(q)
+    )
   })
 
   const totalCount = messages.length
@@ -334,22 +348,77 @@ function Dashboard({ user }) {
           ))}
         </div>
 
-        {/* Filters */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: '2rem' }}>
-          {['all', 'unread', 'read'].map(f => (
-            <button key={f} onClick={() => setFilter(f)} style={{
-              padding: '8px 20px',
-              background: filter === f ? 'var(--primary)' : 'var(--surface)',
-              border: `1px solid ${filter === f ? 'var(--primary)' : 'rgba(222,216,207,0.8)'}`,
-              borderRadius: '9999px',
-              color: filter === f ? 'var(--primary-foreground)' : 'var(--foreground)',
-              fontSize: 13, fontWeight: 700,
-              cursor: 'pointer', textTransform: 'capitalize',
-              transition: 'all 0.2s', fontFamily: 'var(--ff-body)',
-            }} className="btn-organic">
-              {f} {f === 'unread' && unreadCount > 0 ? `(${unreadCount})` : ''}
-            </button>
-          ))}
+        {/* Session Error / Permission Denied Alert */}
+        {sessionError && (
+          <div style={{
+            ...organicCardStyle,
+            borderColor: 'var(--destructive)',
+            background: 'rgba(168,84,72,0.08)',
+            padding: '1.5rem 2rem',
+            marginBottom: '2rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16
+          }}>
+            <ShieldAlert size={28} color="var(--destructive)" />
+            <div>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--foreground)' }}>Security Alert</h4>
+              <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--muted-foreground)' }}>{sessionError}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Filters and Search toolbar */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '1.5rem',
+          marginBottom: '2rem',
+          flexWrap: 'wrap'
+        }}>
+          {/* Filters */}
+          <div style={{ display: 'flex', gap: 10 }}>
+            {['all', 'unread', 'read'].map(f => (
+              <button key={f} onClick={() => setFilter(f)} style={{
+                padding: '8px 20px',
+                background: filter === f ? 'var(--primary)' : 'var(--surface)',
+                border: `1px solid ${filter === f ? 'var(--primary)' : 'rgba(222,216,207,0.8)'}`,
+                borderRadius: '9999px',
+                color: filter === f ? 'var(--primary-foreground)' : 'var(--foreground)',
+                fontSize: 13, fontWeight: 700,
+                cursor: 'pointer', textTransform: 'capitalize',
+                transition: 'all 0.2s', fontFamily: 'var(--ff-body)',
+              }} className="btn-organic">
+                {f} {f === 'unread' && unreadCount > 0 ? `(${unreadCount})` : ''}
+              </button>
+            ))}
+          </div>
+
+          {/* Search Field */}
+          <div style={{ position: 'relative', width: '320px', maxWidth: '100%' }}>
+            <input
+              type="text"
+              placeholder="Search by name, company, email..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 16px 10px 40px',
+                background: 'var(--surface)',
+                border: '1px solid rgba(222,216,207,0.8)',
+                borderRadius: '9999px',
+                fontSize: '13px',
+                color: 'var(--foreground)',
+                outline: 'none',
+                fontFamily: 'var(--ff-body)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(222,216,207,0.8)'}
+            />
+            <Search size={15} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+          </div>
         </div>
 
         {/* Messages */}
@@ -359,17 +428,49 @@ function Dashboard({ user }) {
             <p style={{ fontWeight: 600 }}>Syncing with Firestore...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div style={{
-            ...organicCardStyle,
-            textAlign: 'center', padding: '5rem 2rem',
-            borderStyle: 'dashed',
-          }}>
-            <div style={{ fontSize: 48, marginBottom: 12, opacity: 0.7 }}>📭</div>
-            <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.4rem', marginBottom: 6 }}>No Submissions Found</h3>
-            <p style={{ color: 'var(--muted-foreground)', fontSize: 14, maxWidth: 400, margin: '0 auto' }}>
-              {filter === 'all' ? 'All clear! Messages sent via the Contact form will automatically stream here in real-time.' : `There are no ${filter} messages.`}
-            </p>
-          </div>
+          searchQuery.trim() ? (
+            /* No Search Results Empty State */
+            <div style={{
+              ...organicCardStyle,
+              textAlign: 'center',
+              padding: '5rem 2rem',
+              borderStyle: 'dashed',
+              borderColor: 'rgba(222,216,207,0.8)',
+              background: 'rgba(222,216,207,0.05)'
+            }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 56,
+                height: 56,
+                borderRadius: '50%',
+                background: 'var(--muted)',
+                color: 'var(--primary)',
+                marginBottom: 16
+              }}>
+                <Search size={22} />
+              </div>
+              <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.4rem', marginBottom: 6 }}>No Search Results</h3>
+              <p style={{ color: 'var(--muted-foreground)', fontSize: 14, maxWidth: 420, margin: '0 auto 1.5rem', lineHeight: 1.5 }}>
+                We couldn't find any submissions matching <strong style={{ color: 'var(--foreground)' }}>"{searchQuery}"</strong>. Please verify spelling or clear search filter.
+              </p>
+              <button onClick={() => setSearchQuery('')} style={smallBtnStyle(false, true)} className="btn-organic">Clear Search Query</button>
+            </div>
+          ) : (
+            /* Standard Empty State */
+            <div style={{
+              ...organicCardStyle,
+              textAlign: 'center', padding: '5rem 2rem',
+              borderStyle: 'dashed',
+            }}>
+              <div style={{ fontSize: 48, marginBottom: 12, opacity: 0.7 }}>📭</div>
+              <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.4rem', marginBottom: 6 }}>No Submissions Found</h3>
+              <p style={{ color: 'var(--muted-foreground)', fontSize: 14, maxWidth: 400, margin: '0 auto' }}>
+                {filter === 'all' ? 'All clear! Messages sent via the Contact form will automatically stream here in real-time.' : `There are no ${filter} messages.`}
+              </p>
+            </div>
+          )
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {filtered.map((msg, idx) => (

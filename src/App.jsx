@@ -11,6 +11,7 @@ import SolutionPage from './pages/SolutionPage'
 import ContactPage from './pages/ContactPage'
 import AdminPage from './pages/AdminPage'
 import AnalysisPage from './pages/AnalysisPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -51,7 +52,9 @@ function Layout({ children }) {
         <div className={`main-app-card ${scrolled ? 'expanded' : ''}`}>
           <Nav />
           <main style={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
-            {children}
+            <div key={pathname} className="page-transition-wrapper" style={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
+              {children}
+            </div>
           </main>
           <Footer />
         </div>
@@ -72,6 +75,7 @@ export default function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/analysis" element={<AnalysisPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Layout>
       <Analytics />

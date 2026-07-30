@@ -25,6 +25,7 @@ const fallbackParseOCRText = (text) => {
   const state = /maharashtra/i.test(t) ? 'Maharashtra' : 'Maharashtra';
 
   return {
+    isOffline: true,
     consumerNumber: consumerNumber || '123456789012',
     consumerName: 'Extracted Industrial User',
     discom: discom,

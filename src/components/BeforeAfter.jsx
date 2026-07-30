@@ -191,7 +191,7 @@ export default function BeforeAfter() {
     <section 
       ref={sectionRef} 
       className="before-after-section" 
-      style={{ ...sectionPad, background: 'var(--background)', overflow: 'hidden' }}
+      style={{ ...sectionPad, overflow: 'hidden' }}
     >
       <div style={container}>
         

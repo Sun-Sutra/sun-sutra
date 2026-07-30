@@ -24,8 +24,16 @@ export function useFadeIn() {
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    el.style.opacity = 1
-    el.style.transform = 'none'
+    el.style.opacity = '0'
+    el.style.transform = 'translateY(24px)'
+    el.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+    
+    const timer = setTimeout(() => {
+      el.style.opacity = '1'
+      el.style.transform = 'translateY(0)'
+    }, 50)
+    
+    return () => clearTimeout(timer)
   }, [])
   return ref
 }

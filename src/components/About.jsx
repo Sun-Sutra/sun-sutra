@@ -70,7 +70,6 @@ export default function About() {
       <section id="about" style={{
         padding: 'clamp(40px, 6vw, 80px) 0',
         overflow: 'hidden',
-        background: 'var(--background)',
         position: 'relative'
       }}>
         <div style={container}>

@@ -160,7 +160,16 @@ export default function Home() {
                           padding: '16px 12px',
                           textAlign: 'center',
                           cursor: 'pointer',
-                          transition: 'all 0.25s ease'
+                          transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                          transform: 'translateY(0)'
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.transform = 'translateY(-3px)';
+                          e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.05)';
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = 'none';
                         }}
                       >
                         <div style={{ color: mix === p.id ? 'var(--foreground)' : 'var(--muted-foreground)', marginBottom: 6, display: 'flex', justifyContent: 'center' }}>
