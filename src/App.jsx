@@ -5,6 +5,7 @@ import './index.css'
 
 import Nav from './components/Nav'
 import Footer from './components/Footer'
+import SEO from './components/SEO'
 import Home from './pages/Home'
 import AboutPage from './pages/AboutPage'
 import SolutionPage from './pages/SolutionPage'
@@ -19,6 +20,24 @@ function ScrollToTop() {
     window.scrollTo(0, 0)
   }, [pathname])
   return null
+}
+
+function PageSEO() {
+  const { pathname } = useLocation();
+  const getSEO = (path) => {
+    switch (path) {
+      case '/': return { title: 'Home', description: 'Smart Solar Savings Calculator. Get an instant estimate for your solar panel installation.', url: '/' };
+      case '/about': return { title: 'About Us', description: 'Learn more about Sun Sutra and our mission to provide clean, renewable energy.', url: '/about' };
+      case '/solutions': return { title: 'Our Solutions', description: 'Explore our residential and commercial solar solutions.', url: '/solutions' };
+      case '/contact': return { title: 'Contact Us', description: 'Get in touch with the Sun Sutra team for inquiries and support.', url: '/contact' };
+      case '/analysis': return { title: 'Solar Analysis', description: 'Detailed analysis and instant savings estimator.', url: '/analysis' };
+      case '/admin': return { title: 'Admin Dashboard', description: 'Sun Sutra Administration', url: '/admin' };
+      default: return { title: 'Page Not Found', description: '404 - Page not found.', url: path };
+    }
+  }
+  
+  const seoData = getSEO(pathname);
+  return <SEO {...seoData} />;
 }
 
 function Layout({ children }) {
@@ -67,6 +86,7 @@ export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <PageSEO />
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
