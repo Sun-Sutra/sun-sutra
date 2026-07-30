@@ -229,8 +229,10 @@ export default function Footer() {
         }}>
           <span>© {new Date().getFullYear()} Sun Sutra Energy. All rights reserved.</span>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <a href="#" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Privacy Policy</a>
-            <a href="#" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Terms of Service</a>
+            <Link to="/privacy" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Privacy Policy</Link>
+            <Link to="/terms" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Terms of Service</Link>
+            <Link to="/cookies" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Cookie Policy</Link>
+            <Link to="/refund" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Refund Policy</Link>
           </div>
         </div>
 

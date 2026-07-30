@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-export default function SEO({ title, description, url, type = 'website', image = 'https://sunsutragroup.com/og-image.jpg' }) {
+export default function SEO({ title, description, url, type = 'website', image = 'https://sunsutragroup.com/og-image.png' }) {
   const siteTitle = title ? `${title} | Sun Sutra` : 'Sun Sutra - Smart Solar Savings';
   const metaDescription = description || 'Calculate your solar savings instantly and make the switch to clean, renewable energy with Sun Sutra.';
   const canonicalUrl = url ? `https://sunsutragroup.com${url}` : 'https://sunsutragroup.com';

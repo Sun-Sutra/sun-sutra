@@ -6,6 +6,8 @@ import UploadSection from './UploadSection'
 import ReportPage from './report/ReportPage'
 import buildReportData from './report/buildReportData'
 import generatePdf from './report/generatePdf'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import posthog from 'posthog-js'
 import '../styles/report-tokens.css'
 import '../styles/report.css'
 
@@ -113,6 +115,8 @@ export default function Analysis() {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [isSlow, setIsSlow] = useState(false)
   const [isOfflineParser, setIsOfflineParser] = useState(false)
+  
+  const { executeRecaptcha } = useGoogleReCaptcha()
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true)
@@ -295,9 +299,14 @@ export default function Analysis() {
 
   const handleAnalysis = async () => {
     if (!validateAll()) return
+    if (executeRecaptcha) {
+      await executeRecaptcha('analysis_submit').catch(console.warn);
+    }
     if (uploadRef.current) {
       await uploadRef.current.uploadToR2()
     }
+    
+    posthog.capture('analysis_completed', { form: 'Analysis', units: formData.unitsConsumed, bill: formData.totalBill })
     
     const units = Number(formData.unitsConsumed) || 0;
     const bill = Number(formData.totalBill) || 0;

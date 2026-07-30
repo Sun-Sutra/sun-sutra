@@ -3,6 +3,8 @@ import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, conta
 import { LineChart, ShieldCheck, Clock } from 'lucide-react'
 import { db } from '../firebase'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import posthog from 'posthog-js'
 
 const trustItems = [
   { icon: <LineChart size={20} />, text: 'Free renewable cost analysis for your facility' },
@@ -41,6 +43,7 @@ export default function Contact() {
     bill: '', location: '', message: '',
   })
   const ref = useFadeIn()
+  const { executeRecaptcha } = useGoogleReCaptcha()
 
   const handleChange = (field) => (e) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }))
@@ -68,12 +71,17 @@ export default function Contact() {
     if (!validate()) return
     setSubmitting(true)
     try {
+      if (executeRecaptcha) {
+        await executeRecaptcha('contact_submit').catch(console.warn);
+      }
       // 1. Save to Firestore
       await addDoc(collection(db, 'contactMessages'), {
         ...formData,
         createdAt: serverTimestamp(),
         read: false,
       })
+
+      posthog.capture('signup_completed', { form: 'Contact', email: formData.email, company: formData.company })
 
       // 2. Trigger SMTP emails (notification + auto-reply) via serverless function
       try {
