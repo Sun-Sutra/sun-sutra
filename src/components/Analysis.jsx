@@ -1333,7 +1333,9 @@ export default function Analysis() {
           .analysis-layout{grid-template-columns:1fr!important;gap:3rem!important}
         }
         @media(max-width:640px){
-          .analysis-layout > div:last-child { padding: 1.5rem !important; }
+          .analysis-layout > div:last-child { padding: 1.25rem !important; border-radius: 20px !important; }
+          .wizard-steps-container { flex-direction: column !important; align-items: stretch !important; gap: 0.75rem !important; }
+          .wizard-step-item { justify-content: flex-start !important; width: 100% !important; }
         }
       `}</style>
     </section>

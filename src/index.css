@@ -74,7 +74,7 @@ body {
 
 .bg-text-large {
   font-family: var(--ff-display);
-  font-size: 18vw;
+  font-size: clamp(2.5rem, 14vw, 18vw);
   font-weight: 800;
   color: #ebebeb;
   /* Very light gray */
@@ -140,6 +140,34 @@ body {
     border-radius 0.8s cubic-bezier(0.16, 1, 0.3, 1),
     min-height 0.8s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 1024px) {
+  .main-app-card {
+    margin: 12vh auto 4vh;
+    width: 92%;
+    border-radius: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-app-card {
+    margin: 8vh auto 2vh;
+    width: 94%;
+    border-radius: 20px;
+    min-height: auto;
+  }
+  .page-wrapper {
+    padding-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-app-card {
+    margin: 5vh auto 2vh;
+    width: 96%;
+    border-radius: 16px;
+  }
 }
 
 .main-app-card.expanded {
@@ -238,6 +266,17 @@ a {
   animation: float 25s ease-in-out infinite alternate-reverse;
 }
 
+@media (max-width: 768px) {
+  .orb-1 {
+    width: 300px;
+    height: 300px;
+  }
+  .orb-2 {
+    width: 350px;
+    height: 350px;
+  }
+}
+
 @keyframes float {
   0% {
     transform: translate(0, 0) scale(1);
@@ -266,4 +305,4 @@ a {
     opacity: 1;
     transform: translateY(0);
   }
-}
+}

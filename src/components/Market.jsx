@@ -138,7 +138,7 @@ export default function Market() {
                     <div
                       style={{
                         fontFamily: 'var(--ff-display)',
-                        fontSize: '2.6rem',
+                        fontSize: 'clamp(2rem, 6vw, 2.6rem)',
                         fontWeight: 800,
                         color: 'var(--primary)',
                         lineHeight: 1,

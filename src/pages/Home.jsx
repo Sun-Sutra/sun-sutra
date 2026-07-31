@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <>
       {/* Redesigned Minimalist Hero Section */}
-      <div style={{
+      <div className="home-hero-container" style={{
         display: 'flex',
         flex: 'none',
         height: '75vh',
@@ -43,7 +43,7 @@ export default function Home() {
         gap: '40px'
       }}>
         {/* Left Text Content */}
-        <div style={{
+        <div className="home-hero-text" style={{
           flex: '0 0 35%',
           display: 'flex',
           flexDirection: 'column',
@@ -58,13 +58,13 @@ export default function Home() {
             color: 'var(--foreground)',
             marginBottom: '2rem'
           }}>
-            <span style={{ fontWeight: 300, fontSize: '3rem', color: '#a0a0a0' }}>POWERING</span>
-            <span style={{ fontWeight: 800, fontSize: '3.5rem' }}>INDUSTRY</span>
+            <span style={{ fontWeight: 300, fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#a0a0a0' }}>POWERING</span>
+            <span style={{ fontWeight: 800, fontSize: 'clamp(2.5rem, 6vw, 3.5rem)' }}>INDUSTRY</span>
           </h1>
-          <p style={{
-            fontSize: '1.1rem',
+          <p className="home-hero-subtext" style={{
+            fontSize: 'clamp(0.95rem, 1.5vw, 1.1rem)',
             color: 'var(--muted-foreground)',
-            marginBottom: '3rem',
+            marginBottom: '2.5rem',
             lineHeight: 1.6,
             fontFamily: 'var(--ff-body)'
           }}>
@@ -88,7 +88,7 @@ export default function Home() {
         </div>
 
         {/* Right Image Content */}
-        <div style={{
+        <div className="home-hero-image" style={{
           flex: 1,
           position: 'relative',
           overflow: 'hidden',
@@ -289,8 +289,32 @@ export default function Home() {
           transition: transform 0.2s ease;
         }
         .custom-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
-        @media(max-width:1024px){
+        
+        @media (max-width: 900px) {
+          .home-hero-container {
+            flex-direction: column !important;
+            height: auto !important;
+            padding: 30px 20px 20px 20px !important;
+            gap: 24px !important;
+          }
+          .home-hero-text {
+            flex: none !important;
+            padding-bottom: 0 !important;
+          }
+          .home-hero-image {
+            height: 320px !important;
+            min-height: 260px !important;
+            width: 100% !important;
+          }
+        }
+        
+        @media (max-width: 1024px) {
           .calc-container { grid-template-columns: 1fr !important; gap: 2rem !important; padding: 2rem !important; border-radius: 24px !important; }
+        }
+        
+        @media (max-width: 640px) {
+          .calc-container { padding: 1.5rem !important; border-radius: 20px !important; }
+          .home-hero-image { height: 260px !important; }
         }
       `}</style>
     </>
