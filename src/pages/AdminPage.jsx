@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { db, auth } from '../firebase'
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { useAuth } from '../context/AuthContext'
 import { SectionLabel, SectionHeading, SectionBody, container, organicCardStyle } from '../components/utils'
 import { LogOut, Inbox, Bell, Calendar, Mail, Phone, MapPin, Building, Trash2, CheckCircle, Circle, Eye, EyeOff, User, Lock, Search, ShieldAlert } from 'lucide-react'
 import navLogo from '../assets/shared/logo_rectangle.png'
@@ -101,29 +102,88 @@ const smallBtnStyle = (isDanger, isOutline) => ({
 
 /* ─── Login Screen ─── */
 function LoginScreen() {
+  const [isRegistering, setIsRegistering] = useState(false)
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [otp, setOtp] = useState('')
+  const [otpSent, setOtpSent] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [shake, setShake] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
+  
+  const { signup } = useAuth()
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    if (!email.trim() || !password.trim()) {
+    setSuccessMsg('')
+    
+    if (!email.trim() || !password.trim() || (isRegistering && !name.trim())) {
       setError('Please fill in all fields')
       return
     }
+
+    if (isRegistering && !email.toLowerCase().endsWith('@sunsutragroup.com')) {
+      setError('Admin registration requires an @sunsutragroup.com email address')
+      setShake(true)
+      setTimeout(() => setShake(false), 500)
+      return
+    }
+
+    if (isRegistering && otpSent && !otp.trim()) {
+      setError('Please enter the 6-digit OTP code')
+      return
+    }
+
     setLoading(true)
     setError('')
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password)
+      if (isRegistering) {
+        if (!otpSent) {
+          // 1. Send OTP
+          const res = await fetch(`${BACKEND_URL}/api/otp/send`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email.trim() })
+          })
+          const data = await res.json()
+          if (!res.ok) throw new Error(data.error || 'Failed to send OTP')
+          
+          setOtpSent(true)
+          setSuccessMsg('OTP code sent to your email. Please check your inbox.')
+        } else {
+          // 2. Verify OTP and Signup
+          const verifyRes = await fetch(`${BACKEND_URL}/api/otp/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email.trim(), otp: otp.trim() })
+          })
+          const verifyData = await verifyRes.json()
+          if (!verifyRes.ok) throw new Error(verifyData.error || 'Invalid OTP')
+
+          await signup(name.trim(), email.trim(), password)
+          setSuccessMsg('Account created successfully!')
+          setIsRegistering(false)
+          setOtpSent(false)
+          setOtp('')
+          setPassword('')
+        }
+      } else {
+        await signInWithEmailAndPassword(auth, email.trim(), password)
+      }
     } catch (err) {
       console.error(err)
-      let displayError = 'Invalid email or password'
+      let displayError = err.message || (isRegistering ? 'Failed to register account' : 'Invalid email or password')
       if (err.code === 'auth/invalid-email') {
         displayError = 'Please enter a valid email address'
       } else if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
         displayError = 'Incorrect email or password'
+      } else if (err.code === 'auth/email-already-in-use') {
+        displayError = 'An account with this email already exists'
+      } else if (err.code === 'auth/weak-password') {
+        displayError = 'Password should be at least 6 characters'
       } else if (err.code === 'auth/network-request-failed') {
         displayError = 'Network error. Please check your internet connection.'
       }
@@ -158,22 +218,42 @@ function LoginScreen() {
             <Lock size={24} />
           </div>
           <SectionLabel>Restricted Access</SectionLabel>
-          <SectionHeading style={{ fontSize: '2rem', marginBottom: 6 }}>Admin Sign In</SectionHeading>
+          <SectionHeading style={{ fontSize: '2rem', marginBottom: 6 }}>
+            {isRegistering ? 'Admin Registration' : 'Admin Sign In'}
+          </SectionHeading>
           <p style={{ color: 'var(--muted-foreground)', fontSize: 14 }}>
-            Sign in using Firebase Authentication
+            {isRegistering ? 'Create a secure admin account' : 'Sign in using Firebase Authentication'}
           </p>
         </div>
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {isRegistering && (
+            <div style={{ position: 'relative' }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--foreground)', marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Full Name</label>
+              <div style={{ position: 'relative' }}>
+                <User size={18} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+                <input
+                  type="text" value={name}
+                  onChange={e => setName(e.target.value)}
+                  style={inputLoginStyle}
+                  placeholder="Jane Doe"
+                  disabled={loading}
+                  onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(93,112,82,0.1)' }}
+                  onBlur={e => { e.target.style.borderColor = 'rgba(222,216,207,0.8)'; e.target.style.boxShadow = 'none' }}
+                />
+              </div>
+            </div>
+          )}
+          
           <div style={{ position: 'relative' }}>
             <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--foreground)', marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Email Address</label>
             <div style={{ position: 'relative' }}>
-              <User size={18} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+              <Mail size={18} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
               <input
                 type="email" value={email}
                 onChange={e => setEmail(e.target.value)}
                 style={inputLoginStyle}
-                placeholder="admin@sunsutra.com"
+                placeholder="name@sunsutragroup.com"
                 disabled={loading}
                 onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(93,112,82,0.1)' }}
                 onBlur={e => { e.target.style.borderColor = 'rgba(222,216,207,0.8)'; e.target.style.boxShadow = 'none' }}
@@ -189,12 +269,32 @@ function LoginScreen() {
                 onChange={e => setPassword(e.target.value)}
                 style={inputLoginStyle}
                 placeholder="••••••••"
-                disabled={loading}
+                disabled={loading || otpSent}
                 onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(93,112,82,0.1)' }}
                 onBlur={e => { e.target.style.borderColor = 'rgba(222,216,207,0.8)'; e.target.style.boxShadow = 'none' }}
               />
             </div>
           </div>
+
+          {isRegistering && otpSent && (
+            <div style={{ position: 'relative', animation: 'fadeSlideUp 0.3s ease' }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--foreground)', marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.08em' }}>6-Digit OTP Code</label>
+              <div style={{ position: 'relative' }}>
+                <CheckCircle size={18} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+                <input
+                  type="text" value={otp}
+                  onChange={e => setOtp(e.target.value)}
+                  style={{ ...inputLoginStyle, letterSpacing: '0.2em', fontWeight: 700 }}
+                  placeholder="123456"
+                  disabled={loading}
+                  maxLength={6}
+                  onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px rgba(93,112,82,0.1)' }}
+                  onBlur={e => { e.target.style.borderColor = 'rgba(222,216,207,0.8)'; e.target.style.boxShadow = 'none' }}
+                />
+              </div>
+            </div>
+          )}
+          
           {error && (
             <p style={{
               color: 'var(--destructive)', fontSize: 13, textAlign: 'center',
@@ -202,9 +302,35 @@ function LoginScreen() {
               borderRadius: '9999px', border: '1px solid rgba(168,84,72,0.2)',
             }}>{error}</p>
           )}
+          
+          {successMsg && (
+            <p style={{
+              color: 'var(--primary)', fontSize: 13, textAlign: 'center',
+              background: 'rgba(93,112,82,0.1)', padding: '8px 12px',
+              borderRadius: '9999px', border: '1px solid rgba(93,112,82,0.2)',
+            }}>{successMsg}</p>
+          )}
+
           <button type="submit" style={btnStyle} className="btn-organic" disabled={loading}>
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? 'Processing...' : (isRegistering ? (otpSent ? 'Verify & Create Account' : 'Send OTP Code') : 'Sign In')}
           </button>
+          
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <button 
+              type="button" 
+              onClick={() => {
+                setIsRegistering(!isRegistering)
+                setError('')
+                setSuccessMsg('')
+              }}
+              style={{
+                background: 'none', border: 'none', color: 'var(--secondary)',
+                fontSize: 13, fontWeight: 600, cursor: 'pointer', textDecoration: 'underline'
+              }}
+            >
+              {isRegistering ? 'Already have an admin account? Sign in' : 'Need an admin account? Register'}
+            </button>
+          </div>
         </form>
       </div>
 
@@ -225,8 +351,195 @@ function LoginScreen() {
   )
 }
 
+/* ─── Media View ─── */
+function MediaView() {
+  const [media, setMedia] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    fetch('http://localhost:3001/api/media')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setMedia(data.files || [])
+        } else {
+          setError(data.error || 'Failed to fetch media')
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        setError('Network error fetching media')
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--muted-foreground)' }}>Loading media files...</div>
+  if (error) return <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--destructive)' }}>{error}</div>
+
+  if (media.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--muted-foreground)' }}>
+        No media files found in the bucket.
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <h3 style={{ margin: '0 0 2rem 0', fontFamily: 'var(--ff-display)', fontSize: '1.5rem', color: 'var(--foreground)' }}>
+        Uploaded Media ({media.length})
+      </h3>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+        gap: '1.5rem',
+      }}>
+        {media.map((file) => (
+          <div key={file.key} style={{
+            ...organicCardStyle,
+            borderRadius: '1rem', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+          }}>
+            <div style={{ height: 160, background: 'var(--muted)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {file.isPdf ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'var(--muted-foreground)' }}>
+                  <div style={{ padding: '16px', background: 'var(--background)', borderRadius: '50%' }}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>PDF Document</span>
+                </div>
+              ) : (
+                <img src={file.url} alt={file.key} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              )}
+            </div>
+            <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--foreground)', wordBreak: 'break-all' }}>
+                {file.key.split('/').pop()}
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--muted-foreground)' }}>
+                <span>{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                <span>{new Date(file.lastModified).toLocaleDateString()}</span>
+              </div>
+              <a 
+                href={file.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{
+                  marginTop: 'auto', paddingTop: '0.75rem',
+                  color: 'var(--primary)', fontSize: 12, fontWeight: 700,
+                  textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4
+                }}
+              >
+                View Full Size <span style={{ fontSize: '1.2em' }}>↗</span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ─── Users View ─── */
+function UsersView() {
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'))
+    const unsub = onSnapshot(q, (snap) => {
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      setUsers(data)
+      setLoading(false)
+    }, (err) => {
+      console.error('Firestore users error:', err)
+      setLoading(false)
+    })
+    return () => unsub()
+  }, [])
+
+  const filteredUsers = users.filter(u => {
+    if (!searchQuery.trim()) return true
+    const q = searchQuery.toLowerCase()
+    return (
+      (u.name || '').toLowerCase().includes(q) ||
+      (u.email || '').toLowerCase().includes(q)
+    )
+  })
+
+  const formatDate = (ts) => {
+    if (!ts) return 'Unknown'
+    const d = ts.toDate ? ts.toDate() : new Date(ts)
+    return d.toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'short', year: 'numeric'
+    })
+  }
+
+  if (loading) {
+    return <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--muted-foreground)' }}>Loading users...</div>
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <h3 style={{ margin: 0, fontFamily: 'var(--ff-display)', fontSize: '1.5rem', color: 'var(--foreground)' }}>
+          Registered Users ({users.length})
+        </h3>
+        <div style={{ position: 'relative', width: '320px', maxWidth: '100%' }}>
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            style={{ ...inputLoginStyle, padding: '10px 16px 10px 42px', fontSize: '0.95rem' }}
+          />
+          <Search size={18} color="var(--muted-foreground)" style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)' }} />
+        </div>
+      </div>
+
+      <div style={{ ...organicCardStyle, padding: '1rem', borderRadius: '1rem', overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.95rem' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid rgba(222,216,207,0.8)' }}>
+              <th style={{ padding: '1rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>Name</th>
+              <th style={{ padding: '1rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>Email</th>
+              <th style={{ padding: '1rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>Joined Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td colSpan="3" style={{ padding: '2rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
+                  No users found.
+                </td>
+              </tr>
+            ) : (
+              filteredUsers.map(u => (
+                <tr key={u.id} style={{ borderBottom: '1px solid rgba(222,216,207,0.4)' }}>
+                  <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--foreground)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
+                        {u.name ? u.name.charAt(0).toUpperCase() : 'U'}
+                      </div>
+                      {u.name || 'Unknown'}
+                    </div>
+                  </td>
+                  <td style={{ padding: '1rem', color: 'var(--foreground)' }}>{u.email}</td>
+                  <td style={{ padding: '1rem', color: 'var(--muted-foreground)' }}>{formatDate(u.createdAt)}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 /* ─── Dashboard ─── */
 function Dashboard({ user }) {
+  const [activeTab, setActiveTab] = useState('messages') // 'messages' | 'users'
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState(null)
@@ -308,6 +621,19 @@ function Dashboard({ user }) {
     })
   }
 
+  const tabBtnStyle = (isActive) => ({
+    padding: '12px 24px',
+    background: 'none',
+    border: 'none',
+    borderBottom: isActive ? '3px solid var(--primary)' : '3px solid transparent',
+    color: isActive ? 'var(--foreground)' : 'var(--muted-foreground)',
+    fontSize: '1rem',
+    fontWeight: 700,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    fontFamily: 'var(--ff-display)'
+  })
+
   return (
     <div style={pageStyle}>
       {/* Background Blobs */}
@@ -330,9 +656,24 @@ function Dashboard({ user }) {
         </div>
       </header>
 
+      {/* Tabs */}
+      <div style={{ ...container, display: 'flex', gap: '1rem', marginBottom: '2.5rem', borderBottom: '1px solid var(--border)' }}>
+        <button onClick={() => setActiveTab('messages')} style={tabBtnStyle(activeTab === 'messages')}>
+          Contact Messages
+        </button>
+        <button onClick={() => setActiveTab('users')} style={tabBtnStyle(activeTab === 'users')}>
+          User Accounts
+        </button>
+        <button onClick={() => setActiveTab('media')} style={tabBtnStyle(activeTab === 'media')}>
+          Uploaded Media
+        </button>
+      </div>
+
       <div style={container}>
-        {/* Stats */}
-        <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
+        {activeTab === 'messages' && (
+          <>
+            {/* Stats */}
+            <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
           {[
             { label: 'Total Messages', value: totalCount, icon: <Inbox size={22} />, color: 'var(--primary)' },
             { label: 'Unread Messages', value: unreadCount, icon: <Bell size={22} />, color: 'var(--secondary)' },
@@ -562,6 +903,16 @@ function Dashboard({ user }) {
             ))}
           </div>
         )}
+        </>
+        )}
+
+        {activeTab === 'users' && (
+          <UsersView />
+        )}
+
+        {activeTab === 'media' && (
+          <MediaView />
+        )}
       </div>
 
       <style>{`
@@ -578,10 +929,11 @@ function Dashboard({ user }) {
   )
 }
 
-/* ─── Main Admin Page ─── */
 export default function AdminPage() {
   const [user, setUser] = useState(null)
   const [checkingAuth, setCheckingAuth] = useState(true)
+  const [resendStatus, setResendStatus] = useState('')
+  const { resendVerification } = useAuth()
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (currentUser) => {
@@ -605,7 +957,32 @@ export default function AdminPage() {
     )
   }
 
-  return user
-    ? <Dashboard user={user} />
-    : <LoginScreen />
+  if (user) {
+    const isAdminDomain = user.email && user.email.toLowerCase().endsWith('@sunsutragroup.com');
+
+    if (!isAdminDomain) {
+      return (
+        <div style={{
+          ...pageStyle,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          color: 'var(--foreground)',
+        }}>
+          <ShieldAlert size={48} color="var(--destructive)" style={{ marginBottom: '1rem' }} />
+          <h2 style={{ fontFamily: 'var(--ff-display)', fontSize: '2rem' }}>Unauthorized Access</h2>
+          <p style={{ color: 'var(--muted-foreground)', marginBottom: '2rem' }}>This dashboard is restricted to authorized @sunsutragroup.com administrators.</p>
+          <button 
+            onClick={async () => { await signOut(auth); window.location.href = '/' }}
+            style={{ padding: '12px 24px', borderRadius: '9999px', background: 'var(--primary)', color: 'white', fontWeight: 600, cursor: 'pointer', border: 'none' }}
+          >
+            Sign Out & Return Home
+          </button>
+        </div>
+      )
+    }
+
+    return <Dashboard user={user} />
+  }
+
+  return <LoginScreen />
 }

@@ -237,14 +237,22 @@ a {
   color: inherit;
 }
 
-/* Ambient Floating Orbs */
-.ambient-orb {
+/* Ambient Floating Orbs & Blobs */
+.ambient-orb, .blob-bg {
   position: absolute;
   border-radius: 50%;
   filter: blur(100px);
   z-index: 0;
   pointer-events: none;
 }
+
+.blob-bg {
+  animation: float 20s ease-in-out infinite alternate;
+}
+
+.blob-1 { background: var(--primary); opacity: 0.05; }
+.blob-2 { background: var(--secondary); opacity: 0.05; }
+.blob-3 { background: var(--foreground); opacity: 0.03; animation-direction: alternate-reverse; }
 
 .orb-1 {
   width: 600px;

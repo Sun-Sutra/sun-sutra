@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import './index.css'
 
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import SEO from './components/SEO'
@@ -17,6 +19,9 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import CookiePolicy from './pages/CookiePolicy'
 import RefundPolicy from './pages/RefundPolicy'
+import LoginPage from './pages/LoginPage'
+import SignUpPage from './pages/SignUpPage'
+import ProfilePage from './pages/ProfilePage'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -36,6 +41,9 @@ function PageSEO() {
       case '/contact': return { title: 'Contact Us', description: 'Get in touch with the Sun Sutra team for inquiries and support.', url: '/contact' };
       case '/analysis': return { title: 'Solar Analysis', description: 'Detailed analysis and instant savings estimator.', url: '/analysis' };
       case '/admin': return { title: 'Admin Dashboard', description: 'Sun Sutra Administration', url: '/admin' };
+      case '/login': return { title: 'Login', description: 'Login to your Sun Sutra account.', url: '/login' };
+      case '/signup': return { title: 'Sign Up', description: 'Create a new Sun Sutra account.', url: '/signup' };
+      case '/profile': return { title: 'Profile', description: 'Manage your Sun Sutra profile.', url: '/profile' };
       case '/privacy': return { title: 'Privacy Policy', description: 'Privacy Policy of Sun Sutra.', url: '/privacy' };
       case '/terms': return { title: 'Terms of Service', description: 'Terms of Service for Sun Sutra.', url: '/terms' };
       case '/cookies': return { title: 'Cookie Policy', description: 'Cookie Policy for Sun Sutra.', url: '/cookies' };
@@ -92,25 +100,30 @@ function Layout({ children }) {
 
 export default function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <PageSEO />
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/solutions" element={<SolutionPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/analysis" element={<AnalysisPage />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-          <Route path="/cookies" element={<CookiePolicy />} />
-          <Route path="/refund" element={<RefundPolicy />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Layout>
-      <Analytics />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
+        <PageSEO />
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/solutions" element={<SolutionPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/analysis" element={<AnalysisPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/cookies" element={<CookiePolicy />} />
+            <Route path="/refund" element={<RefundPolicy />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Layout>
+        <Analytics />
+      </Router>
+    </AuthProvider>
   )
 }

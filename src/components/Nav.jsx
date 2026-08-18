@@ -2,15 +2,21 @@ import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import sunsutraLogo from '../assets/shared/logo_rectangle.png'
+import { useAuth } from '../context/AuthContext'
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
 
+  const { isAuthenticated, user } = useAuth()
+
   const links = [
     { to: '/', label: 'HOME' },
     { to: '/about', label: 'ABOUT US' },
-    { to: '/solutions', label: 'SOLUTIONS' }
+    { to: '/solutions', label: 'SOLUTIONS' },
+    ...(isAuthenticated 
+      ? [{ to: '/profile', label: user?.name ? user.name.toUpperCase() : 'PROFILE' }]
+      : [{ to: '/login', label: 'LOGIN' }])
   ]
 
   // Close mobile menu automatically on route change

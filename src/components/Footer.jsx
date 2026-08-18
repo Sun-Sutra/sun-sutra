@@ -60,7 +60,8 @@ export default function Footer() {
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
               {[
                 {
-                  href: '#',
+                  name: 'LinkedIn',
+                  href: 'https://www.linkedin.com/company/sun-sutra/',
                   icon: (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -70,6 +71,7 @@ export default function Footer() {
                   )
                 },
                 {
+                  name: 'Twitter',
                   href: '#',
                   icon: (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -78,6 +80,7 @@ export default function Footer() {
                   )
                 },
                 {
+                  name: 'Website',
                   href: '#',
                   icon: (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -91,6 +94,9 @@ export default function Footer() {
                 <a 
                   key={idx} 
                   href={item.href} 
+                  target={item.href !== '#' ? '_blank' : undefined}
+                  rel={item.href !== '#' ? 'noopener noreferrer' : undefined}
+                  aria-label={item.name}
                   style={{
                     width: '36px',
                     height: '36px',

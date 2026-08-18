@@ -86,3 +86,34 @@ export const organicCardStyle = {
   position: 'relative',
   overflow: 'hidden'
 }
+
+export const inputStyle = {
+  width: '100%', 
+  padding: '14px 20px',
+  background: 'var(--background)',
+  border: '1px solid rgba(222,216,207,0.8)',
+  borderRadius: '9999px', 
+  color: 'var(--foreground)',
+  fontSize: '1rem', 
+  outline: 'none',
+  transition: 'border-color 0.3s, box-shadow 0.3s',
+  fontFamily: 'var(--ff-body)',
+}
+
+export const btnStyle = {
+  width: '100%', 
+  padding: '14px',
+  background: 'var(--primary)',
+  color: 'var(--primary-foreground)', 
+  border: 'none', 
+  borderRadius: '9999px',
+  fontSize: '1.05rem', 
+  fontWeight: 700, 
+  cursor: 'pointer',
+  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  fontFamily: 'var(--ff-body)',
+  display: 'flex', 
+  alignItems: 'center', 
+  justifyContent: 'center', 
+  gap: '8px',
+}

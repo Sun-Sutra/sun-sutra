@@ -411,21 +411,7 @@ export default function Analysis() {
         
         {/* Top Header & Interactive Mode Switcher */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '6px 16px',
-            borderRadius: '9999px',
-            background: 'rgba(16,185,129,0.08)',
-            border: '1px solid rgba(16,185,129,0.2)',
-            color: '#10b981',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            marginBottom: '1rem'
-          }}>
-            <Sparkles size={16} /> AI ENERGY AUDIT STUDIO
-          </div>
+
           <h2 style={{ fontFamily: 'var(--ff-display)', fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', color: 'var(--foreground)', marginBottom: '1rem', lineHeight: 1.15 }}>
             Instant Open Access Savings Audit
           </h2>
@@ -492,22 +478,7 @@ export default function Analysis() {
           gap: 12,
           flexWrap: 'wrap'
         }}>
-          {/* Online / Offline Indicator */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '6px 14px',
-            borderRadius: '9999px',
-            background: isOnline ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
-            border: `1px solid ${isOnline ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`,
-            color: isOnline ? '#10b981' : '#ef4444',
-            fontSize: '0.82rem',
-            fontWeight: 700
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: isOnline ? '#10b981' : '#ef4444', animation: 'pulse 1.2s infinite' }} />
-            {isOnline ? 'CLOUD SYNC ONLINE' : 'OFFLINE MODE'}
-          </div>
+
 
           {/* Slow Network Alert */}
           {isSlow && (

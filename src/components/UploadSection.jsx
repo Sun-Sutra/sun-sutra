@@ -211,16 +211,7 @@ const UploadSection = forwardRef(({ onExtracted }, ref) => {
             </div>
           )}
 
-          <div style={{ marginTop: '20px' }}>
-            {rawText && (
-              <details style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>
-                <summary style={{ cursor: 'pointer', marginBottom: '8px' }}>Raw OCR Text</summary>
-                <pre style={{ background: 'rgba(0,0,0,0.02)', padding: '10px', borderRadius: '8px', maxHeight: '150px', overflow: 'auto', border: '1px solid rgba(222,216,207,0.5)' }}>
-                  {rawText}
-                </pre>
-              </details>
-            )}
-          </div>
+          {/* Raw OCR Text preview removed */}
 
           <style>{`
             @keyframes laserScan {
