@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import './index.css'
 
@@ -8,21 +8,47 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import SEO from './components/SEO'
-import Home from './pages/Home'
-import AboutPage from './pages/AboutPage'
-import SolutionPage from './pages/SolutionPage'
-import ContactPage from './pages/ContactPage'
-import AdminPage from './pages/AdminPage'
-import AnalysisPage from './pages/AnalysisPage'
-import NotFoundPage from './pages/NotFoundPage'
-import PrivacyPolicy from './pages/PrivacyPolicy'
-import TermsOfService from './pages/TermsOfService'
-import CookiePolicy from './pages/CookiePolicy'
-import RefundPolicy from './pages/RefundPolicy'
-import LoginPage from './pages/LoginPage'
-import SignUpPage from './pages/SignUpPage'
-import ProfilePage from './pages/ProfilePage'
 import GlobalNetworkMonitor from './components/GlobalNetworkMonitor'
+
+// ── Eagerly loaded (critical path) ──
+import Home from './pages/Home'
+
+// ── Lazy loaded (code-split into separate chunks) ──
+const AboutPage = lazy(() => import('./pages/AboutPage'))
+const SolutionPage = lazy(() => import('./pages/SolutionPage'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
+const AdminPage = lazy(() => import('./pages/AdminPage'))
+const AnalysisPage = lazy(() => import('./pages/AnalysisPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
+const TermsOfService = lazy(() => import('./pages/TermsOfService'))
+const CookiePolicy = lazy(() => import('./pages/CookiePolicy'))
+const RefundPolicy = lazy(() => import('./pages/RefundPolicy'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const SignUpPage = lazy(() => import('./pages/SignUpPage'))
+const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+
+// ── Loading Fallback ──
+function PageLoader() {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      minHeight: '60vh', color: 'var(--muted-foreground)',
+      fontFamily: 'var(--ff-body)', fontSize: '0.95rem',
+    }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{
+          width: 40, height: 40, border: '3px solid var(--border)',
+          borderTopColor: 'var(--primary)', borderRadius: '50%',
+          animation: 'spin 0.8s linear infinite',
+          margin: '0 auto 1rem',
+        }} />
+        Loading...
+      </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  )
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -107,22 +133,24 @@ export default function App() {
         <PageSEO />
         <GlobalNetworkMonitor />
         <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/solutions" element={<SolutionPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/analysis" element={<AnalysisPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/cookies" element={<CookiePolicy />} />
-            <Route path="/refund" element={<RefundPolicy />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/solutions" element={<SolutionPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/analysis" element={<AnalysisPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
+              <Route path="/refund" element={<RefundPolicy />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
         </Layout>
         <Analytics />
       </Router>

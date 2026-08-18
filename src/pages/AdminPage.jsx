@@ -356,9 +356,10 @@ function MediaView() {
   const [media, setMedia] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/media')
+    fetch(`${BACKEND_URL}/api/media`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
