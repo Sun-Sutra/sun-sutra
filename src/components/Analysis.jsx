@@ -469,54 +469,7 @@ export default function Analysis() {
           </div>
         </div>
 
-        {/* Connection HUD / Notice Bar */}
-        <div style={{
-          marginTop: '-1.5rem',
-          marginBottom: '2.5rem',
-          display: 'flex',
-          justifyContent: 'center',
-          gap: 12,
-          flexWrap: 'wrap'
-        }}>
-
-
-          {/* Slow Network Alert */}
-          {isSlow && (
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '6px 14px',
-              borderRadius: '9999px',
-              background: 'rgba(234,179,8,0.08)',
-              border: '1px solid rgba(234,179,8,0.2)',
-              color: '#eab308',
-              fontSize: '0.82rem',
-              fontWeight: 700
-            }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#eab308', animation: 'pulse 1.2s infinite' }} />
-              SLOW CONNECTION DETECTED
-            </div>
-          )}
-
-          {/* Local Offline Parser Warning */}
-          {isOfflineParser && (
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '6px 14px',
-              borderRadius: '9999px',
-              background: 'rgba(249,115,22,0.08)',
-              border: '1px solid rgba(249,115,22,0.2)',
-              color: '#f97316',
-              fontSize: '0.82rem',
-              fontWeight: 700
-            }}>
-              ⚠️ LOCAL PARSER FALLBACK ACTIVE
-            </div>
-          )}
-        </div>
+      {/* Results Section (Sleek Dark Dashboard) */}
 
         {/* MODE 1: INSTANT LIVE SIMULATOR */}
         {activeTab === 'simulator' && (

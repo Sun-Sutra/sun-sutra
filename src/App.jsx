@@ -22,6 +22,7 @@ import RefundPolicy from './pages/RefundPolicy'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import ProfilePage from './pages/ProfilePage'
+import GlobalNetworkMonitor from './components/GlobalNetworkMonitor'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -104,6 +105,7 @@ export default function App() {
       <Router>
         <ScrollToTop />
         <PageSEO />
+        <GlobalNetworkMonitor />
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
