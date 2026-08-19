@@ -163,10 +163,12 @@ export default function Footer() {
                 <MapPin size={16} style={{ color: 'var(--primary)', flexShrink: 0, marginTop: '2px' }} />
                 <span>IIT Kharagpur Cluster, West Bengal / Maharashtra, India</span>
               </div>
+
               {/* <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 <Phone size={16} style={{ color: 'var(--primary)' }} />
                 <span>+91 99999 99999</span>
               </div> */}
+
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 <Mail size={16} style={{ color: 'var(--primary)' }} />
                 <span>contacts@sunsutragroup.com</span>
