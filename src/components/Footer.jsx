@@ -32,25 +32,25 @@ export default function Footer() {
       }} />
 
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '3rem' }}>
-        
+
         {/* Footer Top Grid */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           gap: '2.5rem',
         }} className="footer-grid">
-          
+
           {/* Brand Info */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <Link to="/" style={{ display: 'inline-flex', textDecoration: 'none' }}>
-              <img 
-                src={navLogo} 
-                alt="Sun Sutra" 
-                style={{ 
-                  height: '42px', 
+              <img
+                src={navLogo}
+                alt="Sun Sutra"
+                style={{
+                  height: '42px',
                   filter: 'brightness(0) invert(1)', // make logo white on dark bg
-                  objectFit: 'contain' 
-                }} 
+                  objectFit: 'contain'
+                }}
               />
             </Link>
             <p style={{ fontSize: '0.9rem', lineHeight: '1.6', margin: 0, color: '#8e8e8e' }}>
@@ -91,9 +91,9 @@ export default function Footer() {
                   )
                 }
               ].map((item, idx) => (
-                <a 
-                  key={idx} 
-                  href={item.href} 
+                <a
+                  key={idx}
+                  href={item.href}
                   target={item.href !== '#' ? '_blank' : undefined}
                   rel={item.href !== '#' ? 'noopener noreferrer' : undefined}
                   aria-label={item.name}
@@ -133,9 +133,9 @@ export default function Footer() {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {links.map(l => (
-                <Link 
-                  key={l.to} 
-                  to={l.to} 
+                <Link
+                  key={l.to}
+                  to={l.to}
                   style={{
                     fontSize: '0.9rem',
                     color: '#8e8e8e',
@@ -163,20 +163,22 @@ export default function Footer() {
                 <MapPin size={16} style={{ color: 'var(--primary)', flexShrink: 0, marginTop: '2px' }} />
                 <span>IIT Kharagpur Cluster, West Bengal / Maharashtra, India</span>
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+
+              {/* <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 <Phone size={16} style={{ color: 'var(--primary)' }} />
                 <span>+91 99999 99999</span>
-              </div>
+              </div> */}
+
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 <Mail size={16} style={{ color: 'var(--primary)' }} />
-                <span>contact@sunsutraenergy.com</span>
+                <span>contacts@sunsutragroup.com</span>
               </div>
             </div>
           </div>
 
           {/* Interactive CTA Box */}
-          <div style={{ 
-            background: 'rgba(255,255,255,0.02)', 
+          <div style={{
+            background: 'rgba(255,255,255,0.02)',
             border: '1px solid rgba(255,255,255,0.06)',
             borderRadius: '1.25rem',
             padding: '1.5rem',
@@ -190,8 +192,8 @@ export default function Footer() {
             <p style={{ fontSize: '0.85rem', lineHeight: '1.5', margin: 0, color: '#8e8e8e' }}>
               Upload your power bill today and get a free, detailed 10-year PPA analysis.
             </p>
-            <Link 
-              to="/contact" 
+            <Link
+              to="/contact"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -235,10 +237,10 @@ export default function Footer() {
         }}>
           <span>© {new Date().getFullYear()} Sun Sutra Energy. All rights reserved.</span>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Link to="/privacy" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Privacy Policy</Link>
-            <Link to="/terms" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Terms of Service</Link>
-            <Link to="/cookies" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Cookie Policy</Link>
-            <Link to="/refund" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#6b7280'}>Refund Policy</Link>
+            <Link to="/privacy" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color = '#fff'} onMouseLeave={e => e.target.style.color = '#6b7280'}>Privacy Policy</Link>
+            <Link to="/terms" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color = '#fff'} onMouseLeave={e => e.target.style.color = '#6b7280'}>Terms of Service</Link>
+            <Link to="/cookies" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color = '#fff'} onMouseLeave={e => e.target.style.color = '#6b7280'}>Cookie Policy</Link>
+            <Link to="/refund" style={{ color: '#6b7280', textDecoration: 'none' }} onMouseEnter={e => e.target.style.color = '#fff'} onMouseLeave={e => e.target.style.color = '#6b7280'}>Refund Policy</Link>
           </div>
         </div>
 
