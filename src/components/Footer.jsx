@@ -56,73 +56,38 @@ export default function Footer() {
             <p style={{ fontSize: '0.9rem', lineHeight: '1.6', margin: 0, color: '#8e8e8e' }}>
               Empowering MSMEs across Maharashtra with seamless open-access renewable energy solutions.
             </p>
-            {/* Social Icons */}
+            {/* Email Icon */}
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-              {[
-                {
-                  name: 'LinkedIn',
-                  href: 'https://www.linkedin.com/company/sun-sutra/',
-                  icon: (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                      <rect x="2" y="9" width="4" height="12" />
-                      <circle cx="4" cy="4" r="2" />
-                    </svg>
-                  )
-                },
-                {
-                  name: 'Twitter',
-                  href: '#',
-                  icon: (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-                    </svg>
-                  )
-                },
-                {
-                  name: 'Website',
-                  href: '#',
-                  icon: (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="2" y1="12" x2="22" y2="12" />
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
-                  )
-                }
-              ].map((item, idx) => (
-                <a
-                  key={idx}
-                  href={item.href}
-                  target={item.href !== '#' ? '_blank' : undefined}
-                  rel={item.href !== '#' ? 'noopener noreferrer' : undefined}
-                  aria-label={item.name}
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#a3a3a3',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.color = '#fff';
-                    e.currentTarget.style.background = 'var(--primary)';
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.color = '#a3a3a3';
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
-                >
-                  {item.icon}
-                </a>
-              ))}
+              <a
+                href="mailto:contacts@sunsutragroup.com"
+                aria-label="Email Sun Sutra at contacts@sunsutragroup.com"
+                title="contacts@sunsutragroup.com"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#a3a3a3',
+                  transition: 'all 0.3s ease',
+                  textDecoration: 'none'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = '#fff';
+                  e.currentTarget.style.background = 'var(--primary)';
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = '#a3a3a3';
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <Mail size={16} />
+              </a>
             </div>
           </div>
 
