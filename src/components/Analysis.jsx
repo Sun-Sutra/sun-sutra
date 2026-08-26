@@ -149,10 +149,26 @@ export default function Analysis() {
   const simMonthlySavings = Math.round(simUnits * (simTariff - simPpaTariff));
   const simAnnualSavings = simMonthlySavings * 12;
 
-  // URL query parameter auto-loader for shareable links
+  // URL query parameter auto-loader for shareable links and homepage calculator redirect
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const dataParam = params.get('data');
+    const billParam = params.get('bill');
+    const mixParam = params.get('mix');
+
+    if (billParam && !dataParam) {
+      const b = Number(billParam);
+      if (!isNaN(b) && b > 0) {
+        // Standard grid tariff is ~9.5, calculate units
+        const calculatedUnits = Math.round(b / 9.5);
+        setSimUnits(calculatedUnits);
+        setFormData(prev => ({ ...prev, totalBill: String(b), unitsConsumed: String(calculatedUnits) }));
+      }
+    }
+    if (mixParam && ['solar', 'wind', 'hybrid'].includes(mixParam)) {
+      setPpaType(mixParam);
+    }
+
     if (dataParam) {
       try {
         const decoded = JSON.parse(decodeURIComponent(atob(dataParam)));
@@ -506,7 +522,7 @@ export default function Analysis() {
                   <input
                     type="range"
                     min="5000"
-                    max="200000"
+                    max={Math.max(200000, Math.ceil(simUnits / 50000) * 50000)}
                     step="2500"
                     value={simUnits}
                     onChange={(e) => setSimUnits(Number(e.target.value))}
@@ -515,7 +531,7 @@ export default function Analysis() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--muted-foreground)', marginTop: '4px' }}>
                     <span>5k kWh (Small MSME)</span>
                     <span>50k kWh</span>
-                    <span>200k kWh (Large Plant)</span>
+                    <span>{Math.round(Math.max(200000, Math.ceil(simUnits / 50000) * 50000) / 1000)}k kWh (High Load Plant)</span>
                   </div>
                 </div>
 
