@@ -188,13 +188,13 @@ export default function BeforeAfter() {
   }, [isDragging]);
 
   return (
-    <section 
-      ref={sectionRef} 
-      className="before-after-section" 
+    <section
+      ref={sectionRef}
+      className="before-after-section"
       style={{ ...sectionPad, overflow: 'hidden' }}
     >
       <div style={container}>
-        
+
         {/* Section Header */}
         <div style={{ textAlign: 'center', marginBottom: '3.5rem', maxWidth: 750, margin: '0 auto 3.5rem' }}>
           <div style={{
@@ -213,21 +213,21 @@ export default function BeforeAfter() {
           }}>
             <Sparkles size={15} /> TRANSFORMING ENERGY PROCUREMENT
           </div>
-          
-          <h2 style={{ 
-            fontFamily: 'var(--ff-display)', 
-            fontSize: 'clamp(2rem, 4vw, 3.2rem)', 
-            fontWeight: 800, 
+
+          <h2 style={{
+            fontFamily: 'var(--ff-display)',
+            fontSize: 'clamp(2rem, 4vw, 3.2rem)',
+            fontWeight: 800,
             color: 'var(--foreground)',
             lineHeight: 1.15,
             marginBottom: '1rem'
           }}>
             The Energy Procurement Shift
           </h2>
-          
-          <p style={{ 
-            fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', 
-            color: 'var(--muted-foreground)', 
+
+          <p style={{
+            fontSize: 'clamp(1rem, 1.5vw, 1.125rem)',
+            color: 'var(--muted-foreground)',
             lineHeight: 1.7,
             fontFamily: 'var(--ff-body)'
           }}>
@@ -255,17 +255,17 @@ export default function BeforeAfter() {
           onMouseDown={(e) => handleUserInteractionStart(e.clientX)}
           onTouchStart={(e) => handleUserInteractionStart(e.touches[0].clientX)}
         >
-          
+
           {/* BACKGROUND LAYER (The Traditional Way - Pinned to the Right Half) */}
           <div style={{
-            position: 'absolute', 
+            position: 'absolute',
             inset: 0,
             background: 'linear-gradient(135deg, #090d16 0%, #1e293b 100%)',
-            display: 'flex', 
-            flexDirection: 'column', 
+            display: 'flex',
+            flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'flex-end',
-            padding: 'clamp(2rem, 5vw, 4rem)', 
+            padding: 'clamp(2rem, 5vw, 4rem)',
             color: '#fff'
           }}>
             <div style={{ maxWidth: '440px', width: '100%', textAlign: 'left' }}>
@@ -288,23 +288,23 @@ export default function BeforeAfter() {
                 Legacy Procurement
               </div>
 
-              <h3 style={{ 
-                fontSize: 'clamp(1.7rem, 2.5vw, 2.3rem)', 
-                fontFamily: 'var(--ff-display)', 
+              <h3 style={{
+                fontSize: 'clamp(1.7rem, 2.5vw, 2.3rem)',
+                fontFamily: 'var(--ff-display)',
                 fontWeight: 800,
-                color: '#ffffff', 
-                marginBottom: '1.5rem', 
-                lineHeight: 1.2 
+                color: '#ffffff',
+                marginBottom: '1.5rem',
+                lineHeight: 1.2
               }}>
                 The Traditional Way
               </h3>
 
-              <ul style={{ 
-                listStyle: 'none', 
-                padding: 0, 
-                display: 'flex', 
-                flexDirection: 'column', 
-                gap: '1.1rem', 
+              <ul style={{
+                listStyle: 'none',
+                padding: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.1rem',
                 fontSize: 'clamp(0.9rem, 1.1vw, 1rem)',
                 fontFamily: 'var(--ff-body)',
                 color: '#cbd5e1'
@@ -333,29 +333,28 @@ export default function BeforeAfter() {
 
           {/* FOREGROUND LAYER (The Sun Sutra Way - Pinned to the Left Half) */}
           <div style={{
-            position: 'absolute', 
+            position: 'absolute',
             inset: 0,
             backgroundImage: `url(${heroImg})`,
-            backgroundSize: 'cover', 
+            backgroundSize: 'cover',
             backgroundPosition: 'center',
             clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`,
-            display: 'flex', 
-            flexDirection: 'column', 
+            display: 'flex',
+            flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'flex-start',
-            padding: 'clamp(2rem, 5vw, 4rem)', 
+            padding: 'clamp(2rem, 5vw, 4rem)',
             color: '#fff',
             willChange: 'clip-path'
           }}>
             {/* Emerald Glass Overlay */}
-            <div style={{ 
-              position: 'absolute', 
-              inset: 0, 
-              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.94) 0%, rgba(4, 120, 87, 0.92) 100%)', 
-              backdropFilter: 'blur(6px)', 
-              zIndex: 0 
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.94) 0%, rgba(4, 120, 87, 0.92) 100%)',
+              backdropFilter: 'blur(6px)',
+              zIndex: 0
             }} />
-            
             <div style={{ position: 'relative', zIndex: 1, maxWidth: '440px', width: '100%', textAlign: 'left' }}>
               <div style={{
                 display: 'inline-flex',
@@ -376,29 +375,29 @@ export default function BeforeAfter() {
                 Aggregated Renewable Sourcing
               </div>
 
-              <h3 style={{ 
-                fontSize: 'clamp(1.7rem, 2.5vw, 2.3rem)', 
-                fontFamily: 'var(--ff-display)', 
+              <h3 style={{
+                fontSize: 'clamp(1.7rem, 2.5vw, 2.3rem)',
+                fontFamily: 'var(--ff-display)',
                 fontWeight: 800,
-                color: '#ffffff', 
-                marginBottom: '1.5rem', 
+                color: '#ffffff',
+                marginBottom: '1.5rem',
                 lineHeight: 1.2,
-                textShadow: '0 2px 10px rgba(0,0,0,0.15)' 
+                textShadow: '0 2px 10px rgba(0,0,0,0.15)'
               }}>
                 The Sun Sutra Way
               </h3>
 
-              <ul style={{ 
-                listStyle: 'none', 
-                padding: 0, 
-                display: 'flex', 
-                flexDirection: 'column', 
-                gap: '1.1rem', 
-                fontWeight: 600, 
+              <ul style={{
+                listStyle: 'none',
+                padding: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.1rem',
+                fontWeight: 600,
                 fontSize: 'clamp(0.9rem, 1.1vw, 1rem)',
                 fontFamily: 'var(--ff-body)',
                 color: '#ffffff',
-                textShadow: '0 1px 4px rgba(0,0,0,0.15)' 
+                textShadow: '0 1px 4px rgba(0,0,0,0.15)'
               }}>
                 {[
                   'Stable, low long-term tariff (₹6.50 - ₹7.50/unit)',
@@ -518,10 +517,10 @@ export default function BeforeAfter() {
                 zIndex: 21
               }}
             >
-              <ArrowLeftRight 
-                size={22} 
-                className={isAnimating ? 'pulse-arrows' : ''} 
-                style={{ color: 'var(--foreground)' }} 
+              <ArrowLeftRight
+                size={22}
+                className={isAnimating ? 'pulse-arrows' : ''}
+                style={{ color: 'var(--foreground)' }}
               />
             </div>
           </div>
@@ -557,7 +556,7 @@ export default function BeforeAfter() {
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }} />
             The Sun Sutra Way (100%)
           </button>
-          
+
           <button
             type="button"
             onClick={() => { stopAutoAnimation(); setSliderPosition(50); }}
