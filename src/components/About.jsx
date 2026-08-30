@@ -8,7 +8,7 @@ import savingImg from '../assets/about/saving.jpg'
 
 export default function About() {
   const ref = useFadeIn()
-  
+
   // Rotating images inside the About section card
   const aboutImages = [businessModelImg, maharashtraClustersImg, groupCaptiveImg, regulatoryOnboardingImg, savingImg]
   const [activeImgIdx, setActiveImgIdx] = useState(0)
@@ -19,7 +19,6 @@ export default function About() {
     }, 4500)
     return () => clearInterval(timer)
   }, [])
-
   const getCaption = (idx) => {
     switch (idx) {
       case 0: return "Consolidating I&C Power Demand"
@@ -51,7 +50,7 @@ export default function About() {
       }}>
         <div style={container}>
           <div ref={ref} className="about-hero-grid">
-            
+
             {/* Left Column: Text & CTA */}
             <div className="about-hero-content">
               <SectionLabel>About Us</SectionLabel>
@@ -65,7 +64,7 @@ export default function About() {
 
             {/* Right Column: Balanced Image Card */}
             <div className="about-image-card-wrapper">
-              <div 
+              <div
                 className="about-image-card"
                 style={{
                   ...organicCardStyle,
