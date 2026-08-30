@@ -16,13 +16,13 @@ export default function ProjectionChart({ monthlyBill, newBill }) {
 
   let cumulativeGrid = 0;
   let cumulativeSS = 0;
-  
+
   const data = Array.from({ length: 11 }, (_, i) => {
     if (i > 0) {
       cumulativeGrid += annualGridBill * Math.pow(gridEscalationRate, i);
       cumulativeSS += annualSunSutraBill;
     }
-    
+
     return {
       year: i === 0 ? 'Now' : `Year ${i}`,
       gridCost: cumulativeGrid,
@@ -48,13 +48,13 @@ export default function ProjectionChart({ monthlyBill, newBill }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.85rem', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
-                <span style={{width: 8, height: 8, borderRadius: '50%', background: '#ef4444'}}></span> Grid Cost
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444' }}></span> Grid Cost
               </span>
               <strong style={{ fontWeight: 700, color: 'var(--foreground)' }}>{formatCurrency(payload[0].value)}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.85rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
-                <span style={{width: 8, height: 8, borderRadius: '50%', background: '#10b981'}}></span> Sun Sutra Cost
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }}></span> Sun Sutra Cost
               </span>
               <strong style={{ fontWeight: 700, color: 'var(--foreground)' }}>{formatCurrency(payload[1].value)}</strong>
             </div>
@@ -91,59 +91,58 @@ export default function ProjectionChart({ monthlyBill, newBill }) {
           Watch the diverging costs over a 10-year period as conventional grid tariffs escalate 5% annually.
         </p>
       </div>
-
       <div style={{ width: '100%', height: 320, zIndex: 1, marginTop: 'auto' }}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorGrid" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.35}/>
-                <stop offset="95%" stopColor="#ef4444" stopOpacity={0.02}/>
+                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.35} />
+                <stop offset="95%" stopColor="#ef4444" stopOpacity={0.02} />
               </linearGradient>
               <linearGradient id="colorSS" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
-                <stop offset="95%" stopColor="#10b981" stopOpacity={0.02}/>
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0.02} />
               </linearGradient>
             </defs>
-            
+
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
-            
-            <XAxis 
-              dataKey="year" 
-              stroke="var(--border)" 
-              tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 500 }} 
-              axisLine={{ stroke: 'var(--border)' }} 
-              tickLine={false} 
+
+            <XAxis
+              dataKey="year"
+              stroke="var(--border)"
+              tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 500 }}
+              axisLine={{ stroke: 'var(--border)' }}
+              tickLine={false}
               dy={10}
             />
-            
-            <YAxis 
-              tickFormatter={(val) => `₹${(val/10000000).toFixed(1)}Cr`}
-              stroke="var(--border)" 
-              tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 500 }} 
-              axisLine={{ stroke: 'var(--border)' }} 
+
+            <YAxis
+              tickFormatter={(val) => `₹${(val / 10000000).toFixed(1)}Cr`}
+              stroke="var(--border)"
+              tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 500 }}
+              axisLine={{ stroke: 'var(--border)' }}
               tickLine={false}
               width={60}
               dx={-10}
             />
-            
+
             <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--muted-foreground)', strokeWidth: 1.5, strokeDasharray: '4 4' }} />
-            
-            <Area 
-              type="monotone" 
-              dataKey="gridCost" 
-              stroke="#ef4444" 
+
+            <Area
+              type="monotone"
+              dataKey="gridCost"
+              stroke="#ef4444"
               strokeWidth={3.5}
-              fillOpacity={1} 
+              fillOpacity={1}
               fill="url(#colorGrid)"
               activeDot={{ r: 6, fill: '#ef4444', stroke: '#fff', strokeWidth: 2 }}
             />
-            <Area 
-              type="monotone" 
-              dataKey="ssCost" 
-              stroke="#10b981" 
+            <Area
+              type="monotone"
+              dataKey="ssCost"
+              stroke="#10b981"
               strokeWidth={3.5}
-              fillOpacity={1} 
+              fillOpacity={1}
               fill="url(#colorSS)"
               activeDot={{ r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
             />
