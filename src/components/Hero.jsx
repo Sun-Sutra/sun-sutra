@@ -56,7 +56,7 @@ export default function Hero() {
       }}>
         <em style={{fontStyle:'italic', color:'var(--primary)', fontWeight: 600}}>Affordable<br className="mobile-br"/> Renewable</em><br/>
         Electricity for<br/>
-        Industrial MSMEs
+        I&C Industrial Consumers
       </h1>
 
       <div className="fade-up hero-buttons" style={{
@@ -86,7 +86,7 @@ export default function Hero() {
         marginBottom:'5rem', fontWeight:400, lineHeight:1.8, zIndex:1, position:'relative',
         fontFamily: 'var(--ff-body)'
       }}>
-        Helping MSMEs reduce electricity costs through renewable energy aggregation, group captive, and open-access procurement models.
+        Helping I&C (Industrial and Commercial) consumers reduce electricity costs through renewable energy aggregation and open-access procurement models.
       </p>
 
       {/* Metrics strip - Organic styled */}

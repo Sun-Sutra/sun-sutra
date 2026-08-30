@@ -34,7 +34,7 @@ const cards = [
   {
     image: sustainability,
     title: "Sustainability Demand",
-    desc: "Export-oriented MSMEs face increasing pressure from global buyers to demonstrate credible renewable energy sourcing."
+    desc: "Export-oriented I&C businesses face increasing pressure from global buyers to demonstrate credible renewable energy sourcing."
   },
   {
     image: expandingEcosystem,
@@ -83,7 +83,7 @@ export default function WhyNow() {
           </SectionHeading>
 
           <SectionBody style={{ margin: '0 auto' }}>
-            Five converging forces are creating an unprecedented
+            Key converging market forces are creating an unprecedented
             window for industrial renewable energy aggregation in India.
           </SectionBody>
         </div>

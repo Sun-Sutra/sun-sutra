@@ -7,8 +7,7 @@ export default function Ticker() {
     '5,000+ Tons CO₂ Reduced',
     '₹15 Cr+ Client Savings',
     'Active in Pune MIDC',
-    'Tier-1 Renewable Generators',
-    '100% Compliance Supported'
+    'Tier-1 Renewable Generators'
   ];
 
   return (

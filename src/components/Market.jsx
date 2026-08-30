@@ -11,7 +11,7 @@ import {
 import { MapPin } from 'lucide-react'
 
 const stats = [
-  { num: '63M+', label: 'MSMEs in India' },
+  { num: '63M+', label: 'I&C Enterprises in India' },
   { num: '₹9-17', label: 'Grid tariff per unit' },
   { num: '₹7-15', label: 'Sunsutra tariff per unit' },
   { num: 'MH #1', label: 'Industrial market size' },
@@ -20,7 +20,7 @@ const stats = [
 const regions = [
   'Pune — Main industrial and manufacturing hub',
   'Pimpri-Chinchwad — Automotive and engineering clusters',
-  'Chakan — High-density MSME industrial corridor',
+  'Chakan — High-density I&C industrial corridor',
   'MIDC Industrial Clusters — State-designated development zones',
 ]
 
@@ -82,8 +82,8 @@ export default function Market() {
                 margin: '0 auto',
               }}
             >
-              India's MSME sector represents one of the world's largest and
-              most underserved industrial energy markets.
+              India's commercial and industrial sector represents one of the world's largest and
+              most underserved energy markets.
             </SectionBody>
 
             <div

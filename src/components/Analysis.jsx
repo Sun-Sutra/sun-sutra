@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from 'react'
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container } from './utils'
-import { LineChart, ShieldCheck, Clock, X, Zap, TrendingDown, Activity, Info, CheckCircle2, AlertCircle, Leaf, Download, Loader2, Share2, Check, Sparkles, Building2, Gauge, Landmark, DollarSign, ChevronRight, ChevronLeft, Sliders, Sun, Wind, Layers, ArrowUpRight, Award, Compass, FileText } from 'lucide-react'
+import { LineChart, ShieldCheck, Clock, X, Zap, TrendingDown, TrendingUp, Activity, Info, CheckCircle2, AlertCircle, Leaf, Download, Loader2, Share2, Check, Sparkles, Building2, Gauge, Landmark, DollarSign, ChevronRight, ChevronLeft, Sliders, Sun, Wind, Layers, ArrowUpRight, Award, Compass, FileText } from 'lucide-react'
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, BarChart, Bar, Cell } from 'recharts'
 import UploadSection from './UploadSection'
 import ReportPage from './report/ReportPage'
@@ -84,7 +84,6 @@ export default function Analysis() {
   // Simulator State
   const [simUnits, setSimUnits] = useState(35000);
   const [simTariff, setSimTariff] = useState(9.5);
-  const [ppaType, setPpaType] = useState('hybrid'); // 'solar', 'wind', 'hybrid'
 
   // Full Form State
   const [formData, setFormData] = useState({
@@ -145,7 +144,7 @@ export default function Analysis() {
 
   // Live Simulator Calculations
   const simCurrentBill = Math.round(simUnits * simTariff);
-  const simPpaTariff = ppaType === 'solar' ? 6.8 : ppaType === 'wind' ? 7.1 : 6.5;
+  const simPpaTariff = 6.50; // Sun Sutra flat PPA tariff
   const simMonthlySavings = Math.round(simUnits * (simTariff - simPpaTariff));
   const simAnnualSavings = simMonthlySavings * 12;
 
@@ -154,7 +153,6 @@ export default function Analysis() {
     const params = new URLSearchParams(window.location.search);
     const dataParam = params.get('data');
     const billParam = params.get('bill');
-    const mixParam = params.get('mix');
 
     if (billParam && !dataParam) {
       const b = Number(billParam);
@@ -164,9 +162,6 @@ export default function Analysis() {
         setSimUnits(calculatedUnits);
         setFormData(prev => ({ ...prev, totalBill: String(b), unitsConsumed: String(calculatedUnits) }));
       }
-    }
-    if (mixParam && ['solar', 'wind', 'hybrid'].includes(mixParam)) {
-      setPpaType(mixParam);
     }
 
     if (dataParam) {
@@ -499,7 +494,7 @@ export default function Analysis() {
             
             {/* Controls Box */}
             <div style={{
-              background: 'var(--surface)',
+              background: '#ffffff',
               borderRadius: '2rem',
               padding: '2.5rem',
               border: '1px solid rgba(222,216,207,0.8)',
@@ -514,10 +509,10 @@ export default function Analysis() {
                 </h3>
 
                 {/* Slider 1: Units Consumed */}
-                <div style={{ marginBottom: '2rem' }}>
+                <div style={{ marginBottom: '2.5rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.95rem' }}>
                     <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>Monthly Consumption (kWh)</span>
-                    <strong style={{ color: 'var(--primary)', fontFamily: 'var(--ff-display)', fontSize: '1.1rem' }}>{simUnits.toLocaleString('en-IN')} kWh</strong>
+                    <strong style={{ color: '#ef4444', fontFamily: 'var(--ff-display)', fontSize: '1.15rem' }}>{simUnits.toLocaleString('en-IN')} kWh</strong>
                   </div>
                   <input
                     type="range"
@@ -526,10 +521,10 @@ export default function Analysis() {
                     step="2500"
                     value={simUnits}
                     onChange={(e) => setSimUnits(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
+                    style={{ width: '100%', accentColor: '#ef4444', cursor: 'pointer' }}
                   />
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--muted-foreground)', marginTop: '4px' }}>
-                    <span>5k kWh (Small MSME)</span>
+                    <span>5k kWh (Small Unit)</span>
                     <span>50k kWh</span>
                     <span>{Math.round(Math.max(200000, Math.ceil(simUnits / 50000) * 50000) / 1000)}k kWh (High Load Plant)</span>
                   </div>
@@ -539,7 +534,7 @@ export default function Analysis() {
                 <div style={{ marginBottom: '2rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.95rem' }}>
                     <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>Current Grid Tariff (₹/unit)</span>
-                    <strong style={{ color: '#ef4444', fontFamily: 'var(--ff-display)', fontSize: '1.1rem' }}>₹{simTariff.toFixed(2)} / kWh</strong>
+                    <strong style={{ color: '#ef4444', fontFamily: 'var(--ff-display)', fontSize: '1.15rem' }}>₹{simTariff.toFixed(2)} / kWh</strong>
                   </div>
                   <input
                     type="range"
@@ -554,40 +549,6 @@ export default function Analysis() {
                     <span>₹7.50 (LT Industrial)</span>
                     <span>₹9.85 (MSEDCL Standard)</span>
                     <span>₹14.00 (Peak Tariff)</span>
-                  </div>
-                </div>
-
-                {/* PPA Energy Mix Selection */}
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: 600, color: 'var(--foreground)', marginBottom: '10px' }}>
-                    Select Preferred PPA Energy Mix
-                  </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-                    {[
-                      { id: 'solar', label: 'Solar PPA', sub: '₹6.80/unit', icon: <Sun size={18} /> },
-                      { id: 'wind', label: 'Wind PPA', sub: '₹7.10/unit', icon: <Wind size={18} /> },
-                      { id: 'hybrid', label: 'Hybrid PPA', sub: '₹6.50/unit', icon: <Layers size={18} /> }
-                    ].map(p => (
-                      <div
-                        key={p.id}
-                        onClick={() => setPpaType(p.id)}
-                        style={{
-                          border: `2px solid ${ppaType === p.id ? 'var(--primary)' : 'rgba(222,216,207,0.8)'}`,
-                          background: ppaType === p.id ? 'rgba(16,185,129,0.06)' : '#fff',
-                          borderRadius: '12px',
-                          padding: '12px 10px',
-                          textAlign: 'center',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease'
-                        }}
-                      >
-                        <div style={{ color: ppaType === p.id ? 'var(--primary)' : 'var(--muted-foreground)', marginBottom: 4, display: 'flex', justifyContent: 'center' }}>
-                          {p.icon}
-                        </div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--foreground)' }}>{p.label}</div>
-                        <div style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 600 }}>{p.sub}</div>
-                      </div>
-                    ))}
                   </div>
                 </div>
 
@@ -636,45 +597,49 @@ export default function Analysis() {
               </div>
             </div>
 
-            {/* Live Results Panel */}
+            {/* Live Results Panel (Clean White Surface) */}
             <div style={{
-              background: '#090d16',
+              background: '#ffffff',
               borderRadius: '2rem',
               padding: '2.5rem',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-              color: '#fff',
+              border: '1px solid rgba(222,216,207,0.8)',
+              boxShadow: 'var(--shadow-card)',
+              color: 'var(--foreground)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between'
             }}>
               <div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#10b981', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem' }}>
-                  <Sparkles size={14} /> INSTANT SIMULATOR METRICS
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <Sparkles size={14} /> Instant Simulator Metrics
                 </div>
 
                 <div style={{ marginBottom: '2rem' }}>
-                  <span style={{ fontSize: '0.82rem', color: '#8e8e8e', fontWeight: 600 }}>ESTIMATED ANNUAL SAVINGS</span>
-                  <div style={{ fontSize: '2.8rem', fontWeight: 800, color: '#eab308', margin: '4px 0', fontFamily: 'var(--ff-display)' }}>
-                    ₹{(simAnnualSavings / 100000).toFixed(2)} <span style={{ fontSize: '1.2rem' }}>Lakhs/yr</span>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--muted-foreground)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Estimated Annual Savings
+                  </span>
+                  <div style={{ fontSize: '2.8rem', fontWeight: 800, color: '#ca8a04', margin: '4px 0', fontFamily: 'var(--ff-display)' }}>
+                    ₹{(simAnnualSavings / 100000).toFixed(2)} <span style={{ fontSize: '1.2rem', color: 'var(--foreground)' }}>Lakhs/yr</span>
                   </div>
-                  <span style={{ fontSize: '0.85rem', color: '#10b981' }}>~₹{simMonthlySavings.toLocaleString('en-IN')} saved every month</span>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                    <TrendingUp size={15} /> ~₹{simMonthlySavings.toLocaleString('en-IN')} saved every month
+                  </span>
                 </div>
 
                 {/* DISCOM Tariff Benchmark Bar Chart */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <span style={{ fontSize: '0.82rem', color: '#8e8e8e', fontWeight: 600, display: 'block', marginBottom: '1rem' }}>
-                    MAHARASHTRA INDUSTRIAL TARIFF BENCHMARK (₹/kWh)
+                  <span style={{ fontSize: '0.82rem', color: 'var(--muted-foreground)', fontWeight: 700, display: 'block', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Maharashtra Industrial Tariff Benchmark (₹/kWh)
                   </span>
                   <div style={{ width: '100%', height: 160 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={discomBenchmarkData} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
-                        <XAxis type="number" stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 11 }} domain={[0, 12]} />
-                        <YAxis dataKey="discom" type="category" stroke="#4b5563" tick={{ fill: '#d1d5db', fontSize: 11 }} width={110} />
-                        <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #334155', color: '#fff', borderRadius: '8px' }} />
+                        <XAxis type="number" stroke="#9ca3af" tick={{ fill: '#4b5563', fontSize: 11 }} domain={[0, 12]} />
+                        <YAxis dataKey="discom" type="category" stroke="#9ca3af" tick={{ fill: '#374151', fontSize: 11, fontWeight: 600 }} width={110} />
+                        <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#111827', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                         <Bar dataKey="rate" radius={[0, 6, 6, 0]}>
                           {discomBenchmarkData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.highlight ? '#10b981' : '#ef4444'} />
+                            <Cell key={`cell-${index}`} fill={entry.highlight ? 'var(--primary)' : '#ef4444'} />
                           ))}
                         </Bar>
                       </BarChart>
@@ -683,9 +648,9 @@ export default function Analysis() {
                 </div>
               </div>
 
-              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.85rem', color: '#9ca3af' }}>Current Monthly Bill</span>
-                <strong style={{ fontSize: '1.1rem', color: '#fff' }}>₹{simCurrentBill.toLocaleString('en-IN')}</strong>
+              <div style={{ background: 'var(--muted)', border: '1px solid rgba(222,216,207,0.8)', borderRadius: '1rem', padding: '1.1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>Current Estimated Monthly Bill</span>
+                <strong style={{ fontSize: '1.15rem', color: '#ef4444', fontFamily: 'var(--ff-display)' }}>₹{simCurrentBill.toLocaleString('en-IN')}</strong>
               </div>
             </div>
 
@@ -957,7 +922,7 @@ export default function Analysis() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '1.25rem' }}>
             <Award size={20} color="var(--primary)" />
             <h4 style={{ margin: 0, fontSize: '1.1rem', fontFamily: 'var(--ff-display)', color: 'var(--foreground)' }}>
-              Recent MSME Open Access Audits
+              Recent I&C Open Access Audits
             </h4>
           </div>
 
@@ -1167,7 +1132,7 @@ export default function Analysis() {
                     </h3>
                   </div>
                   <p style={{ color: '#9ca3af', fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }}>
-                    Based on your demand profile, Sun Sutra will aggregate your load with nearby MSMEs in Maharashtra to unlock bulk Open Access PPA rates.
+                    Based on your demand profile, Sun Sutra will aggregate your load with nearby I&C industrial facilities in Maharashtra to unlock bulk Open Access PPA rates.
                   </p>
                 </div>
 

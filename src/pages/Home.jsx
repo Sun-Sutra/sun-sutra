@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Sun, Wind, Layers, Zap, Leaf, Award, Calculator, ShieldCheck, Edit3, Sliders, RotateCcw, Check, Sparkles } from 'lucide-react'
 import heroImg from '../assets/shared/hero.jpg'
 import WhatWeDoCarousel from '../components/WhatWeDoCarousel'
+import SolutionsPortfolio from '../components/SolutionsPortfolio'
+import WhyNow from '../components/WhyNow'
 import Ticker from '../components/Ticker'
 import ProjectionChart from '../components/ProjectionChart'
 import { useFadeIn, useParallax, SectionLabel, SectionHeading, SectionBody, sectionPad, container } from '../components/utils'
@@ -13,13 +15,12 @@ export default function Home() {
 
   // Savings Calculator State
   const [bill, setBill] = useState(250000)
-  const [mix, setMix] = useState('hybrid') // 'solar', 'wind', 'hybrid'
   const [isCustomBill, setIsCustomBill] = useState(false)
   const [customBillInput, setCustomBillInput] = useState('1500000')
 
   // Calculations
   const currentRate = 9.5 // Average grid rate
-  const sunSutraRate = mix === 'solar' ? 6.8 : mix === 'wind' ? 7.1 : 6.5
+  const sunSutraRate = 6.5 // Sun Sutra flat aggregated PPA tariff
   const units = bill / currentRate
   const newBill = units * sunSutraRate
   const monthlySavings = bill - newBill
@@ -102,7 +103,7 @@ export default function Home() {
             marginBottom: '2rem'
           }}>
             <span style={{ fontWeight: 300, fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#a0a0a0' }}>POWERING</span>
-            <span style={{ fontWeight: 800, fontSize: 'clamp(2.5rem, 6vw, 3.5rem)' }}>INDUSTRY</span>
+            <span style={{ fontWeight: 800, fontSize: 'clamp(2.5rem, 6vw, 3.5rem)' }}>INDUSTRIES</span>
           </h1>
           <p className="home-hero-subtext" style={{
             fontSize: 'clamp(0.95rem, 1.5vw, 1.1rem)',
@@ -111,7 +112,7 @@ export default function Home() {
             lineHeight: 1.6,
             fontFamily: 'var(--ff-body)'
           }}>
-            Helping MSMEs reduce electricity costs through renewable energy aggregation, group captive, and open-access procurement models.
+            Helping I&C (Industrial and Commercial) consumers reduce electricity costs through renewable energy aggregation and open-access procurement models.
           </p>
           <div style={{ display: 'flex', gap: '1rem' }}>
             <Link to="/analysis" style={{
@@ -160,17 +161,17 @@ export default function Home() {
       {/* Savings Calculator Section */}
       <section ref={calcRef} style={{ ...sectionPad, background: 'transparent', borderTop: '1px solid var(--border)', overflow: 'hidden' }}>
         <div style={{...container, position: 'relative', zIndex: 1}}>
-          <div style={{ textAlign: 'center', marginBottom: '4rem', maxWidth: 800, margin: '0 auto 4rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3.5rem', maxWidth: 800, margin: '0 auto 3.5rem' }}>
             <SectionLabel style={{ color: 'var(--muted-foreground)' }}>Instant Savings Estimator</SectionLabel>
             <SectionHeading style={{ fontFamily: 'var(--ff-display)', fontWeight: 800 }}>See Your Potential Savings</SectionHeading>
             <SectionBody style={{ margin: '0 auto' }}>
-              Select your energy mix and slide your monthly bill to instantly calculate estimated savings under a Sun Sutra flat PPA agreement.
+              Slide your monthly electricity bill or enter custom load to instantly calculate estimated savings under a Sun Sutra flat PPA agreement.
             </SectionBody>
           </div>
 
           <div style={{
-            background: 'var(--surface)',
-            display: 'grid', gridTemplateColumns: '1.25fr 1fr', gap: '3.5rem', alignItems: 'stretch',
+            background: '#ffffff',
+            display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '3.5rem', alignItems: 'stretch',
             padding: '3rem', borderRadius: '40px', border: '1px solid var(--border)',
             boxShadow: 'var(--shadow-card)'
           }} className="calc-container">
@@ -178,59 +179,16 @@ export default function Home() {
             {/* Input Controls Column */}
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.6rem', fontWeight: 800, marginBottom: '2rem', color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <Calculator size={24} color="var(--primary)" /> Sourcing Configuration
+                <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.5rem', fontWeight: 800, marginBottom: '2rem', color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <Calculator size={22} color="var(--primary)" /> Adjust Monthly Electricity Bill
                 </h3>
 
-                {/* Sourcing Mix Switcher */}
-                <div style={{ marginBottom: '2.5rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    1. Select Sourcing Mix
-                  </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-                    {[
-                      { id: 'solar', label: 'Solar Mix', rate: '₹6.80', icon: <Sun size={18} /> },
-                      { id: 'wind', label: 'Wind Mix', rate: '₹7.10', icon: <Wind size={18} /> },
-                      { id: 'hybrid', label: 'Hybrid Mix', rate: '₹6.50', icon: <Layers size={18} /> }
-                    ].map(p => (
-                      <div
-                        key={p.id}
-                        onClick={() => setMix(p.id)}
-                        style={{
-                          border: `2px solid ${mix === p.id ? 'var(--foreground)' : 'var(--border)'}`,
-                          background: mix === p.id ? 'var(--muted)' : 'transparent',
-                          borderRadius: '16px',
-                          padding: '16px 12px',
-                          textAlign: 'center',
-                          cursor: 'pointer',
-                          transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                          transform: 'translateY(0)'
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.transform = 'translateY(-3px)';
-                          e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.05)';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = 'none';
-                        }}
-                      >
-                        <div style={{ color: mix === p.id ? 'var(--foreground)' : 'var(--muted-foreground)', marginBottom: 6, display: 'flex', justifyContent: 'center' }}>
-                          {p.icon}
-                        </div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--foreground)' }}>{p.label}</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: 4 }}>{p.rate}/unit</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Monthly Electricity Bill Section */}
-                <div style={{ marginBottom: '2.5rem' }}>
+                <div style={{ marginBottom: '2rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                     <div>
                       <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--foreground)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block' }}>
-                        2. Monthly Electricity Bill
+                        Monthly Facility Electricity Bill
                       </span>
                       {isCustomBill ? (
                         <span style={{ fontSize: '0.78rem', color: '#10b981', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 3 }}>
@@ -243,10 +201,10 @@ export default function Home() {
                       )}
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <strong style={{ color: 'var(--foreground)', fontSize: '1.5rem', fontFamily: 'var(--ff-display)', display: 'block', lineHeight: 1.1 }}>
+                      <strong style={{ color: '#ef4444', fontSize: '1.6rem', fontFamily: 'var(--ff-display)', display: 'block', lineHeight: 1.1 }}>
                         {formatCurrency(bill)}
                       </strong>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: 600 }}>
                         {formatIndianWords(bill)} / month
                       </span>
                     </div>
@@ -571,7 +529,7 @@ export default function Home() {
               {/* Action Toolbar */}
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <Link
-                  to={`/analysis?bill=${bill}&mix=${mix}`}
+                  to={`/analysis?bill=${bill}`}
                   style={{
                     flex: 1,
                     display: 'inline-flex',
@@ -602,6 +560,12 @@ export default function Home() {
 
       {/* Highlights Section */}
       <WhatWeDoCarousel />
+
+      {/* Solutions Portfolio / Current Focus Areas */}
+      <SolutionsPortfolio />
+
+      {/* Why Now Section */}
+      <WhyNow />
 
       <style>{`
         .custom-slider::-webkit-slider-thumb {

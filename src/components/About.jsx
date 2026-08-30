@@ -1,33 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowRight, MapPin, Layers, Briefcase } from 'lucide-react'
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
 import maharashtraClustersImg from '../assets/about/maharashtra_clusters.png'
 import groupCaptiveImg from '../assets/about/group_captive.jpeg'
 import regulatoryOnboardingImg from '../assets/about/regulatory_onboarding.jpeg'
 import businessModelImg from '../assets/about/business_model.jpeg'
 import savingImg from '../assets/about/saving.jpg'
-
-const flowItems = [
-  { 
-    icon: <MapPin size={20} />, 
-    title: 'Maharashtra Industrial Clusters', 
-    desc: 'Focused on Pune and nearby MIDC regions for initial rollout',
-    image: maharashtraClustersImg
-  },
-  { 
-    icon: <Layers size={20} />, 
-    title: 'Group Captive & Open Access', 
-    desc: 'Leveraging proven procurement models for MSME access',
-    image: groupCaptiveImg
-  },
-  { 
-    icon: <Briefcase size={20} />, 
-    title: 'End-to-End Management', 
-    desc: 'Compliance, onboarding, and operational coordination',
-    image: regulatoryOnboardingImg
-  },
-]
 
 export default function About() {
   const ref = useFadeIn()
@@ -45,7 +22,7 @@ export default function About() {
 
   const getCaption = (idx) => {
     switch (idx) {
-      case 0: return "Consolidating MSME Power Demand"
+      case 0: return "Consolidating I&C Power Demand"
       case 1: return "Targeting Core Maharashtra Clusters"
       case 2: return "Securing Group Captive Sourcing"
       case 3: return "Streamlining Regulatory Compliance"
@@ -82,26 +59,8 @@ export default function About() {
                 Building Affordable Renewable Energy Access
               </SectionHeading>
               <SectionBody style={{ margin: '0 0 2rem 0', maxWidth: '540px' }}>
-                We are building an MSME-focused renewable energy aggregation business that enables industries to access affordable clean electricity through group captive and open-access procurement models.
+                We are building an I&C-focused renewable energy aggregation business that enables industrial and commercial consumers to access affordable clean electricity through group captive and open-access procurement models.
               </SectionBody>
-              <div style={{ marginTop: '2rem' }}>
-                <Link to="/contact" className="btn-organic" style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  background: 'var(--primary)',
-                  color: 'var(--primary-foreground)',
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  padding: '14px 28px',
-                  borderRadius: '9999px',
-                  boxShadow: 'var(--shadow-soft)',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s ease'
-                }}>
-                  <span>Partner With Us</span> <ArrowRight size={18} />
-                </Link>
-              </div>
             </div>
 
             {/* Right Column: Balanced Image Card */}
@@ -159,162 +118,12 @@ export default function About() {
         </div>
       </section>
 
-      {/* Current Focus Section */}
-      <section id="current-focus" style={{
-        ...sectionPad,
-        paddingBottom: '64px',
-        background: 'var(--background)',
-        borderTop: '1px solid var(--border)'
-      }}>
-        <div style={container}>
-          <div style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto 4rem' }}>
-            <SectionLabel>Our Strategy</SectionLabel>
-            <SectionHeading style={{ color: 'var(--primary)' }}>Current Focus Areas</SectionHeading>
-            <SectionBody style={{ margin: '0 auto' }}>
-              We are laser-focused on Maharashtra's key industrial corridors, developing aggregation systems that scale power delivery.
-            </SectionBody>
-          </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '2.5rem',
-            marginBottom: '4rem',
-            marginTop: '4rem'
-          }} className="focus-grid">
-            {flowItems.map((item, i) => (
-              <div key={i} className="focus-card" style={{
-                ...organicCardStyle,
-                background: 'var(--surface)',
-                padding: 0,
-                borderRadius: i === 0 ? '3rem 1.5rem 4rem 1.5rem' : i === 1 ? '1.5rem 3rem 1.5rem 4rem' : '4rem 1.5rem 3rem 1.5rem',
-                overflow: 'hidden',
-                boxShadow: 'var(--shadow-soft)',
-                height: '380px',
-                position: 'relative'
-              }}>
-                {/* Full Card Image */}
-                <img src={item.image} alt={item.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                
-                {/* Default Dark bottom gradient for text readability */}
-                <div className="dark-gradient" style={{
-                  position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, transparent 100%)',
-                  pointerEvents: 'none',
-                  transition: 'opacity 0.4s ease',
-                  zIndex: 1
-                }} />
-                
-                {/* Hover white transparent overlay */}
-                <div className="focus-hover-bg" style={{
-                  position: 'absolute', inset: 0,
-                  background: 'rgba(253, 252, 248, 0.6)',
-                  opacity: 0,
-                  transition: 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                  zIndex: 2
-                }} />
-                
-                {/* Content Container (holds heading and description) */}
-                <div className="focus-card-content" style={{
-                  position: 'absolute', bottom: 0, left: 0, right: 0,
-                  padding: '2.5rem 2rem',
-                  display: 'flex', flexDirection: 'column',
-                  justifyContent: 'flex-end',
-                  minHeight: '180px',
-                  zIndex: 3,
-                  transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}>
-                  {/* Heading */}
-                  <h3 className="focus-card-heading" style={{
-                    fontSize: '1.2rem', fontWeight: 700, margin: 0,
-                    fontFamily: 'var(--ff-display)', color: '#FFFFFF',
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: 'translateY(36px)', /* Shifts up on hover */
-                    lineHeight: 1.3
-                  }}>
-                    {item.title}
-                  </h3>
-                  
-                  {/* Description */}
-                  <p className="focus-card-desc" style={{
-                    fontSize: '0.9rem', color: 'var(--foreground)',
-                    lineHeight: 1.6, marginTop: '1rem', marginBottom: 0,
-                    opacity: 0,
-                    transform: 'translateY(15px)',
-                    transition: 'opacity 0.4s ease 0.1s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s'
-                  }}>
-                    {item.desc}
-                  </p>
-                </div>
-                
-              </div>
-            ))}
-          </div>
-
-          <div style={{
-            ...organicCardStyle,
-            background: 'var(--muted)',
-            padding: '3rem',
-            borderRadius: '2rem 4rem 2rem 4rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '3rem',
-            flexWrap: 'wrap'
-          }} className="comparison-card">
-            <div style={{ flex: '1 1 400px' }}>
-              <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.8rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--foreground)' }}>
-                Substantial Tariff Reductions
-              </h3>
-              <p style={{ color: 'var(--muted-foreground)', lineHeight: 1.6 }}>
-                By aggregating loads, we negotiate directly with tier-1 power generators. This allows us to secure stable, long-term power purchase agreements (PPAs) that bypass high retail tariffs.
-              </p>
-            </div>
-            
-            <div style={{ display: 'flex', gap: '2rem', flex: '1 1 300px', justifyContent: 'center' }}>
-              {[['₹7-15', 'Sunsutra Tariff', 'var(--primary)'], ['₹9-17', 'Grid Tariff', 'var(--destructive)']].map(([num, label, color]) => (
-                <div key={label} style={{
-                  flex: 1, padding: 'clamp(1.25rem, 4vw, 2rem) clamp(0.75rem, 3vw, 1.5rem)', background: 'var(--surface)',
-                  borderRadius: '1.5rem', border: '1px solid rgba(222,216,207,0.8)',
-                  textAlign: 'center', minWidth: '120px', boxShadow: 'var(--shadow-soft)'
-                }} className="rate-card">
-                  <div style={{ fontFamily: 'var(--ff-display)', fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', fontWeight: 700, color, lineHeight: 1 }}>{num}</div>
-                  <div style={{ fontSize: 10, color: 'var(--muted-foreground)', marginTop: 8, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       <style>{`
-        .focus-card {
-          transition: transform 0.4s ease, box-shadow 0.4s ease !important;
-        }
         .about-hero-grid {
           display: grid;
           grid-template-columns: 1.15fr 0.85fr;
           gap: clamp(2rem, 4vw, 3.5rem);
           align-items: center;
-        }
-
-        .focus-card:hover {
-          transform: translateY(-6px);
-          box-shadow: var(--shadow-deep) !important;
-        }
-        .focus-card:hover .dark-gradient {
-          opacity: 0 !important;
-        }
-        .focus-card:hover .focus-hover-bg {
-          opacity: 1 !important;
-        }
-        .focus-card:hover .focus-card-heading {
-          color: var(--foreground) !important;
-          transform: translateY(0) !important;
-        }
-        .focus-card:hover .focus-card-desc {
-          opacity: 1 !important;
-          transform: translateY(0) !important;
         }
 
         @media(max-width:900px){
@@ -325,17 +134,6 @@ export default function About() {
           .about-image-card {
             border-radius: 2rem !important;
             height: 340px !important;
-            width: 100% !important;
-          }
-          .focus-grid{grid-template-columns:1fr!important;gap:1.5rem!important}
-          .focus-grid > div { height: 300px !important; }
-          .comparison-card{flex-direction:column!important;text-align:center!important;padding:1.5rem!important;gap:2rem!important}
-          .comparison-card > div {
-            flex: none !important;
-          }
-          .comparison-card > div:last-child { 
-            flex-direction: row !important; 
-            gap: 1rem !important; 
             width: 100% !important;
           }
         }

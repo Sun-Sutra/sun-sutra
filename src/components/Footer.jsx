@@ -7,7 +7,7 @@ export default function Footer() {
     { to: '/', label: 'Home' },
     { to: '/about', label: 'About Us' },
     { to: '/solutions', label: 'Solutions' },
-    { to: '/contact', label: 'Get Analysis' },
+    { to: '/contact', label: 'Partner With Us' },
   ]
 
   return (
@@ -54,7 +54,7 @@ export default function Footer() {
               />
             </Link>
             <p style={{ fontSize: '0.9rem', lineHeight: '1.6', margin: 0, color: '#8e8e8e' }}>
-              Empowering MSMEs across Maharashtra with seamless open-access renewable energy solutions.
+              Empowering I&C industrial and commercial consumers across Maharashtra with seamless open-access renewable energy solutions.
             </p>
             {/* Email Icon */}
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>

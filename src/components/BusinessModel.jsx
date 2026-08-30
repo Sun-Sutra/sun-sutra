@@ -6,7 +6,7 @@ const streams = [
     icon: TrendingUp,
     badge: 'Revenue Stream 01',
     title: 'Per-Unit Procurement Margin',
-    desc: 'We earn a margin on each unit of electricity procured through our aggregated channels — aligned with volume and value delivered to MSMEs.',
+    desc: 'We earn a margin on each unit of electricity procured through our aggregated channels — aligned with volume and value delivered to I&C consumers.',
   },
   {
     icon: Settings,
@@ -18,7 +18,7 @@ const streams = [
     icon: LinkIcon,
     badge: 'Revenue Stream 03',
     title: 'Procurement Facilitation',
-    desc: 'Facilitation fees for structuring and managing renewable energy procurement agreements between generators and aggregated MSME groups.',
+    desc: 'Facilitation fees for structuring and managing renewable energy procurement agreements between generators and aggregated I&C groups.',
   },
 ]
 
@@ -33,7 +33,7 @@ export default function BusinessModel() {
         <div ref={headerRef} style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
           <SectionLabel>Business Model</SectionLabel>
           <SectionHeading>How We Generate Revenue</SectionHeading>
-          <SectionBody style={{ margin: '0 auto' }}>A multi-stream model built around value delivered — aligned with MSME outcomes and generator success.</SectionBody>
+          <SectionBody style={{ margin: '0 auto' }}>A multi-stream model built around value delivered — aligned with I&C consumer outcomes and generator success.</SectionBody>
         </div>
         <div ref={cardsRef} style={{
           display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'2rem', marginTop:'4rem',
