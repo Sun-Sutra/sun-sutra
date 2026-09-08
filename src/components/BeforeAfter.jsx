@@ -196,23 +196,7 @@ export default function BeforeAfter() {
       <div style={container}>
 
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem', maxWidth: 750, margin: '0 auto 3.5rem' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '6px 16px',
-            borderRadius: '9999px',
-            background: 'rgba(16, 185, 129, 0.08)',
-            border: '1px solid rgba(16, 185, 129, 0.2)',
-            color: '#10b981',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            marginBottom: '1rem',
-            fontFamily: 'var(--ff-body)'
-          }}>
-            <Sparkles size={15} /> TRANSFORMING ENERGY PROCUREMENT
-          </div>
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem', maxWidth: 750, margin: '0 auto 3.5rem' }}>
 
           <h2 style={{
             fontFamily: 'var(--ff-display)',
@@ -526,82 +510,6 @@ export default function BeforeAfter() {
           </div>
 
         </div>
-
-        {/* Quick Click Preset Buttons */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '1rem',
-          marginTop: '1.75rem',
-          flexWrap: 'wrap'
-        }}>
-          <button
-            type="button"
-            onClick={() => { stopAutoAnimation(); setSliderPosition(100); }}
-            style={{
-              padding: '8px 18px',
-              borderRadius: '9999px',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              background: sliderPosition > 70 ? 'rgba(16, 185, 129, 0.12)' : 'var(--surface)',
-              color: 'var(--foreground)',
-              fontSize: '0.85rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              transition: 'all 0.2s ease'
-            }}
-          >
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }} />
-            The Sun Sutra Way (100%)
-          </button>
-
-          <button
-            type="button"
-            onClick={() => { stopAutoAnimation(); setSliderPosition(50); }}
-            style={{
-              padding: '8px 18px',
-              borderRadius: '9999px',
-              border: '1px solid var(--border)',
-              background: sliderPosition === 50 ? 'var(--foreground)' : 'var(--surface)',
-              color: sliderPosition === 50 ? 'var(--background)' : 'var(--foreground)',
-              fontSize: '0.85rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              transition: 'all 0.2s ease'
-            }}
-          >
-            <ArrowLeftRight size={14} />
-            Split View (50/50)
-          </button>
-
-          <button
-            type="button"
-            onClick={() => { stopAutoAnimation(); setSliderPosition(0); }}
-            style={{
-              padding: '8px 18px',
-              borderRadius: '9999px',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              background: sliderPosition < 30 ? 'rgba(239, 68, 68, 0.12)' : 'var(--surface)',
-              color: 'var(--foreground)',
-              fontSize: '0.85rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              transition: 'all 0.2s ease'
-            }}
-          >
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444' }} />
-            The Traditional Way (100%)
-          </button>
-        </div>
-
       </div>
 
       <style>{`

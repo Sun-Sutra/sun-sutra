@@ -15,11 +15,16 @@
   --primary: #1c1d20;
   --primary-foreground: #ffffff;
 
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  --secondary: #c18c5d;
+  --secondary-foreground: #ffffff;
+
   --muted: #e9ecef;
-  --muted-foreground: #868e96;
+  --muted-foreground: #6c757d;
 
   --border: #dee2e6;
-
   --surface: #ffffff;
 
   --ff-display: 'Montserrat', sans-serif;
@@ -28,6 +33,9 @@
   --radius-card: 40px;
 
   --shadow-card: 0 30px 60px rgba(0, 0, 0, 0.08);
+  --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  --shadow-deep: 0 20px 35px -10px rgba(0, 0, 0, 0.12);
+  --shadow-float: 0 30px 60px -12px rgba(0, 0, 0, 0.18);
 }
 
 .page-wrapper {
@@ -157,6 +165,7 @@ body {
     border-radius: 20px;
     min-height: auto;
   }
+
   .page-wrapper {
     padding-top: 20px;
   }
@@ -237,8 +246,30 @@ a {
   color: inherit;
 }
 
+/* Custom Select & Option Styling */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2378786C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1.25rem center;
+  background-size: 1rem;
+  padding-right: 2.75rem !important;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+select option {
+  background-color: #ffffff;
+  color: #2C2C24;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+}
+
 /* Ambient Floating Orbs & Blobs */
-.ambient-orb, .blob-bg {
+.ambient-orb,
+.blob-bg {
   position: absolute;
   border-radius: 50%;
   filter: blur(100px);
@@ -250,9 +281,21 @@ a {
   animation: float 20s ease-in-out infinite alternate;
 }
 
-.blob-1 { background: var(--primary); opacity: 0.05; }
-.blob-2 { background: var(--secondary); opacity: 0.05; }
-.blob-3 { background: var(--foreground); opacity: 0.03; animation-direction: alternate-reverse; }
+.blob-1 {
+  background: var(--primary);
+  opacity: 0.05;
+}
+
+.blob-2 {
+  background: var(--secondary);
+  opacity: 0.05;
+}
+
+.blob-3 {
+  background: var(--foreground);
+  opacity: 0.03;
+  animation-direction: alternate-reverse;
+}
 
 .orb-1 {
   width: 600px;
@@ -279,6 +322,7 @@ a {
     width: 300px;
     height: 300px;
   }
+
   .orb-2 {
     width: 350px;
     height: 350px;
@@ -309,8 +353,69 @@ a {
     opacity: 0;
     transform: translateY(16px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
+}
+
+/* Responsive Styles for Analysis Simulator & Projection Chart */
+@media (max-width: 992px) {
+  .analysis-layout {
+    grid-template-columns: 1fr !important;
+    gap: 1.75rem !important;
+    margin-bottom: 2.5rem !important;
+  }
+
+  .sim-card-box {
+    padding: 1.5rem !important;
+    border-radius: 1.5rem !important;
+  }
+
+  .sim-header-title {
+    margin-bottom: 1.75rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  .projection-chart-box {
+    padding: 1.5rem !important;
+    border-radius: 1.5rem !important;
+    min-height: auto !important;
+  }
+
+  .projection-chart-header {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .projection-chart-header h3 {
+    margin-top: 0 !important;
+    font-size: 1.35rem !important;
+  }
+
+  .projection-chart-wrapper {
+    height: 260px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .sim-hero-val {
+    font-size: 2.2rem !important;
+  }
+
+  .sim-stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  .wizard-steps-container {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding-bottom: 8px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wizard-steps-container > div {
+    flex-shrink: 0 !important;
+  }
+}

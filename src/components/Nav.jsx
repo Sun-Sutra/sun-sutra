@@ -15,15 +15,16 @@ export default function Nav() {
     { to: '/about', label: 'ABOUT US' },
     { to: '/solutions', label: 'SOLUTIONS' },
     { to: '/contact', label: 'PARTNER WITH US' },
-    ...(isAuthenticated 
+    ...(isAuthenticated
       ? [{ to: '/profile', label: user?.name ? user.name.toUpperCase() : 'PROFILE' }]
       : [{ to: '/login', label: 'LOGIN' }])
   ]
 
-  // Close mobile menu automatically on route change
-  useEffect(() => {
+  const [prevPath, setPrevPath] = useState(location.pathname)
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname)
     setIsOpen(false)
-  }, [location])
+  }
 
   // Close mobile menu if window is resized above mobile breakpoint (900px)
   useEffect(() => {

@@ -5,6 +5,7 @@ import { db } from '../firebase'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import posthog from 'posthog-js'
+import CustomSelect from './CustomSelect'
 
 const trustItems = [
   { icon: <LineChart size={20} />, text: 'Free renewable cost analysis for your facility' },
@@ -71,8 +72,13 @@ export default function Contact() {
     if (!validate()) return
     setSubmitting(true)
     try {
-      if (executeRecaptcha) {
-        await executeRecaptcha('contact_submit').catch(console.warn);
+      const key = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+      if (executeRecaptcha && key && key !== 'dummy_key') {
+        try {
+          await executeRecaptcha('contact_submit');
+        } catch (recaptchaErr) {
+          console.warn('reCAPTCHA execution skipped or failed:', recaptchaErr);
+        }
       }
       // 1. Save to Firestore
       await addDoc(collection(db, 'contactMessages'), {
@@ -109,7 +115,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" style={{...sectionPad, background: 'var(--background)', overflow: 'hidden'}}>
+    <section id="contact" style={{...sectionPad, overflow: 'hidden'}}>
       <div className="blob-bg blob-2" style={{ top: '10%', right: '0%', width: 500, height: 500 }} />
       <div style={{...container, position: 'relative', zIndex: 1}}>
         <div ref={ref} style={{
@@ -228,14 +234,14 @@ export default function Contact() {
               ].map(s => (
                 <div key={s.id} style={{display:'flex',flexDirection:'column',gap:8}}>
                   <label style={{fontSize:13,fontWeight:600,color:'var(--foreground)',fontFamily:'var(--ff-body)'}}>{s.label}</label>
-                  <select style={inputStyle}
+                  <CustomSelect
                     value={formData[s.id]}
                     onChange={handleChange(s.id)}
-                    onFocus={e=>{e.target.style.borderColor='var(--primary)';e.target.style.boxShadow='0 0 0 3px rgba(93,112,82,0.1)'}}
-                    onBlur={e=>{e.target.style.borderColor='rgba(222,216,207,0.8)';e.target.style.boxShadow='none'}}>
-                    <option value="" disabled>Select range</option>
-                    {s.opts.map(o => <option key={o}>{o}</option>)}
-                  </select>
+                    options={s.opts}
+                    placeholder="Select range"
+                    error={!!errors[s.id]}
+                  />
+                  {errors[s.id] && <span style={errorTextStyle}>{errors[s.id]}</span>}
                 </div>
               ))}
               {/* Textarea */}

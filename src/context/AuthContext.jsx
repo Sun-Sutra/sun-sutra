@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }) => {
       await firebaseUpdatePassword(auth.currentUser, newPassword);
     } catch (error) {
       if (error.code === 'auth/requires-recent-login') {
-        throw new Error('This action requires a recent login. Please log out and log in again.');
+        throw new Error('This action requires a recent login. Please log out and log in again.', { cause: error });
       }
       throw error;
     }

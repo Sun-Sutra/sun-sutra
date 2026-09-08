@@ -27,7 +27,16 @@ export default function LoginPage() {
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err.message || 'Failed to login. Please check your credentials.');
+      console.error('Login error:', err);
+      let msg = err.message || 'Failed to login. Please check your credentials.';
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        msg = 'Incorrect email or password. If you are an Admin, please sign in via the Admin Portal.';
+      } else if (err.code === 'auth/invalid-email') {
+        msg = 'Please enter a valid email address.';
+      } else if (err.code === 'auth/too-many-requests') {
+        msg = 'Access to this account has been temporarily disabled due to many failed login attempts. Please reset your password or try again later.';
+      }
+      setError(msg);
     } finally {
       setLoading(false);
     }

@@ -18,12 +18,15 @@ const UploadSection = forwardRef(({ onExtracted }, ref) => {
   // Expose uploadToR2 and getImage to parent via ref
   useImperativeHandle(ref, () => ({
     getImage: () => image,
-    uploadToR2: async () => {
+    uploadToR2: async (consumerNumber) => {
       if (!image) return; // optional — silently skip
       try {
         const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
         const formPayload = new FormData();
         formPayload.append('file', image);
+        if (consumerNumber) {
+          formPayload.append('consumerNumber', consumerNumber);
+        }
         const res = await fetch(`${BACKEND_URL}/api/upload`, {
           method: 'POST',
           body: formPayload,

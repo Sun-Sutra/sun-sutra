@@ -1,3 +1,5 @@
+import React from "react";
+
 const SEGMENT_COLORS = [
   "var(--rpt-color-primary)",
   "var(--rpt-color-primary-light)",
@@ -11,7 +13,20 @@ export default function BillComposition({ billComposition }) {
 
   const radius = 42;
   const circumference = 2 * Math.PI * radius;
-  let offsetAcc = 0;
+
+  const segments = [];
+  let accumulatedOffset = 0;
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const dash = (item.value / 100) * circumference;
+    segments.push({
+      label: item.label,
+      dash,
+      offset: accumulatedOffset,
+      color: SEGMENT_COLORS[i % SEGMENT_COLORS.length],
+    });
+    accumulatedOffset += dash;
+  }
 
   return (
     <section className="report-section">
@@ -31,26 +46,21 @@ export default function BillComposition({ billComposition }) {
               stroke="var(--rpt-color-border)"
               strokeWidth="14"
             />
-            {items.map((item, i) => {
-              const dash = (item.value / 100) * circumference;
-              const circle = (
-                <circle
-                  key={item.label}
-                  cx="50"
-                  cy="50"
-                  r={radius}
-                  fill="none"
-                  stroke={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
-                  strokeWidth="14"
-                  strokeDasharray={`${dash} ${circumference - dash}`}
-                  strokeDashoffset={-offsetAcc}
-                  transform="rotate(-90 50 50)"
-                  strokeLinecap="butt"
-                />
-              );
-              offsetAcc += dash;
-              return circle;
-            })}
+            {segments.map((seg) => (
+              <circle
+                key={seg.label}
+                cx="50"
+                cy="50"
+                r={radius}
+                fill="none"
+                stroke={seg.color}
+                strokeWidth="14"
+                strokeDasharray={`${seg.dash} ${circumference - seg.dash}`}
+                strokeDashoffset={-seg.offset}
+                transform="rotate(-90 50 50)"
+                strokeLinecap="butt"
+              />
+            ))}
             <text
               x="50"
               y="47"

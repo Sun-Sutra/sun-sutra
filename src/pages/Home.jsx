@@ -201,10 +201,10 @@ export default function Home() {
                       )}
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <strong style={{ color: '#ef4444', fontSize: '1.6rem', fontFamily: 'var(--ff-display)', display: 'block', lineHeight: 1.1 }}>
+                      <strong style={{ color: 'var(--foreground)', fontSize: '1.6rem', fontFamily: 'var(--ff-display)', display: 'block', lineHeight: 1.1 }}>
                         {formatCurrency(bill)}
                       </strong>
-                      <span style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--foreground)', fontWeight: 600 }}>
                         {formatIndianWords(bill)} / month
                       </span>
                     </div>

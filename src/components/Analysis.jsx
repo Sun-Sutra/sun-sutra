@@ -8,8 +8,14 @@ import buildReportData from './report/buildReportData'
 import generatePdf from './report/generatePdf'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import posthog from 'posthog-js'
+import CustomSelect from './CustomSelect'
 import '../styles/report-tokens.css'
 import '../styles/report.css'
+
+import textileImg from '../assets/studies/textile.png'
+import injectionImg from '../assets/studies/injection_molding.png'
+import autoCompImg from '../assets/studies/auto_components.png'
+import chemicalImg from '../assets/studies/chemical_plant.png'
 
 const trustItems = [
   { icon: <LineChart size={20} />, text: 'Detailed analysis of your energy consumption' },
@@ -18,10 +24,10 @@ const trustItems = [
 ]
 
 const recentAudits = [
-  { location: 'Solapur Industrial Area', industry: 'Textile Mill', bill: '₹6.5L/mo', savings: '₹1.8L/mo', type: 'Solar Open Access' },
-  { location: 'Chakan MIDC, Pune', industry: 'Injection Molding', bill: '₹14.0L/mo', savings: '₹4.2L/mo', type: 'Group Captive' },
-  { location: 'Waluj, Chhatrapati Sambhajinagar', industry: 'Auto Components', bill: '₹8.2L/mo', savings: '₹2.4L/mo', type: 'Wind-Solar Hybrid' },
-  { location: 'Tarapur MIDC, Palghar', industry: 'Chemical Processing', bill: '₹22.0L/mo', savings: '₹6.8L/mo', type: 'Solar Open Access' },
+  { location: 'Solapur Industrial Area', industry: 'Textile Mill', bill: '₹6.5L/mo', savings: '₹1.8L/mo', savePct: '28% Saved', type: 'Solar Open Access', image: textileImg },
+  { location: 'Chakan MIDC, Pune', industry: 'Injection Molding', bill: '₹14.0L/mo', savings: '₹4.2L/mo', savePct: '30% Saved', type: 'Group Captive', image: injectionImg },
+  { location: 'Waluj, Chhatrapati Sambhajinagar', industry: 'Auto Components', bill: '₹8.2L/mo', savings: '₹2.4L/mo', savePct: '29% Saved', type: 'Wind-Solar Hybrid', image: autoCompImg },
+  { location: 'Tarapur MIDC, Palghar', industry: 'Chemical Processing', bill: '₹22.0L/mo', savings: '₹6.8L/mo', savePct: '31% Saved', type: 'Solar Open Access', image: chemicalImg },
 ]
 
 const inputStyle = {
@@ -29,11 +35,11 @@ const inputStyle = {
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: 'rgba(222,216,207,0.8)',
-  borderRadius: '12px',
+  borderRadius: '9999px',
   color: 'var(--foreground)',
   fontFamily: 'var(--ff-body)',
   fontSize: '0.95rem',
-  padding: '12px 16px',
+  padding: '14px 20px',
   width: '100%',
   outline: 'none',
   transition: 'all 0.25s ease',
@@ -80,9 +86,21 @@ const cleanNumber = (val) => {
 export default function Analysis() {
   const [activeTab, setActiveTab] = useState('simulator'); // 'simulator' or 'fullForm'
   const [wizardStep, setWizardStep] = useState(1); // 1: Facility, 2: Technical, 3: Charges
-  
+
   // Simulator State
-  const [simUnits, setSimUnits] = useState(35000);
+  const [simUnits, setSimUnits] = useState(() => {
+    if (typeof window === 'undefined') return 35000;
+    const params = new URLSearchParams(window.location.search);
+    const billParam = params.get('bill');
+    const dataParam = params.get('data');
+    if (billParam && !dataParam) {
+      const b = Number(billParam);
+      if (!isNaN(b) && b > 0) {
+        return Math.round(b / 9.5);
+      }
+    }
+    return 35000;
+  });
   const [simTariff, setSimTariff] = useState(9.5);
 
   // Full Form State
@@ -106,7 +124,7 @@ export default function Analysis() {
     totalLossPercentage: '',
     miscellaneousCharges: '',
   })
-  
+
   const [errors, setErrors] = useState({})
   const [analysisResult, setAnalysisResult] = useState(null)
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
@@ -114,7 +132,7 @@ export default function Analysis() {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [isSlow, setIsSlow] = useState(false)
   const [isOfflineParser, setIsOfflineParser] = useState(false)
-  
+
   const { executeRecaptcha } = useGoogleReCaptcha()
 
   useEffect(() => {
@@ -159,7 +177,7 @@ export default function Analysis() {
       if (!isNaN(b) && b > 0) {
         // Standard grid tariff is ~9.5, calculate units
         const calculatedUnits = Math.round(b / 9.5);
-        setSimUnits(calculatedUnits);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setFormData(prev => ({ ...prev, totalBill: String(b), unitsConsumed: String(calculatedUnits) }));
       }
     }
@@ -167,10 +185,13 @@ export default function Analysis() {
     if (dataParam) {
       try {
         const decoded = JSON.parse(decodeURIComponent(atob(dataParam)));
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setFormData(decoded);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setActiveTab('fullForm');
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setWizardStep(3); // jump straight to step 3 for review
-        
+
         const units = Number(decoded.unitsConsumed) || 0;
         const bill = Number(decoded.totalBill) || 0;
         if (units > 0 && bill > 0) {
@@ -184,6 +205,7 @@ export default function Analysis() {
           const isHighConsumption = units > 20000;
           const isPass = isHT && units > 10000;
 
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setAnalysisResult({
             currentBill: bill.toLocaleString('en-IN'),
             averageTariff: effectiveRate.toFixed(2),
@@ -220,17 +242,17 @@ export default function Analysis() {
     const monthlyBill = Number(formData.totalBill) || 100000;
     const monthlySavingsVal = (Number(analysisResult.averageTariff) - Number(analysisResult.renewableTariff)) * (Number(formData.unitsConsumed) || 10000);
     const sunSutraMonthly = Math.max(0, monthlyBill - Math.max(0, monthlySavingsVal));
-    
+
     let gridAcc = 0;
     let sunSutraAcc = 0;
     const points = [];
-    
+
     for (let year = 1; year <= 10; year++) {
       const gridYearCost = (monthlyBill * 12) * Math.pow(1.05, year - 1);
       const sunSutraYearCost = (sunSutraMonthly * 12);
       gridAcc += gridYearCost;
       sunSutraAcc += sunSutraYearCost;
-      
+
       points.push({
         year: `Year ${year}`,
         gridCost: Math.round(gridAcc),
@@ -310,25 +332,30 @@ export default function Analysis() {
 
   const handleAnalysis = async () => {
     if (!validateAll()) return
-    if (executeRecaptcha) {
-      await executeRecaptcha('analysis_submit').catch(console.warn);
+    const key = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+    if (executeRecaptcha && key && key !== 'dummy_key') {
+      try {
+        await executeRecaptcha('analysis_submit');
+      } catch (recaptchaErr) {
+        console.warn('reCAPTCHA execution skipped or failed:', recaptchaErr);
+      }
     }
     if (uploadRef.current) {
-      await uploadRef.current.uploadToR2()
+      await uploadRef.current.uploadToR2(formData.consumerNumber)
     }
-    
+
     posthog.capture('analysis_completed', { form: 'Analysis', units: formData.unitsConsumed, bill: formData.totalBill })
-    
+
     const units = Number(formData.unitsConsumed) || 0;
     const bill = Number(formData.totalBill) || 0;
-    
+
     const effectiveRate = units > 0 ? bill / units : 0;
     const renTariff = effectiveRate > 7.35 ? 7.35 : effectiveRate * 0.8;
     const monthlySavings = (effectiveRate - renTariff) * units;
     const annualSavings = monthlySavings * 12;
     const co2 = (units * 12 * 0.71 / 1000).toFixed(0);
     const score = Math.min(100, Math.max(50, Math.round(70 + (monthlySavings / bill) * 100)));
-    
+
     const isHT = formData.supplyVoltage === 'HT';
     const isHighConsumption = units > 20000;
     const isEligible = isHT && isHighConsumption;
@@ -351,7 +378,7 @@ export default function Analysis() {
     { label: 'Consumer Number', id: 'consumerNumber', type: 'text', placeholder: 'e.g. 012345678912' },
     { label: 'Consumer Name', id: 'consumerName', type: 'text', placeholder: 'Company / Facility Name' },
     { label: 'DISCOM', id: 'discom', type: 'text', placeholder: 'e.g. MSEDCL / Tata Power' },
-    { 
+    {
       label: 'State', id: 'state', type: 'select', placeholder: 'Select State',
       options: [
         'Maharashtra', 'Gujarat', 'Karnataka', 'Tamil Nadu', 'Delhi', 'Haryana', 'Uttar Pradesh', 'Rajasthan', 'Madhya Pradesh', 'Andhra Pradesh', 'Telangana', 'West Bengal', 'Punjab'
@@ -361,7 +388,7 @@ export default function Analysis() {
 
   const fieldsSection2 = [
     { label: 'Tariff Category', id: 'tariff', type: 'text', placeholder: 'e.g. HT-I Industrial' },
-    { 
+    {
       label: 'Supply Voltage', id: 'supplyVoltage', type: 'select', placeholder: 'Select Voltage',
       options: ['HT', 'LT']
     },
@@ -389,19 +416,16 @@ export default function Analysis() {
             {['consumerNumber', 'consumerName', 'discom', 'state', 'tariff', 'contractDemand', 'supplyVoltage', 'billingPeriod', 'unitsConsumed', 'sanctionedLoad', 'energyCharges', 'demandCharges', 'electricityDuty', 'totalBill'].includes(f.id) && <span style={{ color: 'var(--destructive)', marginLeft: 2 }}>*</span>}
           </label>
           {f.type === 'select' ? (
-            <select
-              style={errors[f.id] ? inputErrorStyle : inputStyle}
+            <CustomSelect
               value={formData[f.id]}
               onChange={handleChange(f.id)}
-              onFocus={e => { e.target.style.borderColor = errors[f.id] ? 'var(--destructive)' : 'var(--primary)'; e.target.style.boxShadow = `0 0 0 3px ${errors[f.id] ? 'rgba(168,84,72,0.1)' : 'rgba(93,112,82,0.1)'}` }}
-              onBlur={e => { if (!errors[f.id]) { e.target.style.borderColor = 'rgba(222,216,207,0.8)'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)' } }}
-            >
-              <option value="" disabled>{f.placeholder}</option>
-              {f.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
+              options={f.options}
+              placeholder={f.placeholder}
+              error={!!errors[f.id]}
+            />
           ) : (
-            <input 
-              type={f.type} 
+            <input
+              type={f.type}
               placeholder={f.placeholder}
               style={errors[f.id] ? inputErrorStyle : inputStyle}
               value={formData[f.id]}
@@ -419,7 +443,7 @@ export default function Analysis() {
   return (
     <section id="analysis" style={{ padding: '20px 0 clamp(40px, 6vw, 80px)', overflow: 'hidden' }}>
       <div style={{ ...container, position: 'relative', zIndex: 1 }}>
-        
+
         {/* Top Header & Interactive Mode Switcher */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
 
@@ -456,7 +480,7 @@ export default function Analysis() {
                 gap: 8
               }}
             >
-              <Sliders size={16} /> Instant Live Simulator
+              Live Simulator
             </button>
             <button
               onClick={() => setActiveTab('fullForm')}
@@ -475,12 +499,12 @@ export default function Analysis() {
                 gap: 8
               }}
             >
-              <Building2 size={16} /> Precision Bill Audit (Wizard)
+              Bill Audit
             </button>
           </div>
         </div>
 
-      {/* Results Section (Sleek Dark Dashboard) */}
+        {/* Results Section (Sleek Dark Dashboard) */}
 
         {/* MODE 1: INSTANT LIVE SIMULATOR */}
         {activeTab === 'simulator' && (
@@ -491,9 +515,9 @@ export default function Analysis() {
             alignItems: 'stretch',
             marginBottom: '4rem'
           }} className="analysis-layout">
-            
+
             {/* Controls Box */}
-            <div style={{
+            <div className="sim-card-box" style={{
               background: '#ffffff',
               borderRadius: '2rem',
               padding: '2.5rem',
@@ -504,7 +528,7 @@ export default function Analysis() {
               justifyContent: 'space-between'
             }}>
               <div>
-                <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '1.5rem', color: 'var(--foreground)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h3 className="sim-header-title" style={{ fontFamily: 'var(--ff-display)', fontSize: '1.5rem', color: 'var(--foreground)', marginBottom: '4rem', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Sliders size={20} color="var(--primary)" /> Adjust Facility Load & Tariff
                 </h3>
 
@@ -512,7 +536,7 @@ export default function Analysis() {
                 <div style={{ marginBottom: '2.5rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.95rem' }}>
                     <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>Monthly Consumption (kWh)</span>
-                    <strong style={{ color: '#ef4444', fontFamily: 'var(--ff-display)', fontSize: '1.15rem' }}>{simUnits.toLocaleString('en-IN')} kWh</strong>
+                    <strong style={{ color: 'var(--foreground)', fontFamily: 'var(--ff-display)', fontSize: '1.15rem' }}>{simUnits.toLocaleString('en-IN')} kWh</strong>
                   </div>
                   <input
                     type="range"
@@ -521,7 +545,7 @@ export default function Analysis() {
                     step="2500"
                     value={simUnits}
                     onChange={(e) => setSimUnits(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: '#ef4444', cursor: 'pointer' }}
+                    style={{ width: '100%', accentColor: 'var(--foreground)', cursor: 'pointer' }}
                   />
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--muted-foreground)', marginTop: '4px' }}>
                     <span>5k kWh (Small Unit)</span>
@@ -534,7 +558,7 @@ export default function Analysis() {
                 <div style={{ marginBottom: '2rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.95rem' }}>
                     <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>Current Grid Tariff (₹/unit)</span>
-                    <strong style={{ color: '#ef4444', fontFamily: 'var(--ff-display)', fontSize: '1.15rem' }}>₹{simTariff.toFixed(2)} / kWh</strong>
+                    <strong style={{ color: 'var(--foreground)', fontFamily: 'var(--ff-display)', fontSize: '1.15rem' }}>₹{simTariff.toFixed(2)} / kWh</strong>
                   </div>
                   <input
                     type="range"
@@ -543,7 +567,7 @@ export default function Analysis() {
                     step="0.10"
                     value={simTariff}
                     onChange={(e) => setSimTariff(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: '#ef4444', cursor: 'pointer' }}
+                    style={{ width: '100%', accentColor: 'var(--foreground)', cursor: 'pointer' }}
                   />
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--muted-foreground)', marginTop: '4px' }}>
                     <span>₹7.50 (LT Industrial)</span>
@@ -597,60 +621,94 @@ export default function Analysis() {
               </div>
             </div>
 
-            {/* Live Results Panel (Clean White Surface) */}
-            <div style={{
+            {/* Live Results Panel (Rich White Surface) */}
+            <div className="sim-card-box" style={{
               background: '#ffffff',
               borderRadius: '2rem',
-              padding: '2.5rem',
+              padding: '3rem',
               border: '1px solid rgba(222,216,207,0.8)',
               boxShadow: 'var(--shadow-card)',
               color: 'var(--foreground)',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              gap: '2.5rem'
             }}>
               <div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  <Sparkles size={14} /> Instant Simulator Metrics
-                </div>
 
-                <div style={{ marginBottom: '2rem' }}>
-                  <span style={{ fontSize: '0.82rem', color: 'var(--muted-foreground)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {/* Primary Hero Metric */}
+                <div style={{ marginBottom: '2.5rem' }}>
+                  <span style={{ fontSize: '0.88rem', color: 'var(--muted-foreground)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                     Estimated Annual Savings
                   </span>
-                  <div style={{ fontSize: '2.8rem', fontWeight: 800, color: '#ca8a04', margin: '4px 0', fontFamily: 'var(--ff-display)' }}>
-                    ₹{(simAnnualSavings / 100000).toFixed(2)} <span style={{ fontSize: '1.2rem', color: 'var(--foreground)' }}>Lakhs/yr</span>
+                  <div className="sim-hero-val" style={{ fontSize: '3.6rem', fontWeight: 800, color: '#ca8a04', margin: '6px 0', fontFamily: 'var(--ff-display)', lineHeight: 1.1 }}>
+                    ₹{(simAnnualSavings / 100000).toFixed(2)} <span style={{ fontSize: '1.4rem', color: 'var(--foreground)', fontWeight: 700 }}>Lakhs/yr</span>
                   </div>
-                  <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                    <TrendingUp size={15} /> ~₹{simMonthlySavings.toLocaleString('en-IN')} saved every month
-                  </span>
+                  <div style={{
+                    marginTop: '1rem',
+                    padding: '12px 18px',
+                    background: 'var(--muted)',
+                    borderRadius: '14px',
+                    fontSize: '1.05rem',
+                    color: 'var(--primary)',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8
+                  }}>
+                    <TrendingUp size={18} /> ~₹{simMonthlySavings.toLocaleString('en-IN')} saved every month
+                  </div>
                 </div>
 
-                {/* DISCOM Tariff Benchmark Bar Chart */}
-                <div style={{ marginBottom: '2rem' }}>
-                  <span style={{ fontSize: '0.82rem', color: 'var(--muted-foreground)', fontWeight: 700, display: 'block', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Maharashtra Industrial Tariff Benchmark (₹/kWh)
-                  </span>
-                  <div style={{ width: '100%', height: 160 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={discomBenchmarkData} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
-                        <XAxis type="number" stroke="#9ca3af" tick={{ fill: '#4b5563', fontSize: 11 }} domain={[0, 12]} />
-                        <YAxis dataKey="discom" type="category" stroke="#9ca3af" tick={{ fill: '#374151', fontSize: 11, fontWeight: 600 }} width={110} />
-                        <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#111827', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
-                        <Bar dataKey="rate" radius={[0, 6, 6, 0]}>
-                          {discomBenchmarkData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.highlight ? 'var(--primary)' : '#ef4444'} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
+                {/* 2 Highlights Grid */}
+                <div className="sim-stats-grid" style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '1.25rem',
+                  marginTop: '1.5rem'
+                }}>
+                  <div style={{
+                    background: 'var(--background)',
+                    padding: '1.25rem',
+                    borderRadius: '1.25rem',
+                    border: '1px solid rgba(222,216,207,0.6)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', color: 'var(--muted-foreground)', fontWeight: 600, marginBottom: 6 }}>
+                      <TrendingUp size={16} color="var(--primary)" /> 10-Yr Cumulative
+                    </div>
+                    <strong style={{ fontSize: '1.25rem', fontFamily: 'var(--ff-display)', color: 'var(--foreground)' }}>
+                      ₹{((simAnnualSavings * 10) / 10000000).toFixed(2)} Cr
+                    </strong>
+                  </div>
+
+                  <div style={{
+                    background: 'var(--background)',
+                    padding: '1.25rem',
+                    borderRadius: '1.25rem',
+                    border: '1px solid rgba(222,216,207,0.6)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', color: 'var(--muted-foreground)', fontWeight: 600, marginBottom: 6 }}>
+                      <Leaf size={16} color="var(--primary)" /> CO₂ Avoided
+                    </div>
+                    <strong style={{ fontSize: '1.25rem', fontFamily: 'var(--ff-display)', color: 'var(--foreground)' }}>
+                      ~{(simUnits * 12 * 0.71 / 1000).toFixed(0)} T/yr
+                    </strong>
                   </div>
                 </div>
               </div>
 
-              <div style={{ background: 'var(--muted)', border: '1px solid rgba(222,216,207,0.8)', borderRadius: '1rem', padding: '1.1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>Current Estimated Monthly Bill</span>
-                <strong style={{ fontSize: '1.15rem', color: '#ef4444', fontFamily: 'var(--ff-display)' }}>₹{simCurrentBill.toLocaleString('en-IN')}</strong>
+              {/* Bottom Monthly Bill Summary */}
+              <div style={{
+                background: 'var(--muted)',
+                border: '1px solid rgba(222,216,207,0.8)',
+                borderRadius: '1.25rem',
+                padding: '1.25rem 1.5rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>Current Estimated Monthly Bill</span>
+                <strong style={{ fontSize: '1.3rem', color: 'var(--foreground)', fontFamily: 'var(--ff-display)' }}>₹{simCurrentBill.toLocaleString('en-IN')}</strong>
               </div>
             </div>
 
@@ -663,11 +721,14 @@ export default function Analysis() {
             display: 'grid', gridTemplateColumns: '1fr 1.35fr', gap: '4rem', alignItems: 'start',
             marginBottom: '4rem'
           }} className="analysis-layout">
-            
+
             {/* Info Side Bar */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              
-              <div style={{
+
+              {/* Upload Bill from OCR (Top of Sidebar) */}
+              <UploadSection ref={uploadRef} onExtracted={handleExtractedData} />
+
+              <div className="audit-info-card" style={{
                 background: 'var(--foreground)',
                 color: '#fff',
                 borderRadius: '2rem',
@@ -695,25 +756,6 @@ export default function Analysis() {
                 </div>
               </div>
 
-              {/* Quick Helper Card */}
-              <div style={{
-                background: 'var(--surface)',
-                borderRadius: '1.5rem',
-                padding: '1.75rem',
-                border: '1px solid rgba(222,216,207,0.6)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem'
-              }}>
-                <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', flexShrink: 0 }}>
-                  <Zap size={22} />
-                </div>
-                <div>
-                  <h5 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--foreground)' }}>Auto-Skip with OCR</h5>
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>Uploading your bill auto-populates all 18 variables and takes you straight to final review!</p>
-                </div>
-              </div>
-
             </div>
 
             {/* Form Wizard Card Container */}
@@ -723,13 +765,13 @@ export default function Analysis() {
               padding: '2.5rem',
               border: '1px solid rgba(222,216,207,0.8)',
               boxShadow: 'var(--shadow-card)',
-              position: 'relative', 
+              position: 'relative',
               overflow: 'hidden',
             }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 6, background: 'var(--primary)', zIndex: 2 }} />
 
               {/* Wizard Step Progress Tracker */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', borderBottom: '1px solid rgba(222,216,207,0.5)', paddingBottom: '1.5rem' }}>
+              <div className="wizard-steps-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', borderBottom: '1px solid rgba(222,216,207,0.5)', paddingBottom: '1.5rem' }}>
                 {[
                   { step: 1, label: 'Facility', icon: <Building2 size={16} /> },
                   { step: 2, label: 'Voltage & Demand', icon: <Gauge size={16} /> },
@@ -768,10 +810,9 @@ export default function Analysis() {
                 ))}
               </div>
 
-              {/* Step 1: Upload + Facility */}
+              {/* Step 1: Facility Identity */}
               {wizardStep === 1 && (
                 <div>
-                  <UploadSection ref={uploadRef} onExtracted={handleExtractedData} />
                   <div style={{ marginBottom: '1.5rem' }}>
                     <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '1rem', fontFamily: 'var(--ff-display)' }}>
                       Step 1 of 3: Consumer & Facility Identity
@@ -882,19 +923,19 @@ export default function Analysis() {
                     >
                       <ChevronLeft size={18} /> Back
                     </button>
-                    <button 
+                    <button
                       type="button"
-                      onClick={handleAnalysis} 
-                      className="btn-organic" 
+                      onClick={handleAnalysis}
+                      className="btn-organic"
                       style={{
                         flex: 2,
-                        padding: '14px', 
+                        padding: '14px',
                         justifyContent: 'center',
                         background: 'var(--primary)',
-                        color: 'var(--primary-foreground)', 
+                        color: 'var(--primary-foreground)',
                         fontSize: '1rem',
                         fontWeight: 700,
-                        border: 'none', 
+                        border: 'none',
                         cursor: 'pointer',
                         boxShadow: '0 4px 15px rgba(16,185,129,0.25)',
                         gap: 8
@@ -914,40 +955,97 @@ export default function Analysis() {
         {/* Live Recent Industry Audits Feed */}
         <div style={{
           background: 'var(--surface)',
-          borderRadius: '1.5rem',
-          padding: '2rem',
+          borderRadius: '2rem',
+          padding: '2.25rem',
           border: '1px solid rgba(222,216,207,0.6)',
-          marginTop: '2rem'
+          boxShadow: 'var(--shadow-soft)',
+          marginTop: '2.5rem'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '1.25rem' }}>
-            <Award size={20} color="var(--primary)" />
-            <h4 style={{ margin: 0, fontSize: '1.1rem', fontFamily: 'var(--ff-display)', color: 'var(--foreground)' }}>
-              Recent I&C Open Access Audits
-            </h4>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{
+                width: 42, height: 42, borderRadius: '50%',
+                background: 'rgba(93,112,82,0.15)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--primary)'
+              }}>
+                <Award size={22} />
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '1.25rem', fontFamily: 'var(--ff-display)', color: 'var(--foreground)', fontWeight: 800 }}>
+                  Recent I&C Open Access Audits
+                </h4>
+                <p style={{ margin: '2px 0 0 0', fontSize: 13, color: 'var(--muted-foreground)' }}>
+                  Verified tariff optimizations & annual savings across industrial clusters
+                </p>
+              </div>
+            </div>
           </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: '1.25rem'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: '1.5rem'
           }}>
             {recentAudits.map((a, idx) => (
               <div key={idx} style={{
-                background: 'var(--background)',
-                border: '1px solid rgba(222,216,207,0.5)',
-                borderRadius: '1rem',
-                padding: '1.25rem',
+                position: 'relative',
+                height: 270,
+                borderRadius: '1.5rem',
+                overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}>
-                <div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>{a.location}</div>
-                  <h5 style={{ margin: '4px 0 8px', fontSize: '1rem', color: 'var(--foreground)', fontWeight: 700 }}>{a.industry}</h5>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: '1px solid rgba(222,216,207,0.4)', fontSize: '0.85rem' }}>
-                  <span style={{ color: 'var(--muted-foreground)' }}>Bill: {a.bill}</span>
-                  <strong style={{ color: '#10b981' }}>Saved: {a.savings}</strong>
+                justifyContent: 'flex-end',
+                padding: '1.25rem',
+                cursor: 'pointer',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
+                transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-6px)'
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(16,185,129,0.25)'
+                  const img = e.currentTarget.querySelector('.audit-bg-img')
+                  if (img) img.style.transform = 'scale(1.08)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'none'
+                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.12)'
+                  const img = e.currentTarget.querySelector('.audit-bg-img')
+                  if (img) img.style.transform = 'scale(1)'
+                }}
+              >
+                {/* High Res Background Image */}
+                <img
+                  src={a.image}
+                  alt={a.industry}
+                  className="audit-bg-img"
+                  style={{
+                    position: 'absolute', inset: 0, width: '100%', height: '100%',
+                    objectFit: 'cover', transition: 'transform 0.5s ease',
+                    zIndex: 0
+                  }}
+                />
+
+                {/* Dark Gradient Overlay for Readability */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(180deg, rgba(15,23,42,0.1) 0%, rgba(15,23,42,0.55) 50%, rgba(9,13,22,0.95) 100%)',
+                  zIndex: 1
+                }} />
+
+                {/* Card Bottom Content (Strictly Positioned at Bottom of Div) */}
+                <div style={{ position: 'relative', zIndex: 2, color: '#ffffff', marginTop: 'auto' }}>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
+                    {a.location}
+                  </div>
+                  <h5 style={{ margin: '0 0 10px 0', fontSize: '1.25rem', fontWeight: 800, fontFamily: 'var(--ff-display)', color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                    {a.industry}
+                  </h5>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.2)', fontSize: '0.9rem' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 500 }}>{a.bill}</span>
+                    <strong style={{ color: '#34d399', fontWeight: 700 }}>{a.savings}</strong>
+                  </div>
                 </div>
               </div>
             ))}
@@ -959,7 +1057,7 @@ export default function Analysis() {
       {/* Results Section (Sleek Dark Dashboard) */}
       {analysisResult && (
         <div style={{ ...container, marginTop: '5rem' }} ref={(el) => { if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}>
-          
+
           <div style={{
             background: '#090d16',
             borderRadius: '2.5rem',
@@ -1023,7 +1121,7 @@ export default function Analysis() {
                   {isGeneratingPdf ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Generating PDF…</>
                   ) : (
-                    <><Download size={16} /> Download Full PDF</>    
+                    <><Download size={16} /> Download Full PDF</>
                   )}
                 </button>
 
@@ -1089,11 +1187,11 @@ export default function Analysis() {
 
             {/* Strategic Details & Recommended Solution Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-              
+
               {/* Detailed Breakdown */}
               <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '1.5rem', padding: '2rem', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <h4 style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Zap size={18} color="#10b981"/> Billing Metrics Breakdown
+                  <Zap size={18} color="#10b981" /> Billing Metrics Breakdown
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.92rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.6rem' }}>
@@ -1123,7 +1221,7 @@ export default function Analysis() {
               <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '1.5rem', padding: '2rem', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
                   <h4 style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <TrendingDown size={18} color="#10b981"/> Recommended Procurement Path
+                    <TrendingDown size={18} color="#10b981" /> Recommended Procurement Path
                   </h4>
                   <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '1rem', padding: '1.25rem', marginBottom: '1.25rem' }}>
                     <span style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 700, letterSpacing: '0.05em' }}>PRIMARY RECOMMENDATION</span>
@@ -1176,21 +1274,21 @@ export default function Analysis() {
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                     <defs>
                       <linearGradient id="analysisGridGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4}/>
-                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0.0}/>
+                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
+                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0.0} />
                       </linearGradient>
                       <linearGradient id="analysisSunGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0.0}/>
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="year" stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                    <YAxis 
-                      stroke="#4b5563" 
+                    <YAxis
+                      stroke="#4b5563"
                       tick={{ fill: '#9ca3af', fontSize: 12 }}
                       tickFormatter={(val) => `₹${(val / 100000).toFixed(0)}L`}
                     />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{
                         background: 'rgba(15, 23, 42, 0.95)',
                         border: '1px solid rgba(255,255,255,0.1)',
@@ -1236,6 +1334,7 @@ export default function Analysis() {
         }
         @media(max-width:1024px){
           .analysis-layout{grid-template-columns:1fr!important;gap:3rem!important}
+          .audit-info-card { display: none !important; }
         }
         @media(max-width:640px){
           .analysis-layout > div:last-child { padding: 1.25rem !important; border-radius: 20px !important; }

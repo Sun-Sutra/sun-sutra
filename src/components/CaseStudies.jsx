@@ -1,5 +1,7 @@
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
 import profileFallback from '../assets/shared/profile_fallback.png'
+import textileImg from '../assets/studies/textile.png'
+import coldStorageImg from '../assets/studies/cold_storage.png'
 
 const studies = [
   {
@@ -9,7 +11,7 @@ const studies = [
     currentBill: 1200000,
     newBill: 850000,
     co2: 125,
-    image: 'https://images.unsplash.com/photo-1574620617345-cb3ba49a8f15?q=80&w=600&auto=format&fit=crop'
+    image: textileImg
   },
   {
     industry: 'Injection Molding',
@@ -27,7 +29,7 @@ const studies = [
     currentBill: 2500000,
     newBill: 1750000,
     co2: 240,
-    image: 'https://images.unsplash.com/photo-1590740924045-802da408f619?q=80&w=600&auto=format&fit=crop'
+    image: coldStorageImg
   }
 ];
 

@@ -69,6 +69,6 @@ export const extractTextFromImage = async (file, onProgress) => {
     }
   } catch (error) {
     console.error('Extraction Error:', error);
-    throw new Error('Failed to extract text. Please try a valid file.');
+    throw new Error('Failed to extract text. Please try a valid file.', { cause: error });
   }
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
+import { useFadeIn, SectionHeading, SectionBody, sectionPad, container, organicCardStyle } from './utils'
 import maharashtraClustersImg from '../assets/about/maharashtra_clusters.png'
 import groupCaptiveImg from '../assets/about/group_captive.jpeg'
 import regulatoryOnboardingImg from '../assets/about/regulatory_onboarding.jpeg'
@@ -53,7 +53,6 @@ export default function About() {
 
             {/* Left Column: Text & CTA */}
             <div className="about-hero-content">
-              <SectionLabel>About Us</SectionLabel>
               <SectionHeading style={{ margin: '0 0 1.25rem 0', lineHeight: 1.15 }}>
                 Building Affordable Renewable Energy Access
               </SectionHeading>
