@@ -7,7 +7,7 @@ import voltaraBg from "../assets/solutions/agreement.jpg"
 import msmeBg from "../assets/solutions/industries.jpg"
 
 const solPoints = [
-  'MSME demand aggregation across industrial clusters',
+  'I&C demand aggregation across industrial clusters',
   'Renewable energy procurement coordination',
   'Group captive and open-access support',
   'Compliance and onboarding management',
@@ -66,7 +66,7 @@ export default function Solution() {
           <SectionLabel>Our Solution</SectionLabel>
           <SectionHeading>Simplifying Renewable Energy</SectionHeading>
           <SectionBody>
-            We act as the intelligent layer between renewable generators and industrial MSMEs —
+            We act as the intelligent layer between renewable generators and I&C industrial consumers —
             handling everything from aggregation to compliance.
           </SectionBody>
         </div>
@@ -276,7 +276,7 @@ export default function Solution() {
                   marginBottom: '0.75rem',
                 }}
               >
-                Aggregated MSMEs
+                Aggregated I&C Consumers
               </div>
 
               <div

@@ -4,7 +4,6 @@ import Problem from '../components/Problem'
 import Solution from '../components/Solution'
 import Timeline from '../components/Timeline'
 import ValueProp from '../components/ValueProp'
-import WhyNow from '../components/WhyNow'
 import { SectionLabel, SectionHeading, SectionBody, container } from '../components/utils'
 
 export default function SolutionPage() {
@@ -16,7 +15,6 @@ export default function SolutionPage() {
       <Timeline />
       <ValueProp />
       <CaseStudies />
-      <WhyNow />
     </div>
   )
 }

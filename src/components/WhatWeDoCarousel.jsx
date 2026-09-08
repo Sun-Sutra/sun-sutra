@@ -3,33 +3,33 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { useFadeIn, SectionLabel, SectionHeading, SectionBody, sectionPad, container } from './utils'
 
-import groupCaptiveImg from '../assets/about/group_captive.jpeg'
-import regulatoryOnboardingImg from '../assets/about/regulatory_onboarding.jpeg'
+import openAccessImg from '../assets/solutions/open_access.jpg'
+import industriesImg from '../assets/solutions/industries.jpg'
 import businessModelImg from '../assets/about/business_model.jpeg'
 
 const features = [
   {
-    title: "Group Captive Sourcing",
-    desc: "We structure group captive investments where generators provide clean energy directly to our MSME pool with zero upfront capex requirements.",
+    title: "I&C Demand Aggregation",
+    desc: "We pool energy demand across industrial clusters to negotiate institutional tariffs directly with tier-1 solar and wind developers.",
     path: "/solutions",
-    image: groupCaptiveImg,
+    image: industriesImg,
     bullets: [
-      "Zero upfront capital expenditure for solar & wind procurement",
-      "Direct grid injection with up to 40% energy cost reduction",
-      "Aggregated MSME buying power accessing tier-1 developer rates",
-      "Long-term fixed tariff hedging against DISCOM rate hikes"
+      "Aggregated I&C buying power accessing tier-1 developer rates",
+      "Direct grid injection with up to 30-40% energy cost reduction",
+      "Long-term fixed tariff hedging against DISCOM rate hikes",
+      "Predictable utility savings with zero internal complexity"
     ]
   },
   {
-    title: "Regulatory & Onboarding",
-    desc: "We handle DISCOM approvals, open access compliance, and monthly scheduling so you can focus entirely on your manufacturing.",
+    title: "Open-Access Power Procurement",
+    desc: "Enabling small and medium industrial facilities to procure clean utility-scale solar and wind electricity seamlessly via the state grid.",
     path: "/solutions",
-    image: regulatoryOnboardingImg,
+    image: openAccessImg,
     bullets: [
-      "End-to-end DISCOM open access approval & regulatory filings",
-      "Automated monthly energy banking & grid scheduling support",
-      "Full compliance with state electricity regulatory commission guidelines",
-      "Zero operational overhead for your internal manufacturing team"
+      "Direct procurement from high-efficiency solar & wind parks",
+      "Zero disruption to facility operations or power reliability",
+      "Substantial reduction in corporate carbon emissions & ESG footprint",
+      "Transparent wheeling and energy accounting coordination"
     ]
   },
   {
@@ -78,7 +78,7 @@ export default function WhatWeDoCarousel() {
             Unlocking Renewable Value
           </SectionHeading>
           <SectionBody style={{ margin: '0 auto', maxWidth: 650 }}>
-            Sun Sutra acts as a single aggregator of fragmented industrial loads to secure tier-1 solar and wind power agreements, passing the savings to MSMEs.
+            Sun Sutra acts as a single aggregator of fragmented industrial loads to secure tier-1 solar and wind power agreements, passing the savings to I&C consumers.
           </SectionBody>
         </div>
 

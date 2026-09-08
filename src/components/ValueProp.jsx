@@ -11,7 +11,7 @@ export default function ValueProp() {
         <div ref={headerRef} style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
           <SectionLabel>Value Proposition</SectionLabel>
           <SectionHeading>Ecosystem Alignment</SectionHeading>
-          <SectionBody style={{ margin: '0 auto' }}>Our model creates aligned incentives for MSMEs, renewable generators, and the energy ecosystem.</SectionBody>
+          <SectionBody style={{ margin: '0 auto' }}>Our model creates aligned incentives for I&C consumers, renewable generators, and the energy ecosystem.</SectionBody>
         </div>
 
         <div ref={gridRef} style={{
@@ -23,7 +23,7 @@ export default function ValueProp() {
           margin: '4rem auto 0'
         }} className="bento-grid">
           
-          {/* Main Card: MSMEs */}
+          {/* Main Card: I&C Consumers */}
           <div style={{
             ...organicCardStyle,
             gridColumn: 'span 2',
@@ -46,7 +46,7 @@ export default function ValueProp() {
                 <div style={{ padding: '12px', background: 'rgba(253, 224, 71, 0.2)', borderRadius: '12px', color: 'var(--primary)' }}>
                   <Zap size={28} />
                 </div>
-                <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '2rem', fontWeight: 700, margin: 0 }}>For MSMEs</h3>
+                <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: '2rem', fontWeight: 700, margin: 0 }}>For I&C Consumers</h3>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {[
@@ -84,7 +84,7 @@ export default function ValueProp() {
               {[
                 'Aggregated industrial demand — large, consolidated off-take at once',
                 'Reduced customer acquisition costs via single-point aggregation',
-                'Access to the MSME market segment without fragmented outreach'
+                'Access to the I&C market segment without fragmented outreach'
               ].map((item, i) => (
                 <li key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', fontSize: '0.95rem', color: 'rgba(255,255,255,0.85)' }}>
                   <div style={{ marginTop: 2, opacity: 0.7 }}><Check size={16} strokeWidth={3} /></div>

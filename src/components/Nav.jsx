@@ -14,6 +14,7 @@ export default function Nav() {
     { to: '/', label: 'HOME' },
     { to: '/about', label: 'ABOUT US' },
     { to: '/solutions', label: 'SOLUTIONS' },
+    { to: '/contact', label: 'PARTNER WITH US' },
     ...(isAuthenticated 
       ? [{ to: '/profile', label: user?.name ? user.name.toUpperCase() : 'PROFILE' }]
       : [{ to: '/login', label: 'LOGIN' }])
@@ -60,7 +61,7 @@ export default function Nav() {
       </div>
 
       {/* Desktop Links (Center) */}
-      <ul className="desktop-nav-links" style={{ display: 'flex', gap: '3rem', listStyle: 'none', alignItems: 'center', margin: 0, padding: 0 }}>
+      <ul className="desktop-nav-links" style={{ display: 'flex', gap: 'clamp(1.5rem, 2.2vw, 2.5rem)', listStyle: 'none', alignItems: 'center', margin: 0, padding: 0 }}>
         {links.map(l => (
           <li key={l.to}>
             <NavLink
